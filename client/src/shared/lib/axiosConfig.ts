@@ -9,7 +9,7 @@ import axios, {
 // const API_URL = "http://localhost:3000/api";
 
 // Для продакшена (удалённый сервер)
-const API_URL = "http://crocdraw.ru/api";
+const API_URL = "https://crocdraw.ru/api";
 
 export const $api: AxiosInstance = axios.create({
   withCredentials: true,
