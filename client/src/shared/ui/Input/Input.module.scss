@@ -1,0 +1,26 @@
+.inputWrapper {
+  position: relative;
+  width: 100%;
+
+  label {
+    display: block;
+    font-weight: 500;
+    height: 100%;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    padding: 0.9rem;
+    padding-right: 25px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+
+    &:focus {
+      border-color: $hover-color;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(98, 0, 238, 0.3);
+    }
+  }
+}
