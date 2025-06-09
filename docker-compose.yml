@@ -1,13 +1,43 @@
 version: "3.9"
 
 services:
+traefik:
+  image: traefik:v3.2.3
+  command:
+    - "--api.insecure=false"
+    - "--providers.docker=true"
+    - "--providers.docker.exposedbydefault=false"
+    - "--entrypoints.web.address=:80"
+    - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+    - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    - "--entrypoints.websecure.address=:443"
+    - "--entrypoints.websecure.http.tls.certresolver=myresolver"
+    - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+    - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+    - "--certificatesresolvers.myresolver.acme.email=axcerz@gmail.com"
+    - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    - "letsencrypt:/letsencrypt"
+  networks:
+    - web
+  restart: unless-stopped
+
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
     container_name: client
-    ports:
-      - "80:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.rule=Host(`crocdraw.ru`) && PathPrefix(`/`)"
+      - "traefik.http.routers.client.tls=true"
+      - "traefik.http.services.client.loadbalancer.server.port=80"
+    networks:
+      - web
     restart: unless-stopped
 
   server:
@@ -15,6 +45,17 @@ services:
       context: ./server
       dockerfile: Dockerfile
     container_name: server
-    ports:
-      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.rule=Host(`crocdraw.ru`) && PathPrefix(`/api`)"
+      - "traefik.http.services.server.loadbalancer.server.port=3000"
+    networks:
+      - web
     restart: unless-stopped
+
+networks:
+  web:
+    driver: bridge
+
+volumes:
+  letsencrypt:
