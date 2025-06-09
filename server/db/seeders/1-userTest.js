@@ -10,6 +10,18 @@ module.exports = {
         email: 'Cooper@test.com',
         password: '123',
         point: 10
+      },
+      {
+        username: 'John',
+        email: 'John@test.com',
+        password: '456',
+        point: 15
+      },
+      {
+        username: 'Snow',
+        email: 'Snow@test.com',
+        password: '789',
+        point: 20
       }
     ], {});
     

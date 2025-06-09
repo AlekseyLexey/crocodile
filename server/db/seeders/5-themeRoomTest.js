@@ -7,6 +7,14 @@ module.exports = {
       {
         theme_id: 1,
         room_id: 1
+      },
+      {
+        theme_id: 2,
+        room_id: 2
+      },
+      {
+        theme_id: 3,
+        room_id: 3
       }
     ], {});
    

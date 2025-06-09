@@ -6,8 +6,16 @@ module.exports = {
 
       await queryInterface.bulkInsert('Words', [
         {
-        name: Драккар,
+        name: "Драккар",
         theme_id: 1
+      },
+      {
+        name: "Ступа",
+        theme_id: 2
+      },
+      {
+        name: "Миля",
+        theme_id: 3
       }
     ], {});
 

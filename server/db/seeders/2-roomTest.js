@@ -9,6 +9,16 @@ module.exports = {
         pictures: 'picture',
         status: 'status',
         name: 'Clever owls'
+      },
+      {
+        pictures: 'Draw',
+        status: 'GOOD',
+        name: 'Отчаянные домохозяйки'
+      },
+      {
+        pictures: 'Photo',
+        status: 'BAD',
+        name: 'Ходящие в бар'
       }
     ], {});
    

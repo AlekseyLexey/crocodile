@@ -7,6 +7,12 @@ module.exports = {
       await queryInterface.bulkInsert('Themes', [
       {
         name: 'История'
+      },
+      {
+        name: 'Всякая всячина'
+      },
+      {
+        name: 'Кино'
       }
     ], {});
 
