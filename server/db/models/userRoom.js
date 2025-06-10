@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     point: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'User_room',
+    modelName: 'UserRoom',
   });
   return UserRoom;
 };
