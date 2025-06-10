@@ -14,3 +14,17 @@ $error-color: #f44336;
 $spacing: 1.25rem;
 $transition: all 0.2s ease-out 0s;
 $br: 12px;
+
+//фон общий
+$background-main: linear-gradient(60deg, #8029CC, #CD5D5D);
+
+//цвета для фонов компонентов
+$background-container: #00000013;
+$background-mini:#00000019;
+$white: rgb(255,245,245);
+$background-modal: linear-gradient(#FF2C68, #387EFF);
+$border-encircle: #00000022;
+
+//цвета для текста
+$color: #FFEEEE;
+$chat-color: #000000;

@@ -38,6 +38,9 @@ export const Header = () => {
           <Link to={CLIENT_ROUTES.MAIN} onClick={handleLogout}>
             Sign Out
           </Link>
+          <Link to={CLIENT_ROUTES.GAME}>
+            GamePage
+          </Link>
         </>
       )}
     </nav>
