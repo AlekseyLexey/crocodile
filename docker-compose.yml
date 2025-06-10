@@ -51,7 +51,25 @@ services:
       - "traefik.http.services.server.loadbalancer.server.port=3000"
     networks:
       - web
+    depends_on:
+      - db
     restart: unless-stopped
+
+    db:
+      image: postgres:16-alpine
+      container_name: postgres_db
+      restart: always
+      env_file:
+        - ./.env
+      # дублируем ключ, чтобы точно применился даже при пустом .env
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: crocodile
+      volumes:
+        - dbdata:/var/lib/postgresql/data
+      ports:
+        - "${DB_PORT:-5432}:5432"
 
 networks:
   web:
@@ -59,3 +77,4 @@ networks:
 
 volumes:
   letsencrypt:
+  dbdata:
