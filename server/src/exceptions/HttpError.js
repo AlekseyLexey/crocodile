@@ -1,8 +1,8 @@
 class HttpError extends Error {
-  constructor(status, message, errors = []) {
+  constructor(statusCode, message, data = null) {
     super(message);
-    this.status = status;
-    this.errors = errors;
+    this.statusCode = statusCode;
+    this.data = data;
   }
 
   static UnauthorizedError() {

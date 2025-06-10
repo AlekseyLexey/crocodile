@@ -5,6 +5,7 @@ const {
   refreshService,
 } = require("../services/userService");
 const cookieConfig = require("../config/cookieConfig");
+const { formatResponse } = require("../utils/formatResponse");
 
 const registration = async (req, res, next) => {
   try {
@@ -14,7 +15,9 @@ const registration = async (req, res, next) => {
 
     res.cookie("refreshToken", userData.refreshToken, cookieConfig);
 
-    return res.status(201).json(userData);
+    return res
+      .status(201)
+      .json(formatResponse(201, "Пользователь создан", userData));
   } catch (e) {
     next(e);
   }
@@ -28,7 +31,9 @@ const login = async (req, res, next) => {
 
     res.cookie("refreshToken", userData.refreshToken, cookieConfig);
 
-    return res.status(200).json(userData);
+    return res
+      .status(200)
+      .json(formatResponse(200, "Пользователь вошел", userData));
   } catch (e) {
     next(e);
   }
@@ -42,7 +47,7 @@ const logout = async (req, res, next) => {
 
     res.clearCookie("refreshToken");
 
-    return res.status(200).json({ message: "Вы разлогинились" });
+    return res.status(200).json(200, "Пользователь вышел");
   } catch (e) {
     next(e);
   }
@@ -56,7 +61,9 @@ const refresh = async (req, res, next) => {
 
     res.cookie("refreshToken", userData.refreshToken, cookieConfig);
 
-    return res.status(200).json(userData);
+    return res
+      .status(200)
+      .json(formatResponse(200, "Пользователь вошел", userData));
   } catch (e) {
     next(e);
   }

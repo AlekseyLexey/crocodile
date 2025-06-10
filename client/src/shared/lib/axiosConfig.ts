@@ -6,10 +6,10 @@ import axios, {
 } from "axios";
 
 // Для разработки (локальный сервер)
-const API_URL = "http://localhost:3000/api";
+// const API_URL = "http://localhost:3000/api";
 
 // Для продакшена (удалённый сервер)
-// const API_URL = "http://crocdraw.ru/api";
+const API_URL = "https://crocdraw.ru/api";
 
 export const $api: AxiosInstance = axios.create({
   withCredentials: true,
@@ -39,19 +39,11 @@ $api.interceptors.response.use(
         localStorage.setItem("token", res.data.accessToken);
         return $api.request(prevReq!);
       } catch (error) {
-        console.log("Рефреш токен истек / не валиден!");
-        if (axios.isAxiosError(error)) {
-          return Promise.reject(
-            (error.response?.data as { message: string }).message
-          );
-        }
-        return Promise.reject("Unknown error");
+        return Promise.reject(error);
       }
     }
 
-    return Promise.reject(
-      (error.response?.data as { message: string }).message
-    );
+    return Promise.reject(error);
   }
 );
 

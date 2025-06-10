@@ -7,10 +7,16 @@ import {
   signUpThunk,
 } from "../api/UserApi";
 
-const initialState = {
-  user: null as IUser | null,
+type UserType = {
+  user: IUser | null;
+  isLoading: boolean;
+  error: string | null;
+};
+
+const initialState: UserType = {
+  user: null,
   isLoading: false,
-  error: null as string | null,
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -27,11 +33,11 @@ const userSlice = createSlice({
       })
       .addCase(signUpThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = action.payload.data.user;
       })
       .addCase(signUpThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload!.message ?? "Unknow error";
       })
 
       // ***signInThunk
@@ -41,11 +47,11 @@ const userSlice = createSlice({
       })
       .addCase(signInThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = action.payload.data.user;
       })
       .addCase(signInThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload!.message ?? "Unknow error";
       })
 
       // ***logoutThunk
@@ -59,7 +65,7 @@ const userSlice = createSlice({
       })
       .addCase(logoutThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload?.message ?? "Unknow error";
       })
 
       // ***refreshThunk
@@ -69,11 +75,11 @@ const userSlice = createSlice({
       })
       .addCase(refreshThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = action.payload.data.user;
       })
       .addCase(refreshThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload?.message ?? "Unknow error";
       });
   },
 });
