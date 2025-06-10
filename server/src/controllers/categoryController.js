@@ -1,14 +1,12 @@
 const CategoryService = require('../services/categoryService');
+const { formatResponse } = require('../utils/formatResponse');
 
 class CategoryController {
   static async getAllCategories(_, res, next) {
     try {
       const categories = await CategoryService.findAllCategories();
 
-      return res.status(200).json({
-        message: 'Success',
-        data: categories,
-      });
+      return res.status(200).json(formatResponse(200, 'Success', categories));
     } catch (err) {
       next(err);
     }
@@ -21,16 +19,12 @@ class CategoryController {
       const category = await CategoryService.findCategoryById(categoryId);
 
       if (!category) {
-        return res.status(404).json({
-          message: 'Category not found',
-          data: null,
-        });
+        return res
+          .status(404)
+          .json(formatResponse(404, 'Category not found', null));
       }
 
-      return res.status(200).json({
-        message: 'Success',
-        data: category,
-      });
+      return res.status(200).json(formatResponse(200, 'Success', category));
     } catch (err) {
       next(err);
     }

@@ -1,14 +1,12 @@
 const RoomService = require('../services/roomService');
+const { formatResponse } = require('../utils/formatResponse');
 
 class RoomController {
   static async getAllRooms(_, res, next) {
     try {
       const rooms = await RoomService.findAllRooms();
 
-      return res.status(200).json({
-        message: 'Success',
-        data: rooms,
-      });
+      return res.status(200).json(formatResponse(200, 'Success', rooms));
     } catch (err) {
       next(err);
     }
@@ -20,16 +18,12 @@ class RoomController {
       const room = await RoomService.findRoomById(roomId);
 
       if (!room) {
-        return res.status(404).json({
-          message: 'Room not found',
-          data: null,
-        });
+        return res
+          .status(404)
+          .json(formatResponse(404, 'Room not found', null));
       }
 
-      return res.status(200).json({
-        message: 'Success',
-        data: room,
-      });
+      return res.status(200).json(formatResponse(200, 'Success', room));
     } catch (err) {
       next(err);
     }
@@ -45,16 +39,12 @@ class RoomController {
       });
 
       if (!newRoom) {
-        return res.status(400).json({
-          message: 'Room was not created',
-          data: null,
-        });
+        return res
+          .status(400)
+          .json(formatResponse(400, 'Room was not created', null));
       }
 
-      return res.status(201).json({
-        message: 'Success',
-        data: newRoom,
-      });
+      return res.status(201).json(formatResponse(201, 'Success', newRoom));
     } catch (err) {
       next(err);
     }
@@ -70,10 +60,7 @@ class RoomController {
         name,
       });
 
-      return res.status(201).json({
-        message: 'Success',
-        data: updatedRoom,
-      });
+      return res.status(200).json(formatResponse(200, 'Success', updatedRoom));
     } catch (err) {
       next(err);
     }

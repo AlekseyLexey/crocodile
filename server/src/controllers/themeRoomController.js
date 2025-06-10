@@ -1,4 +1,5 @@
 const ThemeRoomService = require('../services/themeRoomService');
+const { formatResponse } = require('../utils/formatResponse');
 
 class ThemeRoomController {
   static async createThemeRoom(req, res, next) {
@@ -9,10 +10,7 @@ class ThemeRoomController {
         roomId,
       });
 
-      return res.status(201).json({
-        message: 'Success',
-        data: newThemeRoom,
-      });
+      return res.status(201).json(formatResponse(201, 'Success', newThemeRoom));
     } catch (err) {
       next(err);
     }

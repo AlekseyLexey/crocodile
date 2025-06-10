@@ -22,7 +22,7 @@ router.post('/login', login);
 router.post('/logout', logout);
 router.get('/refresh', refresh);
 
-//
+
 router.use('/rooms', authMiddleware, roomRouter);
 router.use('/words', wordRouter);
 router.use('/themes', themeRouter);

@@ -1,4 +1,4 @@
-const { User, Buy, Product } = require('../../db/models');
+const { Buy, Product } = require('../../db/models');
 
 class BuyService {
   static async createNewBuy({ productId, userId }) {

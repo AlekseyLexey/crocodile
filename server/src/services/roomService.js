@@ -3,7 +3,7 @@ const { Room, User } = require('../../db/models');
 class RoomService {
   static async findAllRooms() {
     return await Room.findAll({
-      attributes: ['id', 'picture', 'status', 'name'],
+      attributes: ['id', 'pictures', 'status', 'name'],
       include: [
         {
           model: User,
@@ -18,7 +18,7 @@ class RoomService {
 
   static async findRoomById(roomId) {
     return await Room.findByPk(roomId, {
-      attributes: ['id', 'picture', 'status', 'name'],
+      attributes: ['id', 'pictures', 'status', 'name'],
       include: [
         {
           model: User,
