@@ -6,4 +6,4 @@ COPY package-lock.json ./
 RUN npm install
 COPY . . 
 EXPOSE 3000
-CMD ["npm", "run", "dbr", "node", "src/server.js"]
+CMD ["node", "src/server.js"]
