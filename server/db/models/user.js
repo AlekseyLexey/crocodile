@@ -7,6 +7,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "tokens",
       });
+      User.belongsToMany(models.Room, {
+        through: models.UserRoom,
+        foreignKey: 'user_id',
+        otherKey: 'room_id'
+      });
     }
   }
   User.init(
