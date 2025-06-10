@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MainPage, SignInPage, SignUpPage } from "@/pages";
 import { CLIENT_ROUTES } from "@/shared";
 import { Layout } from "../layout/Layout";
+import { LobbyListPage } from "@/pages/LobbyListPage/LobbyListPage";
+
 
 const Router = () => {
   return (
@@ -11,6 +13,7 @@ const Router = () => {
           <Route path={CLIENT_ROUTES.MAIN} element={<MainPage />} />
           <Route path={CLIENT_ROUTES.SIGN_IN} element={<SignInPage />} />
           <Route path={CLIENT_ROUTES.SIGN_UP} element={<SignUpPage />} />
+          <Route path={CLIENT_ROUTES.LOBBY_LIST} element={<LobbyListPage/>} />
         </Route>
       </Routes>
     </BrowserRouter>
