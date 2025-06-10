@@ -11,21 +11,21 @@ module.exports = {
       },
       theme_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'Themes',
           key: 'id',
         },
         onDelete: 'CASCADE',
+        allowNull: false
       },
       room_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'Rooms',
           key: 'id',
         },
         onDelete: 'CASCADE',
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

@@ -4,24 +4,22 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Theme extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       Theme.belongsToMany(models.Room, {
         through: models.ThemeRoom,
         foreignKey: 'theme_id',
-        otherKey: 'room_id'
+        otherKey: 'room_id',
+        as: 'themeRooms'
       });
       Theme.hasMany(models.Word, {
-        foreignKey: 'theme_id'
+        foreignKey: 'theme_id',
+        as: 'themeWords'
       });
     }
   }
   Theme.init({
-    name: DataTypes.TEXT
+    name: { type: DataTypes.TEXT, allowNull: false }
   }, {
     sequelize,
     modelName: 'Theme',

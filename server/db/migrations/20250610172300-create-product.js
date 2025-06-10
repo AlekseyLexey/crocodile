@@ -2,49 +2,43 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('UserRooms', {
+    await queryInterface.createTable('Products', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
-        allowNull: false
-      },
-      room_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Rooms',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
-        allowNull: false
-      },
-      point: {
-        type: Sequelize.INTEGER,
+      name: {
         allowNull: false,
-        defaultValue: 0
+        type: Sequelize.TEXT
+      },
+      price: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      category_id: {
+        allowNull: false,
+        references: {
+          model: 'Categories',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
         defaultValue: Sequelize.fn("now"),
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
         defaultValue: Sequelize.fn("now"),
+        type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('UserRooms');
+    await queryInterface.dropTable('Products');
   }
 };

@@ -10,8 +10,15 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Room, {
         through: models.UserRoom,
         foreignKey: 'user_id',
-        otherKey: 'room_id'
+        otherKey: 'room_id',
+        as: 'userRooms'
       });
+      User.belongsToMany(models.Product, {
+        through: models.Buy,
+        foreignKey: 'user_id',
+        otherKey: 'product_id',
+        as: 'userProducts'
+      })
     }
   }
   User.init(
