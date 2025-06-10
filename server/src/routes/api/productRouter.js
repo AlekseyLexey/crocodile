@@ -6,5 +6,4 @@ const validateId = require('../../middlewares/validateIdMiddleware');
 productRouter.get('/', ProductController.getAllProducts);
 productRouter.get('/:id', validateId, ProductController.getProductById);
 
-
 module.exports = productRouter;

@@ -7,6 +7,7 @@ class ThemeService {
       include: [
         {
           model: Word,
+          as: 'themeWords',
           attributes: ['id', 'name'],
         },
       ],
@@ -19,6 +20,7 @@ class ThemeService {
       include: [
         {
           model: Word,
+          as: 'themeWords',
           attributes: ['id', 'name'],
         },
       ],

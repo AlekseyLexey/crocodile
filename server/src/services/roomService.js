@@ -7,7 +7,8 @@ class RoomService {
       include: [
         {
           model: User,
-          attributes: ['id', 'username', 'points'],
+          as: 'roomUsers',
+          attributes: ['id', 'username', 'point'],
           through: {
             attributes: ['point'],
           },
@@ -22,7 +23,8 @@ class RoomService {
       include: [
         {
           model: User,
-          attributes: ['id', 'username', 'points'],
+          as: 'roomUsers',
+          attributes: ['id', 'username', 'point'],
           through: {
             attributes: ['point'],
           },
@@ -33,7 +35,7 @@ class RoomService {
 
   static async createNewRoom(roomData) {
     return await Room.create({
-      picture: roomData.picture,
+      pictures: roomData.pictures,
       status: roomData.status,
       name: roomData.name,
     });
@@ -46,7 +48,7 @@ class RoomService {
     }
 
     return await room.update({
-      picture: roomData.picture,
+      pictures: roomData.pictures,
       status: roomData.status,
       name: roomData.name,
     });

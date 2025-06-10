@@ -24,7 +24,6 @@ class UserRoomService {
     return await userRoom.update({ point });
   }
 
-  //при отключении пользователя, будем ли удалять его из комнаты?
   static async deleteUserRoom({ userId, roomId }) {
     return await UserRoom.destroy({
       where: {

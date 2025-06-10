@@ -7,6 +7,6 @@ const validateId = require('../../middlewares/validateIdMiddleware');
 roomRouter.get('/', RoomController.getAllRooms);
 roomRouter.get('/:id', validateId, RoomController.getRoomById);
 roomRouter.post('/', RoomController.createRoom);
-roomRouter.put('/', RoomController.updateRoom);
+roomRouter.put('/:id', validateId, RoomController.updateRoom);
 
 module.exports = roomRouter;

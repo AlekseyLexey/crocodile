@@ -7,6 +7,7 @@ class CategoryService {
       include: [
         {
           model: Product,
+          as: 'categoryProducts',
           attributes: ['id', 'name', 'price'],
         },
       ],
@@ -19,6 +20,7 @@ class CategoryService {
       include: [
         {
           model: Product,
+          as: 'categoryProducts',
           attributes: ['id', 'name', 'price'],
         },
       ],

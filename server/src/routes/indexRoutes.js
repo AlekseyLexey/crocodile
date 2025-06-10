@@ -16,6 +16,7 @@ const userRoomRouter = require('./api/userRoomRouter');
 const themeRoomRouter = require('./api/themeRoomRouter');
 const buyRouter = require('./api/buyRouter');
 const categoryRouter = require('./api/categoryRouter');
+const productRouter = require('./api/productRouter');
 
 router.post('/registration', registration);
 router.post('/login', login);
@@ -30,7 +31,7 @@ router.use('/user-room', authMiddleware, userRoomRouter);
 router.use('/theme-room', authMiddleware, themeRoomRouter);
 router.use('/buies', authMiddleware, buyRouter);
 router.use('/categories', categoryRouter);
-router.use('/products', authMiddleware, categoryRouter);
+router.use('/products', authMiddleware, productRouter);
 
 // ?Multer пример подключения
 // router.use(

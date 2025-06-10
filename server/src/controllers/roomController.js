@@ -31,9 +31,10 @@ class RoomController {
 
   static async createRoom(req, res, next) {
     try {
-      const { picture, status, name } = req.body;
+
+      const { pictures, status, name } = req.body;
       const newRoom = await RoomService.createNewRoom({
-        picture,
+        pictures,
         status,
         name,
       });
@@ -53,12 +54,19 @@ class RoomController {
   static async updateRoom(req, res, next) {
     try {
       const roomId = req.validateId;
-      const { picture, status, name } = req.body;
+
+      const { pictures, status, name } = req.body;
       const updatedRoom = await RoomService.updateRoomById(roomId, {
-        picture,
+        pictures,
         status,
         name,
       });
+
+      if (!updatedRoom) {
+        return res
+          .status(404)
+          .json(formatResponse(404, 'Room not found', null));
+      }
 
       return res.status(200).json(formatResponse(200, 'Success', updatedRoom));
     } catch (err) {

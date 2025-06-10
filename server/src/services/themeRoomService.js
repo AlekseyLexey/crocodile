@@ -7,13 +7,15 @@ class ThemeRoomService {
       room_id: roomId,
     });
 
-    return await ThemeRoom.findOne({
-      where: {
-        theme_id: themeId,
-        room_id: roomId,
-      },
-      attributes: ['id', 'theme_id', 'room_id'],
-    });
+    if (themeRoom) {
+      return await ThemeRoom.findOne({
+        where: {
+          theme_id: themeId,
+          room_id: roomId,
+        },
+        attributes: ['id', 'theme_id', 'room_id'],
+      });
+    }
   }
 }
 
