@@ -39,19 +39,11 @@ $api.interceptors.response.use(
         localStorage.setItem("token", res.data.accessToken);
         return $api.request(prevReq!);
       } catch (error) {
-        console.log("Рефреш токен истек / не валиден!");
-        if (axios.isAxiosError(error)) {
-          return Promise.reject(
-            (error.response?.data as { message: string }).message
-          );
-        }
-        return Promise.reject("Unknown error");
+        return Promise.reject(error);
       }
     }
 
-    return Promise.reject(
-      (error.response?.data as { message: string }).message
-    );
+    return Promise.reject(error);
   }
 );
 

@@ -44,7 +44,7 @@ export const AuthForm = () => {
     }
 
     if (signInThunk.rejected.match(res) || signUpThunk.rejected.match(res)) {
-      alert(res.payload);
+      alert(res.payload?.message);
       return;
     }
 
