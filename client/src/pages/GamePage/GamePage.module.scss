@@ -1,0 +1,50 @@
+
+
+.container {
+  height: calc(100% - 236px); 
+  width: calc(100% - 236px);
+  background-color: $background-container;
+  border-radius: 12px;
+}
+
+.exitButton {
+    width: 109px;
+    height: 41px;
+}
+
+.colorsPanel {
+    width: 100px;
+    height: 460px;
+    border-radius: 12px;
+    background-color: #FFEFEF28;
+}
+
+.gameArea {
+    width: 342px;
+    height: 27px;
+    border-radius: 12px;
+}
+
+.timer {
+    width: 42px;
+    height: 18px;
+}
+
+.tools {
+    width: 66px;
+    height: 426px;
+}
+
+.sidebar {
+    width: 661px;
+    height: 83px;
+    background-color: $background-mini;
+    border-radius: 12px;
+}
+
+.chat {
+    width: 244px;
+    height: 561px;
+    background-color: $background-mini;
+    border-radius: 12px;
+}
