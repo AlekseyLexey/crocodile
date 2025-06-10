@@ -11,24 +11,26 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'Users',
           key: 'id',
         },
         onDelete: 'CASCADE',
+        allowNull: false
       },
       room_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'Rooms',
           key: 'id',
         },
         onDelete: 'CASCADE',
+        allowNull: false
       },
       point: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

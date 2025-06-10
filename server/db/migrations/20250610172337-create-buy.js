@@ -11,21 +11,21 @@ module.exports = {
       },
       product_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'Products',
           key: 'id',
         },
         onDelete: 'CASCADE',
+        allowNull: false
       },
       user_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'Users',
           key: 'id',
         },
         onDelete: 'CASCADE',
+        allowNull: false
       },
       createdAt: {
         defaultValue: Sequelize.fn("now"),
