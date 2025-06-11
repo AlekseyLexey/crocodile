@@ -9,6 +9,9 @@ import {
   setTool,
   clearCanvas,
 } from "@/entities/canvas/slice/canvasSlice";
+import pencilIcon from "@/assets/svg/карандаш.svg";
+import fillIcon from "@/assets/svg/заливка.svg";
+import clearIcon from "@/assets/svg/удалить все.svg";
 
 export const GamePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -80,7 +83,7 @@ export const GamePage = () => {
             }`}
             onClick={() => handleToolChange("pencil")}
           >
-            Карандаш
+            <img src={pencilIcon} alt="Карандаш" />
           </button>
           <button
             className={`${styles.toolButton} ${
@@ -88,7 +91,7 @@ export const GamePage = () => {
             }`}
             onClick={() => handleToolChange("fill")}
           >
-            Заливка
+            <img src={fillIcon} alt="Заливка" />
           </button>
           <button
             className={`${styles.toolButton} ${
@@ -96,7 +99,7 @@ export const GamePage = () => {
             }`}
             onClick={() => handleToolChange("clear")}
           >
-            Очистить
+            <img src={clearIcon} alt="Очистить" />
           </button>
         </div>
 
