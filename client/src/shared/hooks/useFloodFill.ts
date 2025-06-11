@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-export const useFloodFill = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
+export const useFloodFill = (canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
   const floodFill = useCallback(
     (x: number, y: number, fillColor: string) => {
       if (!canvasRef.current) return;
@@ -35,7 +35,6 @@ export const useFloodFill = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
 
       // Реализация алгоритма заливки с затравкой
       const pixelsToCheck = [{ x: Math.round(x), y: Math.round(y) }];
-      const width4 = canvasRef.current.width * 4;
       const height = canvasRef.current.height;
 
       while (pixelsToCheck.length > 0) {

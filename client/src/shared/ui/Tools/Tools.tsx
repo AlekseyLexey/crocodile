@@ -1,15 +1,16 @@
 import styles from "./Tools.module.scss";
-import { FC } from "react";
 import pencilIcon from "@/assets/svg/карандаш.svg";
 import fillIcon from "@/assets/svg/заливка.svg";
 import clearIcon from "@/assets/svg/удалить все.svg";
 
+type ToolType = "pencil" | "fill" | "clear";
+
 interface ToolsProps {
-  activeTool: string;
-  handleToolChange: (tool: "pencil" | "fill" | "clear") => void;
+  activeTool: ToolType;
+  handleToolChange: (tool: ToolType) => void;
 }
 
-export const Tools: FC<ToolsProps> = ({ activeTool, handleToolChange }) => {
+export const Tools = ({ activeTool, handleToolChange }: ToolsProps) => {
   return (
     <div className={styles.tools}>
       <button
