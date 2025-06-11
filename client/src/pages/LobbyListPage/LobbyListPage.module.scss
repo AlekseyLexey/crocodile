@@ -1,101 +1,102 @@
+
+
 .pageContainer {
-  width: 1280px;
-  min-height: 832px;
-  background: linear-gradient(180deg, #CD5D5D 0%, #8029CC 100%);
-  border: 1px solid #FFEEEE;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  transform: rotate(-180deg);
-  position: relative;
-  margin: 0 auto;
-  
-  // Компенсируем поворот
-  & > * {
-    transform: rotate(180deg);
-  }
+  width: 100%;
+  min-height: 100vh;
+  background: $background-main;
+  padding: $spacing;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: $ff;
+  color: $color;
 }
 
 .contentWrapper {
-  padding: 118px 164px;
-  height: 100%;
-  box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: white;
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  margin-bottom: $spacing;
   text-align: center;
-  margin-bottom: 40px;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .lobbiesContainer {
-  width: 952px;
-  min-height: 595px;
-  background: rgba(0, 0, 0, 0.13);
-  border-radius: 12px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  padding: 30px;
-  margin: 0 auto 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  width: 100%;
+  background: $background-container;
+  border-radius: $br;
+  padding: $spacing;
+  margin-bottom: $spacing;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .lobbyCard {
-  width: 100%;
-  height: 50px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-}
+  padding: $spacing;
+  margin-bottom: $spacing;
+  background: $background-mini;
+  border-radius: $br;
+  border: 1px solid $border-encircle;
+  transition: $transition;
 
-.lobbyName {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.joinButton {
-  width: 250px;
-  height: 50px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   &:hover {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.25);
     transform: translateY(-2px);
   }
 }
 
+.lobbyName {
+  font-size: $fs;
+  font-weight: $fw-normal;
+}
+
+.joinButton {
+  padding: 0.5rem 1rem;
+  background: #00000033;
+  color: $white;
+  border: none;
+  border-radius: $br;
+  font-size: $fs;
+  font-weight: $fw-bold;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: $hover-color;
+  }
+}
+
 .createButtonWrapper {
+  width: 100%;
   display: flex;
   justify-content: center;
 }
 
 .createButton {
-  width: 250px;
-  height: 50px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  background: #00000033;
+  color: $white;
   border: none;
+  border-radius: $br;
+  font-size: $fs;
+  font-weight: $fw-bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: $transition;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.3);
+    background: $buy-hover-color;
     transform: translateY(-2px);
   }
 }
