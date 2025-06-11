@@ -25,6 +25,8 @@
   margin-bottom: $spacing;
   text-align: center;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  
+  
 }
 
 .lobbiesContainer {
@@ -34,6 +36,7 @@
   padding: $spacing;
   margin-bottom: $spacing;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  
 }
 
 .lobbyCard {
@@ -46,6 +49,7 @@
   border-radius: $br;
   border: 1px solid $border-encircle;
   transition: $transition;
+  
 
   &:last-child {
     margin-bottom: 0;
@@ -60,6 +64,7 @@
 .lobbyName {
   font-size: $fs;
   font-weight: $fw-normal;
+  @include text-style-bold;
 }
 
 .joinButton {
@@ -72,6 +77,8 @@
   font-weight: $fw-bold;
   cursor: pointer;
   transition: $transition;
+  @include text-style-bold;
+  
 
   &:hover {
     // background: $hover-color;
@@ -83,6 +90,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  
 }
 
 .createButton {
@@ -95,6 +103,8 @@
   font-weight: $fw-bold;
   cursor: pointer;
   transition: $transition;
+  @include text-style-bold;
+  
 
   &:hover {
     // background: $buy-hover-color;
