@@ -7,7 +7,9 @@ import {
   clearCanvas,
 } from "@/entities/canvas/slice/canvasSlice";
 
-export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
+type ToolType = "pencil" | "fill" | "clear";
+
+export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
   const dispatch = useAppDispatch();
   const { currentColor, activeTool, dimensions } = useAppSelector(selectCanvas);
   const isDrawing = useRef(false);

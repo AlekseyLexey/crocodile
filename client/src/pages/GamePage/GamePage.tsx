@@ -40,7 +40,7 @@ export const GamePage = () => {
     dispatch(setTool(tool));
     if (tool === "clear") {
       handleClear();
-    } 
+    }
   };
 
   return (
@@ -72,10 +72,7 @@ export const GamePage = () => {
           <CanvasComponent canvasRef={canvasRef} />
         </div>
         <div className={styles.timer}>00:30</div>
-        <Tools
-          activeTool={activeTool} 
-          handleToolChange={handleToolChange} 
-        />
+        <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
         <div className={styles.sidebar}></div>
         <div className={styles.chat}></div>
       </div>

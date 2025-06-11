@@ -3,7 +3,7 @@ import { useCanvas } from "@/shared/hooks/useCanvas";
 import { useFloodFill } from "@/shared/hooks/useFloodFill";
 
 interface CanvasProps {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
 }
 
 export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
@@ -59,19 +59,15 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      onMouseDown={startDrawing}
-      onMouseUp={stopDrawing}
-      onMouseMove={draw}
-      onMouseLeave={stopDrawing}
-      style={{
-        cursor: activeTool === "fill" ? "pointer" : "default",
-        borderRadius: "12px",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#FFF5F5",
-      }}
-    />
-  );
+  <canvas
+    ref={canvasRef}
+    onMouseDown={startDrawing}
+    onMouseUp={stopDrawing}
+    onMouseMove={draw}
+    onMouseLeave={stopDrawing}
+    style={{
+      cursor: activeTool === "fill" ? "pointer" : "default",
+    }}
+  />
+);
 };
