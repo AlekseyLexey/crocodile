@@ -1,7 +1,7 @@
-const { UserRoom } = require('../../db/models');
+const { UserRoom } = require("../../db/models");
 
 class UserRoomService {
-  static async createUserRoom({ userId, roomId, point }) {
+  static async createUserRoom({ userId, roomId, point = 0 }) {
     return await UserRoom.create({
       user_id: userId,
       room_id: roomId,

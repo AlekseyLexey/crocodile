@@ -1,20 +1,14 @@
-import { CLIENT_ROUTES, useAppSelector } from "@/shared";
+import { CLIENT_ROUTES } from "@/shared";
 import { useNavigate } from "react-router-dom";
 
-export const MainPage = ({ socket }) => {
-  const { user } = useAppSelector((state) => state.user);
+// const roomId = new Date().getMilliseconds();
+const roomId = 1;
+
+export const MainPage = () => {
   const navigate = useNavigate();
 
   const handleJoin = () => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    socket.emit("joinRoom", {
-      user,
-      roodId: 1,
-    });
-    navigate(`${CLIENT_ROUTES.GAME_TEST}/${1}`);
+    navigate(`${CLIENT_ROUTES.GAME_TEST}/${roomId}`);
   };
 
   return (
