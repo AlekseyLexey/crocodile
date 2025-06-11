@@ -32,6 +32,7 @@
   width: 109px;
   height: 41px;
   transform: translateX(-100%);
+  @include text-style-bold;
 }
 
 .colorsPanel {
@@ -83,6 +84,7 @@
   height: 27px;
   border-radius: $br;
   border: 3px solid rgba(0, 0, 0, 0.2);
+  @include text-style-bold;
 }
 
 .canvas {
@@ -101,6 +103,7 @@
   justify-self: end;
   margin-right: 10px;
   color: $color;
+  @include text-style-bold;
 }
 
 .tools {
@@ -118,11 +121,19 @@
 .toolButton {
   width: 39px;
   height: 40px;
-  border: 3px solid #FFF5F5;
   background-color: #ffefef00;
   margin: 0 auto;
   margin-bottom: 16px; 
   border-radius: 12px;
+  display: flex;          
+  align-items: center;    
+  justify-content: center; 
+  padding: 0;             
+  
+  img {
+    
+    display: block;       
+  }
   
   &:not(:first-child) {
     margin-top: 13px; 
@@ -143,6 +154,7 @@
   height: 83px;
   background-color: $background-mini;
   border-radius: $br;
+  @include text-style-semibold;
 }
 
 .chat {
@@ -152,4 +164,5 @@
   background-color: $background-mini;
   border-radius: $br;
   margin-right: 16px;
+  @include text-style-bold;
 }
