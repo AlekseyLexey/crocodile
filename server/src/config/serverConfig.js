@@ -3,7 +3,7 @@ const cookeiParser = require("cookie-parser");
 const cors = require("cors");
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://crocdraw.ru"],
+  origin: ["http://localhost:5173", "https://crocdraw.ru"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],

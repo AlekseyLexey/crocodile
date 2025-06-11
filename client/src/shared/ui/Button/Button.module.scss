@@ -1,46 +1,39 @@
 .button {
-  display: inline-block;
-  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 12px; 
+  font-family: "IBM Plex Mono", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #FFEEEE; 
+  background-color: rgba(0, 0, 0, 0.2); 
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-out;
   text-align: center;
+  backdrop-filter: blur(4px);
+  padding: 0 1.25rem;
 
-  background-color: #4caf50;
-  color: white;
+  min-width: 109px;
+  height: 41px;
 
   &:hover {
-    background-color: darken(#4caf50, 10%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.25); 
   }
 
   &:disabled {
-    background-color: #cccccc;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
   }
 
-  &[type="submit"] {
-    background-color: #2196f3;
-    &:hover {
-      background-color: darken(#2196f3, 10%);
-    }
+  &--sm {
+    min-width: 106px;
+    height: 31px;
   }
 
-  &[type="reset"] {
-    background-color: #f44336;
-    &:hover {
-      background-color: darken(#f44336, 10%);
-    }
+  &--lg {
+    min-width: 250px;
+    height: 50px;
   }
 }

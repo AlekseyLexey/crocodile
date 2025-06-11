@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap");
 
 :root {
-  --bg-color: #fff;
+  --bg-color: #ff6d6d;
   --text-color: #000;
 }
 
@@ -25,7 +25,8 @@ body {
   font-size: $fs;
   font-weight: $fw-normal;
   color: var(--text-color);
-  background-color: var(--bg-color);
+  background: $background-main;
+  background-attachment: fixed;
   transition: $transition;
 }
 
