@@ -9,9 +9,7 @@ import {
   setTool,
   clearCanvas,
 } from "@/entities/canvas/slice/canvasSlice";
-import pencilIcon from "@/assets/svg/карандаш.svg";
-import fillIcon from "@/assets/svg/заливка.svg";
-import clearIcon from "@/assets/svg/удалить все.svg";
+import { Tools } from "@/shared/ui/Tools/Tools";
 
 export const GamePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -73,36 +71,11 @@ export const GamePage = () => {
         <div className={styles.canvas}>
           <CanvasComponent canvasRef={canvasRef} />
         </div>
-
         <div className={styles.timer}>00:30</div>
-
-        <div className={styles.tools}>
-          <button
-            className={`${styles.toolButton} ${
-              activeTool === "pencil" ? styles.activeTool : ""
-            }`}
-            onClick={() => handleToolChange("pencil")}
-          >
-            <img src={pencilIcon} alt="Карандаш" />
-          </button>
-          <button
-            className={`${styles.toolButton} ${
-              activeTool === "fill" ? styles.activeTool : ""
-            }`}
-            onClick={() => handleToolChange("fill")}
-          >
-            <img src={fillIcon} alt="Заливка" />
-          </button>
-          <button
-            className={`${styles.toolButton} ${
-              activeTool === "clear" ? styles.activeTool : ""
-            }`}
-            onClick={() => handleToolChange("clear")}
-          >
-            <img src={clearIcon} alt="Очистить" />
-          </button>
-        </div>
-
+        <Tools
+          activeTool={activeTool} 
+          handleToolChange={handleToolChange} 
+        />
         <div className={styles.sidebar}></div>
         <div className={styles.chat}></div>
       </div>

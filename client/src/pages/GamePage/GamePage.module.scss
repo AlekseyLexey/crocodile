@@ -106,48 +106,6 @@
   @include text-style-bold;
 }
 
-.tools {
-  grid-area: tools;
-  width: 66px;
-  height: 426px;
-  border: 3px solid #FFF5F5;
-  border-radius: $br;
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  padding: 82px 0 0 0;
-}
-
-.toolButton {
-  width: 39px;
-  height: 40px;
-  background-color: #ffefef00;
-  margin: 0 auto;
-  margin-bottom: 16px; 
-  border-radius: 12px;
-  display: flex;          
-  align-items: center;    
-  justify-content: center; 
-  padding: 0;             
-  
-  img {
-    
-    display: block;       
-  }
-  
-  &:not(:first-child) {
-    margin-top: 13px; 
-  }
-  
-  &:first-child {
-    margin-top: 14px; 
-  }
-  
-  &:last-child {
-    margin-bottom: 0; 
-  }
-}
-
 .sidebar {
   grid-area: sidebar;
   width: 661px; 
