@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { userReducer } from "@/entities/user";
+import {canvasReducer} from "@/entities/canvas/slice/canvasSlice";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
+    canvas: canvasReducer,
   },
 });
 

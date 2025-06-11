@@ -3,3 +3,15 @@
   justify-content: center;
   align-items: center;
 }
+
+@mixin text-style-bold {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 12%;
+}
+
+@mixin text-style-semibold {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0%;
+}
