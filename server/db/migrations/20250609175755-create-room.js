@@ -7,33 +7,41 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       pictures: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       status: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       name: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+      },
+      owner_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
-      }
+        defaultValue: Sequelize.fn('now'),
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Rooms');
-  }
+  },
 };
