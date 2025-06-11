@@ -1,22 +1,29 @@
 const UserRoomService = require("../../services/userRoomService");
+const { getRoom } = require("../helpers/getRoom");
 
 module.exports.roomSocket = (io, socket) => {
   socket.on("joinRoom", async ({ user, roomId }) => {
-    const { point } = await UserRoomService.createUserRoom({
+    await UserRoomService.createUserRoom({
       userId: user.id,
       roomId,
     });
 
-    socket.user = { user, point };
+    socket.user = user;
     socket.join(roomId);
+    // const sockets = await io.in(roomId).fetchSockets();
+    // const users = sockets.map((socket) => socket.user);
+    getRoom(io, roomId);
+    socket.to(roomId).emit("message", `Игрок ${user.username} присоеденился`);
+  });
 
-    const sockets = await io.in(roomId).fetchSockets();
-    const users = sockets.map((socket) => socket.user);
-
-    io.to(roomId).emit("userList", {
-      users,
+  socket.on("exit", async ({ user, roomId }) => {
+    await UserRoomService.deleteUserRoom({
+      userId: user.id,
+      roomId,
     });
 
-    socket.to(roomId).emit("message", `Игрок ${user.username} присоеденился`);
+    getRoom(io, roomId);
+    socket.leave(roomId);
+    socket.to(roomId).emit("message", `Игрок ${user.username} покинул игру`);
   });
 };

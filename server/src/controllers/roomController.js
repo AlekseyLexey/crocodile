@@ -31,12 +31,13 @@ class RoomController {
 
   static async createRoom(req, res, next) {
     try {
-
+      const userId = res.locals.user.id;
       const { pictures, status, name } = req.body;
       const newRoom = await RoomService.createNewRoom({
         pictures,
         status,
         name,
+        userId,
       });
 
       if (!newRoom) {
@@ -50,9 +51,11 @@ class RoomController {
       next(err);
     }
   }
-
+  //уточнить как инициализируется смена статуса
   static async updateRoom(req, res, next) {
     try {
+      const userId = res.locals.user.id;
+
       const roomId = req.validateId;
 
       const { pictures, status, name } = req.body;
@@ -60,13 +63,8 @@ class RoomController {
         pictures,
         status,
         name,
+        userId,
       });
-
-      if (!updatedRoom) {
-        return res
-          .status(404)
-          .json(formatResponse(404, 'Room not found', null));
-      }
 
       return res.status(200).json(formatResponse(200, 'Success', updatedRoom));
     } catch (err) {
