@@ -1,9 +1,10 @@
 const { Room, User } = require('../../db/models');
+const HttpError = require('../exceptions/HttpError');
 
 class RoomService {
   static async findAllRooms() {
     return await Room.findAll({
-      attributes: ['id', 'pictures', 'status', 'name'],
+      attributes: ['id', 'pictures', 'status', 'name', 'owner_id'],
       include: [
         {
           model: User,
@@ -19,7 +20,7 @@ class RoomService {
 
   static async findRoomById(roomId) {
     return await Room.findByPk(roomId, {
-      attributes: ['id', 'pictures', 'status', 'name'],
+      attributes: ['id', 'pictures', 'status', 'name', 'owner_id'],
       include: [
         {
           model: User,
@@ -34,24 +35,32 @@ class RoomService {
   }
 
   static async createNewRoom(roomData) {
-    return await Room.create({
+    const newRoom = await Room.create({
       pictures: roomData.pictures,
       status: roomData.status,
       name: roomData.name,
+      owner_id: roomData.userId,
     });
+
+    if (newRoom) {
+      return await RoomService.findRoomById(newRoom.id);
+    }
   }
 
   static async updateRoomById(roomId, roomData) {
     const room = await Room.findByPk(roomId);
     if (!room) {
-      return null;
+      throw new HttpError(404, 'Room not found');
     }
 
-    return await room.update({
+    await room.update({
       pictures: roomData.pictures,
       status: roomData.status,
       name: roomData.name,
+      owner_id: roomData.userId,
     });
+
+    return await RoomService.findRoomById(room.id);
   }
 }
 
