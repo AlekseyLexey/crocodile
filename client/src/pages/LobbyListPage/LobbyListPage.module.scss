@@ -74,7 +74,8 @@
   transition: $transition;
 
   &:hover {
-    background: $hover-color;
+    // background: $hover-color;
+    transform: translateY(-2px);
   }
 }
 
@@ -96,7 +97,7 @@
   transition: $transition;
 
   &:hover {
-    background: $buy-hover-color;
+    // background: $buy-hover-color;
     transform: translateY(-2px);
   }
 }
