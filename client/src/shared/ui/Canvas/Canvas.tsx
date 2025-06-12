@@ -53,21 +53,21 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
     saveCanvasState();
 
     if (canvasRef.current) {
-      const dataURL = canvasRef.current.toDataURL();
-      console.log("Canvas dataURL:", dataURL);
+      // const dataURL = canvasRef.current.toDataURL();
+      // console.log("Canvas dataURL:", dataURL);
     }
   };
 
   return (
-  <canvas
-    ref={canvasRef}
-    onMouseDown={startDrawing}
-    onMouseUp={stopDrawing}
-    onMouseMove={draw}
-    onMouseLeave={stopDrawing}
-    style={{
-      cursor: activeTool === "fill" ? "pointer" : "default",
-    }}
-  />
-);
+    <canvas
+      ref={canvasRef}
+      onMouseDown={startDrawing}
+      onMouseUp={stopDrawing}
+      onMouseMove={draw}
+      onMouseLeave={stopDrawing}
+      style={{
+        cursor: activeTool === "fill" ? "pointer" : "default",
+      }}
+    />
+  );
 };
