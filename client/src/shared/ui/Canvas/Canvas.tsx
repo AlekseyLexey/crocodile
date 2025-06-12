@@ -66,6 +66,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
       onMouseMove={draw}
       onMouseLeave={stopDrawing}
       style={{
+        borderRadius: "12px",
         cursor: activeTool === "fill" ? "pointer" : "default",
       }}
     />
