@@ -41,6 +41,9 @@ export const Header = () => {
           <Link to={CLIENT_ROUTES.GAME}>
             GamePage
           </Link>
+          <Link to={CLIENT_ROUTES.LOBBY_LIST}>
+          Lobbies</Link>
+
         </>
       )}
     </nav>

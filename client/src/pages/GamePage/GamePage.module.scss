@@ -1,50 +1,126 @@
-
+.game {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 
 .container {
-  height: calc(100% - 236px); 
-  width: calc(100% - 236px);
+  position: relative;
+  width: 952px;
+  height: 595px;
   background-color: $background-container;
-  border-radius: 12px;
+  border-radius: $br;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 100px 464px 66px 244px;
+  grid-template-rows: 27px 426px 83px;
+  gap: 16px;
+  grid-template-areas:
+    "colors word timer chat"
+    "colors canvas tools chat"
+    "sidebar sidebar sidebar chat"; 
+  box-sizing: border-box;
+  margin: 0 auto; 
 }
 
 .exitButton {
-    width: 109px;
-    height: 41px;
+  position: absolute;
+  top: 16px; 
+  left: calc(50% - 476px - 109px - 20px); 
+  width: 109px;
+  height: 41px;
+  transform: translateX(-100%);
+  @include text-style-bold;
 }
 
 .colorsPanel {
-    width: 100px;
-    height: 460px;
-    border-radius: 12px;
-    background-color: #FFEFEF28;
+  grid-area: colors;
+  width: 100px;
+  height: 470px;
+  border-radius: $br;
+  background-color: #FFEFEF28;
+  display: flex;
+  flex-direction: column;
+  padding-top: 38px; 
+  padding-bottom: 39px; 
+}
+
+.colorRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 52px; 
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.colorPair {
+  display: flex;
+  gap: 12px;
+  margin: 0 9px;
+}
+
+.color {
+  border-radius: 12px;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: inset 0 5px 3px -3px rgba(0, 0, 0, 0.5);
+  
+  
+  &.selected {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+  }
 }
 
 .gameArea {
-    width: 342px;
-    height: 27px;
-    border-radius: 12px;
+  grid-area: word;
+  width: 464px;
+  height: 27px;
+  border-radius: $br;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  @include text-style-bold;
+}
+
+.canvas {
+  grid-area: canvas;
+  width: 464px;
+  height: 426px;
+  background-color: #FFF5F5;
+  border-radius: $br;
+  top: 0px;
 }
 
 .timer {
-    width: 42px;
-    height: 18px;
-}
-
-.tools {
-    width: 66px;
-    height: 426px;
+  grid-area: timer;
+  width: 42px;
+  height: 18px;
+  justify-self: end;
+  margin-right: 10px;
+  color: $color;
+  @include text-style-bold;
 }
 
 .sidebar {
-    width: 661px;
-    height: 83px;
-    background-color: $background-mini;
-    border-radius: 12px;
+  grid-area: sidebar;
+  width: 661px; 
+  height: 83px;
+  background-color: $background-mini;
+  border-radius: $br;
+  @include text-style-semibold;
 }
 
 .chat {
-    width: 244px;
-    height: 561px;
-    background-color: $background-mini;
-    border-radius: 12px;
+  grid-area: chat;
+  width: 244px;
+  height: 566px;
+  background-color: $background-mini;
+  border-radius: $br;
+  margin-right: 16px;
+  @include text-style-bold;
 }
