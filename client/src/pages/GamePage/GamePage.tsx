@@ -5,23 +5,27 @@ import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
 import {
   selectCanvas,
-  setColor,
   setTool,
   clearCanvas,
 } from "@/entities/canvas/slice/canvasSlice";
 import { Tools } from "@/shared/ui/Tools/Tools";
+import { ColorsPanel } from "@/shared/ui/ColorsPanel/ColorsPanel";
+import { Chat } from "@/shared/ui/Chat/Chat";
 
 export const GamePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dispatch = useAppDispatch();
-  const { currentColor, activeTool, dimensions } = useAppSelector(selectCanvas);
+  const { activeTool, dimensions } = useAppSelector(selectCanvas);
 
-  const colorPairs = [
-    ["#FF0000", "#FF6200"],
-    ["#0EA700", "#FFD900"],
-    ["#FF007B", "#B700FF"],
-    ["#0004FF", "#00D9FF"],
-    ["#613528", "#000000"],
+  const users = [
+    { id: "1", username: "Игрок1", score: 150 },
+    { id: "2", username: "Игрок2", score: 120 },
+    { id: "3", username: "Игрок3", score: 90 },
+    { id: "4", username: "Игрок4", score: 80 },
+    { id: "5", username: "Игрок5", score: 70 },
+    { id: "6", username: "Игрок6", score: 60 },
+    { id: "7", username: "Игрок7", score: 50 },
+    { id: "8", username: "Игрок8", score: 40 },
   ];
 
   const handleClear = () => {
@@ -47,34 +51,25 @@ export const GamePage = () => {
     <div className={styles.game}>
       <div className={styles.container}>
         <Button buttonText="Выйти из игры" className={styles.exitButton} />
-
-        <div className={styles.colorsPanel}>
-          {colorPairs.map((pair, index) => (
-            <div key={index} className={styles.colorRow}>
-              <div className={styles.colorPair}>
-                {pair.map((color) => (
-                  <div
-                    key={color}
-                    className={`${styles.color} ${
-                      currentColor === color ? styles.selected : ""
-                    }`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => dispatch(setColor(color))}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
+        <ColorsPanel />
+        <div className={styles.gameArea}>
+          <p>яблоко</p>
         </div>
-
-        <div className={styles.gameArea}></div>
         <div className={styles.canvas}>
           <CanvasComponent canvasRef={canvasRef} />
         </div>
         <div className={styles.timer}>00:30</div>
         <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
-        <div className={styles.sidebar}></div>
-        <div className={styles.chat}></div>
+        <div className={styles.sidebar}>
+          {users.map((user) => (
+            <div key={user.id} className={styles.userCard}>
+              <div className={styles.userAvatar} />
+              <div className={styles.userName}>{user.username}</div>
+              <div className={styles.userScore}>{user.score}</div>
+            </div>
+          ))}
+        </div>
+        <Chat roomName="Название комнаты" />
       </div>
     </div>
   );
