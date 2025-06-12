@@ -4,13 +4,26 @@ import styles from "./Header.module.scss";
 import { useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
 import { logoutThunk } from "@/entities/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ButtonNavigate } from "@/shared";
 
 export const Header = () => {
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -40,8 +53,8 @@ export const Header = () => {
 
       {user && (
         <>
+        {isMobile ? (
           <div className={styles.menuContainer}>
-            
             <button
               className={styles.burgerButton}
               onClick={toggleMenu}
@@ -59,7 +72,7 @@ export const Header = () => {
                 >
                   Магазин
                 </Link>
-                <Link 
+                <Link
                   to={CLIENT_ROUTES.GAME}
                   className={styles.menuItem}
                   onClick={() => setIsMenuOpen(false)}
@@ -67,33 +80,25 @@ export const Header = () => {
                   Игры
                 </Link>
                 <Link
-                to={CLIENT_ROUTES.PROFILE}
-                className={styles.menuItem}
-                onClick={() => setIsMenuOpen(false)}
+                  to={CLIENT_ROUTES.PROFILE}
+                  className={styles.menuItem}
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   Профиль
                 </Link>
               </div>
             )}
+            <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
           </div>
-
-          <div className={styles.logoutContainer}>
-              <button 
-              onClick={handleLogout}
-              className={styles.logoutButton}
-              >
-                Выйти
-              </button>
+        ) : (
+          <div className={styles.desktopButtons}>
+          <ButtonNavigate buttonText="Магазин" onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)} />
+          <ButtonNavigate buttonText="Игры" onClick={() => navigate(CLIENT_ROUTES.GAME)} />
+          <ButtonNavigate buttonText="Профиль" onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)} />
+          <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
           </div>
-            
+        )}       
 
-          {/* <h3>Hello, {user.username}</h3>
-          <Link to={CLIENT_ROUTES.MAIN} onClick={handleLogout}>
-            Sign Out
-          </Link>
-          <Link to={CLIENT_ROUTES.GAME}>
-            GamePage
-          </Link> */}
         </>
       )}
     </nav>
