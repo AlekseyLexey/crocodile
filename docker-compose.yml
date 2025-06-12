@@ -40,7 +40,7 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT:-5444}:5432"
+      - "${DB_PORT}:5432"
 
   client:
     build:
