@@ -3,6 +3,7 @@ const RoomService = require("../../services/roomService");
 module.exports.gameSocket = (io, socket) => {
   socket.on("startGame", async ({ roomId }) => {
     const room = await RoomService.updateRoomById(roomId, { status: "active" });
+    
 
     io.to(roomId).emit("room", {
       room,

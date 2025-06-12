@@ -10,6 +10,8 @@ module.exports.roomSocket = (io, socket) => {
 
     socket.user = user;
     socket.join(roomId);
+    console.log('socket.user ===>', socket.user);
+    
     // const sockets = await io.in(roomId).fetchSockets();
     // const users = sockets.map((socket) => socket.user);
     getRoom(io, roomId);

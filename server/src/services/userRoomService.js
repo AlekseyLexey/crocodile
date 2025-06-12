@@ -1,14 +1,20 @@
-const { UserRoom } = require("../../db/models");
+const { UserRoom } = require('../../db/models');
 
 class UserRoomService {
   static async findUserRoomByIds(userId, roomId) {
-    return await UserRoom.findOne({
+    const userRoom = await UserRoom.findOne({
       where: {
         user_id: userId,
         room_id: roomId,
       },
-      attributes: ["user_id", "room_id", "point"],
+      attributes: ['user_id', 'room_id', 'point'],
     });
+
+    if (!userRoom) {
+      throw new HttpError(404, 'UserRoom not found');
+    }
+
+    return userRoom;
   }
 
   static async createUserRoom({ userId, roomId, point }) {
@@ -28,7 +34,7 @@ class UserRoomService {
     const userRoom = await UserRoomService.findUserRoomByIds(userId, roomId);
 
     if (!userRoom) {
-      throw new HttpError(404, "UserRoom not found");
+      throw new HttpError(404, 'UserRoom not found');
     }
 
     await userRoom.update({ point });

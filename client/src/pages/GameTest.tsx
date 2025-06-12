@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { CLIENT_ROUTES, useAppSelector } from "@/shared";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useNavigate } from "react-router-dom";
+import { ChatTest } from "./chatTest";
+import { WordTest } from "./wordTest";
 
 // const roomId = new Date().getMilliseconds();
 const roomId = 1;
@@ -30,6 +32,7 @@ export const GameTest = () => {
       console.log(message);
     });
 
+    
     return () => {
       socket.off("room");
       socket.off("message");
@@ -83,6 +86,8 @@ export const GameTest = () => {
             ) : null}
           </div>
         ))}
+      <ChatTest roomId={roomId} />
+      <WordTest roomId={roomId}/>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { CLIENT_ROUTES } from "@/shared";
 import { Layout } from "../layout/Layout";
 import { GamePage } from "@/pages/GamePage/GamePage";
 import { GameTest } from "@/pages/GameTest";
+import { ChatTest } from "@/pages/chatTest";
 
 const Router = () => {
   return (

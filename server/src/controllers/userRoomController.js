@@ -65,6 +65,18 @@ class UserRoomController {
       next(err);
     }
   }
+
+  static async findUserRoomByUserId(req, res, next) {
+    try {
+      const { userId, roomId } = req.body;
+
+      const userRoom = await UserRoomService.findUserRoomByIds(userId, roomId);
+
+      return res.status(200).json(formatResponse(200, 'Success', userRoom));
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = UserRoomController;

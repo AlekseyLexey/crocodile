@@ -1,0 +1,38 @@
+const getWordsByTheme = require('./getWordsByTheme');
+const getRandomWord = require('./getRandomWord');
+
+const roomWords = new Map();
+
+async function initWordsForRoom(themeId, roomId) {
+  const words = await getWordsByTheme(themeId);
+
+  roomWords.set(roomId, {
+    allWords: words,
+    unUsedWords: [...words],
+    usedWords: [],
+    currentWord: null,
+  });
+}
+
+function clearRoomWords(roomId) {
+  roomWords.delete(roomId);
+}
+
+function getCurrentWord(roomId) {
+  const state = roomWords.get(roomId);
+  // console.log('state==>', state);
+  
+  return state?.currentWord || null;
+}
+
+function getRandomWordForRoom(roomId) {
+  return getRandomWord(roomId, roomWords);
+}
+
+module.exports = {
+  roomWords,
+  initWordsForRoom,
+  clearRoomWords,
+  getCurrentWord,
+  getRandomWordForRoom,
+};
