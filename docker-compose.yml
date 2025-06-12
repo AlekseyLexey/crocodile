@@ -31,7 +31,7 @@ services:
     container_name: postgres_db
     restart: always
     env_file:
-      - ./server/.env
+      - ./.env
     # дублируем ключ, чтобы точно применился даже при пустом .env
     environment:
       POSTGRES_USER: postgres
