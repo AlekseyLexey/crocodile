@@ -13,10 +13,8 @@ export const ButtonNavigate: FC<ButtonNavigateProps> = ({
   ...props
 }) => {
   return (
-    <div className={styles.logoutContainer} onClick={onClick}>
-      <button className={styles.logoutButton} {...props}>
+      <button className={styles.logoutButton} {...props} onClick={onClick}>
         {buttonText}
       </button>
-    </div>
   );
 };

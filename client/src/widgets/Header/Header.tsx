@@ -15,14 +15,17 @@ export const Header = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768);
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(document.documentElement.clientWidth <= 768);
     };
 
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-
-    return () => window.removeEventListener('resize', checkScreenSize);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const handleLogout = async () => {
@@ -53,52 +56,60 @@ export const Header = () => {
 
       {user && (
         <>
-        {isMobile ? (
-          <div className={styles.menuContainer}>
-            <button
-              className={styles.burgerButton}
-              onClick={toggleMenu}
-              aria-label="Toggle-menu"
-            >
-              ☰
-            </button>
+          {isMobile ? (
+            <div className={styles.menuContainer}>
+              <button
+                className={styles.burgerButton}
+                onClick={toggleMenu}
+                aria-label="Toggle-menu"
+              >
+                ☰
+              </button>
 
-            {isMenuOpen && (
-              <div className={styles.modalMenu}>
-                <Link
-                  to={CLIENT_ROUTES.SHOP}
-                  className={styles.menuItem}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Магазин
-                </Link>
-                <Link
-                  to={CLIENT_ROUTES.GAME}
-                  className={styles.menuItem}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Игры
-                </Link>
-                <Link
-                  to={CLIENT_ROUTES.PROFILE}
-                  className={styles.menuItem}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Профиль
-                </Link>
-              </div>
-            )}
-            <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
-          </div>
-        ) : (
-          <div className={styles.desktopButtons}>
-          <ButtonNavigate buttonText="Магазин" onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)} />
-          <ButtonNavigate buttonText="Игры" onClick={() => navigate(CLIENT_ROUTES.GAME)} />
-          <ButtonNavigate buttonText="Профиль" onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)} />
-          <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
-          </div>
-        )}       
-
+              {isMenuOpen && (
+                <div className={styles.modalMenu}>
+                  <Link
+                    to={CLIENT_ROUTES.LOBBY_LIST}
+                    className={styles.menuItem}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Магазин
+                  </Link>
+                  <Link
+                    to={CLIENT_ROUTES.GAME}
+                    className={styles.menuItem}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Игры
+                  </Link>
+                  <Link
+                    to={CLIENT_ROUTES.LOBBY_LIST}
+                    className={styles.menuItem}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Профиль
+                  </Link>
+                </div>
+              )}
+              <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
+            </div>
+          ) : (
+            <div className={styles.desktopButtons}>
+              <ButtonNavigate
+                buttonText="Магазин"
+                onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
+              />
+              <ButtonNavigate
+                buttonText="Игры"
+                onClick={() => navigate(CLIENT_ROUTES.GAME)}
+              />
+              <ButtonNavigate
+                buttonText="Профиль"
+                onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
+              />
+              <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
+            </div>
+          )}
         </>
       )}
     </nav>
