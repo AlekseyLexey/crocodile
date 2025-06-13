@@ -8,18 +8,12 @@ module.exports.roomSocket = (io, socket) => {
       roomId,
     });
     //тестим подтверждение факта подключения для синхронизации событий
-    socket.emit('joinedRoom', { roomId });
+    // socket.emit('joinedRoom', { roomId });
 
-    const sockets = await io.in(roomId).fetchSockets();
-    console.log(
-      'Сокеты в комнате',
-      roomId,
-      sockets.map((s) => s.id)
-    );
+    
 
     socket.user = user;
     socket.join(roomId);
-    console.log('socket.user ===>', socket.user);
 
     // const sockets = await io.in(roomId).fetchSockets();
     // const users = sockets.map((socket) => socket.user);

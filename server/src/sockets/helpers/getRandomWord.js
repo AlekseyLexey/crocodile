@@ -1,11 +1,9 @@
 const WordService = require('../../services/wordService');
 const ThemeService = require('../../services/themeService');
 
- function getRandomWord(roomId, wordsMap) {
+function getRandomWord(roomId, wordsMap) {
   const currentWordsMap = wordsMap.get(roomId);
 
-  console.log('currentWordsMap', currentWordsMap);
-  
   if (!currentWordsMap) {
     return null;
   }

@@ -1,12 +1,16 @@
-import React from "react";
-import { useCanvas } from "@/shared/hooks/useCanvas";
-import { useFloodFill } from "@/shared/hooks/useFloodFill";
+import React from 'react';
+import { useCanvas } from '@/shared/hooks/useCanvas';
+import { useFloodFill } from '@/shared/hooks/useFloodFill';
 
 interface CanvasProps {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  isOwner: boolean;
 }
 
-export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
+export const CanvasComponent: React.FC<CanvasProps> = ({
+  canvasRef,
+  isOwner,
+}) => {
   const { currentColor, activeTool, isDrawing, saveCanvasState } =
     useCanvas(canvasRef);
 
@@ -15,28 +19,28 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
 
-    const ctx = canvasRef.current.getContext("2d");
+    const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    if (activeTool === "pencil") {
+    if (activeTool === 'pencil') {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.strokeStyle = currentColor;
       isDrawing.current = true;
-    } else if (activeTool === "fill") {
+    } else if (activeTool === 'fill') {
       floodFill(x, y, currentColor);
     }
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing.current || !canvasRef.current || activeTool !== "pencil")
+    if (!isDrawing.current || !canvasRef.current || activeTool !== 'pencil')
       return;
 
-    const ctx = canvasRef.current.getContext("2d");
+    const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
@@ -66,8 +70,9 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
       onMouseMove={draw}
       onMouseLeave={stopDrawing}
       style={{
-        borderRadius: "12px",
-        cursor: activeTool === "fill" ? "pointer" : "default",
+        borderRadius: '12px',
+        cursor: activeTool === 'fill' ? 'pointer' : 'default',
+        ...(isOwner ? {} : { pointerEvents: 'none' }),
       }}
     />
   );

@@ -1,19 +1,58 @@
-import styles from "@/pages/GamePage/GamePage.module.scss";
-import vectorIcon from "@/assets/svg/Vector.svg";
+import styles from '@/pages/GamePage/GamePage.module.scss';
+import vectorIcon from '@/assets/svg/Vector.svg';
+import { useAppSelector } from '@/shared/hooks/useReduxHooks';
+import { useEffect, useState } from 'react';
+import type { IUser } from '@/entities/user';
+import { useSocket } from '@/app/store/hooks/useSocket';
+import { ChatMessage } from '../ChatMessage/ChatMessage';
 
-interface ChatProps {
-  roomName: string;
+// interface ChatProps {
+//   roomName: string;
+// }
+
+export interface IMessage {
+  message: string;
+  sender: IUser;
 }
 
-export const Chat = ({ roomName }: ChatProps) => {
+export const Chat = () => {
+  const { room } = useAppSelector((state) => state.room);
+  const roomId = room?.id
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const { socket } = useSocket();
+  const { user } = useAppSelector((state) => state.user);
+  const [inputMessage, setInputMessage] = useState<string>('');
+
+  useEffect(() => {
+    socket.on('newMessage', ({ message, sender }: IMessage) => {
+      setMessages((prev) => [...prev, { message, sender }]);
+    });
+
+    return () => {
+      socket.off('newMessage');
+    };
+  }, [socket, roomId]);
+
+  const onSendMessageHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (inputMessage.trim()) {
+      socket.emit('sendMessage', {
+        message: inputMessage.trim(),
+        user,
+        roomId,
+      });
+      setInputMessage('');
+    }
+  };
+
   return (
     <div className={styles.chat}>
       <div className={styles.roomName}>
-        <p>{roomName}</p>
+        <p>{room?.name}</p>
       </div>
 
       <div className={styles.messagesContainer}>
-        <div className={`${styles.message} ${styles.otherMessage}`}>
+        {/* <div className={`${styles.message} ${styles.otherMessage}`}>
           Это сообщение от другого игрока
         </div>
         <div className={`${styles.message} ${styles.userMessage}`}>
@@ -23,34 +62,38 @@ export const Chat = ({ roomName }: ChatProps) => {
           Короткое
         </div>
         <div className={`${styles.message} ${styles.userMessage}`}>
-          Очень длинное сообщение, которое должно переноситься на новую строку, если не помещается в максимальную ширину
+          Очень длинное сообщение, которое должно переноситься на новую строку,
+          если не помещается в максимальную ширину
         </div>
-        
+
         {Array.from({ length: 10 }).map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className={`${styles.message} ${
               i % 2 ? styles.userMessage : styles.otherMessage
             }`}
           >
             Сообщение {i + 1} для демонстрации прокрутки
           </div>
-        ))}
+        ))} */}
+        {messages.map((message, index) => {
+          return (
+            <ChatMessage msg={message} key={`${index}_${message.sender.id}`} />
+          );
+        })}
       </div>
 
-      <div className={styles.inputContainer}>
+      <form onSubmit={onSendMessageHandler} className={styles.inputContainer}>
         <input
           className={styles.chatInput}
           placeholder="Введите сообщение..."
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
         />
-        <button className={styles.sendButton}>
-          <img
-            src={vectorIcon}
-            alt="Отправить"
-            className={styles.toolIcon}
-          />
+        <button className={styles.sendButton} type="submit">
+          <img src={vectorIcon} alt="Отправить" className={styles.toolIcon} />
         </button>
-      </div>
+      </form>
     </div>
   );
 };

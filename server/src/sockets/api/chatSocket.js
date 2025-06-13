@@ -15,8 +15,7 @@ module.exports.chatSocket = (io, socket) => {
 		
 
 		io.to(roomId).emit('newMessage', { message, sender: socket.user })
-		
-		//вынести в хелпер типо addPoints
+	
 
 		const checker = isCorrectWord(message, roomId);
 

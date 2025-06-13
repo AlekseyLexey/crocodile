@@ -13,10 +13,6 @@ async function getWordsByTheme(themeId = null) {
   themeWords = theme.themeWords.map((themeWord) => themeWord.name);
 
   return themeWords;
-
 }
-
-getWordsByTheme(1).then(data => console.log(data));
-
 
 module.exports = getWordsByTheme;

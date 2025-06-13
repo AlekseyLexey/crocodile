@@ -20,8 +20,7 @@ function clearRoomWords(roomId) {
 
 function getCurrentWord(roomId) {
   const state = roomWords.get(roomId);
-  // console.log('state==>', state);
-  
+
   return state?.currentWord || null;
 }
 

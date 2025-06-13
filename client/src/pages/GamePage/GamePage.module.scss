@@ -18,9 +18,9 @@
   grid-template-rows: 27px 426px 83px;
   gap: 16px;
   grid-template-areas:
-    "colors word timer chat"
-    "colors canvas tools chat"
-    "sidebar sidebar sidebar chat";
+    'colors word timer chat'
+    'colors canvas tools chat'
+    'sidebar sidebar sidebar chat';
   box-sizing: border-box;
   margin: 0 auto;
 }
@@ -75,17 +75,6 @@
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
   }
-}
-
-.gameArea {
-  grid-area: word;
-  width: 464px;
-  height: 27px;
-  border-radius: $br;
-  border: 3px solid rgba(0, 0, 0, 0.2);
-  @include text-style-bold;
-  color: #fff5f5;
-  @include flex-center;
 }
 
 .canvas {
@@ -194,28 +183,6 @@
 
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
-}
-
-.message {
-  max-width: 66.66%;
-  padding: 8px 12px;
-  word-wrap: break-word;
-  position: relative;
-
-  &.otherMessage {
-    left: 0px;
-    align-self: flex-start;
-    background-color: $white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px 12px 12px 0;
-  }
-
-  &.userMessage {
-    right: 0px;
-    align-self: flex-end;
-    background-color: $white;
-    border-radius: 12px 12px 0 12px;
-  }
 }
 
 .roomName {

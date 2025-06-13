@@ -1,6 +1,6 @@
 import { Button } from "@/shared/ui/Button/Button";
 import styles from "./GamePage.module.scss";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
 import {
@@ -15,6 +15,7 @@ import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 import { useNavigate } from "react-router-dom";
 import { CLIENT_ROUTES } from "@/shared";
+import { WordPanel } from "@/shared/ui/WordPanel/WordPanel";
 
 // const roomId = new Date().getMilliseconds();
 const roomId = 1;
@@ -26,7 +27,7 @@ export const GamePage = () => {
   const { activeTool, dimensions } = useAppSelector(selectCanvas);
   const { socket } = useSocket();
   const { user } = useAppSelector((state) => state.user);
-  const [isJoined, setIsJoined] = useState(false);
+  // const [isJoined, setIsJoined] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export const GamePage = () => {
       roomId,
     });
 
-    socket.on("joinedRoom", () => setIsJoined(true));
+    // socket.on("joinedRoom", () => setIsJoined(true));
 
     socket.on("room", ({ room }) => {
       dispatch(setRoom(room));
@@ -57,6 +58,9 @@ export const GamePage = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log('room', room);
+  
 
   const handleExit = () => {
     socket.emit("exit", {
@@ -87,6 +91,9 @@ export const GamePage = () => {
     }
   };
 
+  const isOwner = user?.id === room?.owner_id;
+  
+
   return (
     <div className={styles.game}>
       <div className={styles.container}>
@@ -95,25 +102,23 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        <ColorsPanel />
-        <div className={styles.gameArea}>
-          <p>яблоко</p>
-        </div>
+        {isOwner && <ColorsPanel />}
+        {room && <WordPanel isOwner={isOwner}/>}
         <div className={styles.canvas}>
-          <CanvasComponent canvasRef={canvasRef} />
+          <CanvasComponent canvasRef={canvasRef} isOwner={isOwner}/>
         </div>
         <div className={styles.timer}>00:30</div>
-        <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
+        {isOwner && <Tools activeTool={activeTool} handleToolChange={handleToolChange} />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
               <div className={styles.userAvatar} />
               <div className={styles.userName}>{user.username}</div>
-              <div className={styles.userScore}>{user.point}</div>
+              <div className={styles.userScore}>{user.UserRoom.point}</div>
             </div>
           ))}
         </div>
-        <Chat roomName="Название комнаты" />
+        {room && <Chat />}
       </div>
     </div>
   );
