@@ -7,7 +7,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [socket, setSocket] = useState<Socket>(
     io("wss://crocdraw.ru", {
       transports: ["websocket"],
-      path: "/ws",
+      path: "/socket.io",
       secure: true,
     })
   );
