@@ -1,6 +1,6 @@
 import { Button } from "@/shared/ui/Button/Button";
 import styles from "./GamePage.module.scss";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
 import {
@@ -11,22 +11,62 @@ import {
 import { Tools } from "@/shared/ui/Tools/Tools";
 import { ColorsPanel } from "@/shared/ui/ColorsPanel/ColorsPanel";
 import { Chat } from "@/shared/ui/Chat/Chat";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { setRoom } from "@/entities/room";
+import { useNavigate } from "react-router-dom";
+import { CLIENT_ROUTES } from "@/shared";
+
+// const roomId = new Date().getMilliseconds();
+const roomId = 1;
 
 export const GamePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dispatch = useAppDispatch();
+  const { room } = useAppSelector((state) => state.room);
   const { activeTool, dimensions } = useAppSelector(selectCanvas);
+  const { socket } = useSocket();
+  const { user } = useAppSelector((state) => state.user);
+  const [isJoined, setIsJoined] = useState(false);
+  const navigate = useNavigate();
 
-  const users = [
-    { id: "1", username: "Игрок1", score: 150 },
-    { id: "2", username: "Игрок2", score: 120 },
-    { id: "3", username: "Игрок3", score: 90 },
-    { id: "4", username: "Игрок4", score: 80 },
-    { id: "5", username: "Игрок5", score: 70 },
-    { id: "6", username: "Игрок6", score: 60 },
-    { id: "7", username: "Игрок7", score: 50 },
-    { id: "8", username: "Игрок8", score: 40 },
-  ];
+  useEffect(() => {
+    socket.emit("joinRoom", {
+      user,
+      roomId,
+    });
+
+    socket.on("joinedRoom", () => setIsJoined(true));
+
+    socket.on("room", ({ room }) => {
+      dispatch(setRoom(room));
+    });
+
+    socket.on("message", (message) => {
+      console.log(message);
+    });
+
+    socket.on("exit", (message) => {
+      console.log(message);
+    });
+
+    return () => {
+      socket.off("room");
+      socket.off("joinedRoom");
+      socket.off("message");
+      socket.off("exit");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleExit = () => {
+    socket.emit("exit", {
+      user,
+      roomId,
+    });
+
+    dispatch(setRoom(null));
+    navigate(CLIENT_ROUTES.MAIN);
+  };
 
   const handleClear = () => {
     if (!canvasRef.current) return;
@@ -50,7 +90,11 @@ export const GamePage = () => {
   return (
     <div className={styles.game}>
       <div className={styles.container}>
-        <Button buttonText="Выйти из игры" className={styles.exitButton} />
+        <Button
+          onClick={handleExit}
+          buttonText="Выйти из игры"
+          className={styles.exitButton}
+        />
         <ColorsPanel />
         <div className={styles.gameArea}>
           <p>яблоко</p>
@@ -61,11 +105,11 @@ export const GamePage = () => {
         <div className={styles.timer}>00:30</div>
         <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
         <div className={styles.sidebar}>
-          {users.map((user) => (
+          {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
               <div className={styles.userAvatar} />
               <div className={styles.userName}>{user.username}</div>
-              <div className={styles.userScore}>{user.score}</div>
+              <div className={styles.userScore}>{user.point}</div>
             </div>
           ))}
         </div>
