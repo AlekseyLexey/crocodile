@@ -1,10 +1,10 @@
-import styles from '@/pages/GamePage/GamePage.module.scss';
-import vectorIcon from '@/assets/svg/Vector.svg';
-import { useAppSelector } from '@/shared/hooks/useReduxHooks';
-import { useEffect, useState } from 'react';
-import type { IUser } from '@/entities/user';
-import { useSocket } from '@/app/store/hooks/useSocket';
-import { ChatMessage } from '../ChatMessage/ChatMessage';
+import styles from "@/pages/GamePage/GamePage.module.scss";
+import vectorIcon from "@/assets/svg/Vector.svg";
+import { useAppSelector } from "@/shared/hooks/useReduxHooks";
+import { useEffect, useState } from "react";
+import type { IUser } from "@/entities/user";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { ChatMessage } from "../../shared/ui/ChatMessage/ChatMessage";
 
 // interface ChatProps {
 //   roomName: string;
@@ -17,31 +17,31 @@ export interface IMessage {
 
 export const Chat = () => {
   const { room } = useAppSelector((state) => state.room);
-  const roomId = room?.id
+  const roomId = room?.id;
   const [messages, setMessages] = useState<IMessage[]>([]);
   const { socket } = useSocket();
   const { user } = useAppSelector((state) => state.user);
-  const [inputMessage, setInputMessage] = useState<string>('');
+  const [inputMessage, setInputMessage] = useState<string>("");
 
   useEffect(() => {
-    socket.on('newMessage', ({ message, sender }: IMessage) => {
+    socket.on("newMessage", ({ message, sender }: IMessage) => {
       setMessages((prev) => [...prev, { message, sender }]);
     });
 
     return () => {
-      socket.off('newMessage');
+      socket.off("newMessage");
     };
   }, [socket, roomId]);
 
   const onSendMessageHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputMessage.trim()) {
-      socket.emit('sendMessage', {
+      socket.emit("sendMessage", {
         message: inputMessage.trim(),
         user,
         roomId,
       });
-      setInputMessage('');
+      setInputMessage("");
     }
   };
 

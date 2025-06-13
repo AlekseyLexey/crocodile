@@ -3,13 +3,24 @@ import pencilIcon from "@/assets/svg/карандаш.svg";
 import fillIcon from "@/assets/svg/заливка.svg";
 import clearIcon from "@/assets/svg/удалить все.svg";
 import { useCanvas } from "@/shared/hooks/useCanvas";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { SOCKET_DRAW_ROUTES } from "@/shared";
+
+// const roomId = new Date().getMilliseconds();
+const roomId = 1;
 
 export const Tools = () => {
   const { activeTool, changeTool, handleClearCanvas } = useCanvas();
+  const { socket } = useSocket();
 
   const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
     changeTool(tool);
     if (tool === "clear") {
+      socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
+        roomId,
+        action: SOCKET_DRAW_ROUTES.CLEAR,
+        figure: {},
+      });
       handleClearCanvas();
     }
   };

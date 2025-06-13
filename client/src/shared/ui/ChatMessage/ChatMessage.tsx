@@ -1,6 +1,6 @@
-import styles from './ChatMessage.module.scss';
-import { useAppSelector } from '@/shared/hooks/useReduxHooks';
-import type { IMessage } from '../Chat/Chat';
+import styles from "./ChatMessage.module.scss";
+import { useAppSelector } from "@/shared/hooks/useReduxHooks";
+import type { IMessage } from "../../../features/Chat/Chat";
 
 interface IMessageBlockProps {
   msg: IMessage;

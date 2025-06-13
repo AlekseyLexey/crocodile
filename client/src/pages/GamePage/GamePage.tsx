@@ -1,16 +1,16 @@
-import { Button } from "@/shared/ui/Button/Button";
-import styles from "./GamePage.module.scss";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
-import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
-import { Tools } from "@/shared/ui/Tools/Tools";
-import { ColorsPanel } from "@/shared/ui/ColorsPanel/ColorsPanel";
-import { Chat } from "@/shared/ui/Chat/Chat";
+import { useNavigate } from "react-router-dom";
+import styles from "./GamePage.module.scss";
+import {
+  Button,
+  ColorsPanel,
+  CLIENT_ROUTES,
+  useAppDispatch,
+  useAppSelector,
+} from "@/shared";
+import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
-import { useNavigate } from "react-router-dom";
-import { CLIENT_ROUTES } from "@/shared";
-import { WordPanel } from "@/shared/ui/WordPanel/WordPanel";
 
 // const roomId = new Date().getMilliseconds();
 const roomId = 1;

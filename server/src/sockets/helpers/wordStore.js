@@ -1,5 +1,5 @@
-const getWordsByTheme = require('./getWordsByTheme');
-const getRandomWord = require('./getRandomWord');
+const getWordsByTheme = require("./getWordsByTheme");
+const getRandomWord = require("./getRandomWord");
 
 const roomWords = new Map();
 

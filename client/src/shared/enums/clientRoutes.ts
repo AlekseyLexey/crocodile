@@ -6,3 +6,9 @@ export enum CLIENT_ROUTES {
   GAME_TEST = "/game-test",
   LOBBY_LIST = "/lobbies",
 }
+
+export enum SOCKET_DRAW_ROUTES {
+  DRAW = "draw",
+  FINISH = "finish",
+  CLEAR = "clear",
+}

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { useCanvas } from "@/shared/hooks/useCanvas";
-import { useFloodFill } from "@/shared/hooks/useFloodFill";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
+import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
 
 interface CanvasProps {
   isOwner: boolean;
@@ -14,17 +13,33 @@ const roomId = 1;
 export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   const { socket } = useSocket();
   const { canvasRef } = useCanvasContext();
-  const { currentColor, activeTool, isDrawing, saveCanvasState } = useCanvas();
+  const {
+    currentColor,
+    activeTool,
+    isDrawing,
+    saveCanvasState,
+    handleClearCanvas,
+  } = useCanvas();
 
   const { floodFill } = useFloodFill();
 
   useEffect(() => {
-    socket.on("draw", ({ figure }) => {
+    socket.on(SOCKET_DRAW_ROUTES.DRAW, ({ figure }) => {
       drawing(figure.x, figure.y);
     });
-    socket.on("finish", () => {
-      canvasRef.current.getContext("2d")?.beginPath();
+    socket.on(SOCKET_DRAW_ROUTES.FINISH, () => {
+      const ctx = canvasRef.current.getContext("2d");
+      ctx!.beginPath();
     });
+    socket.on(SOCKET_DRAW_ROUTES.CLEAR, () => {
+      handleClearCanvas();
+    });
+
+    return () => {
+      socket.off(SOCKET_DRAW_ROUTES.DRAW);
+      socket.off(SOCKET_DRAW_ROUTES.FINISH);
+      socket.off(SOCKET_DRAW_ROUTES.CLEAR);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,9 +74,9 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    socket.emit("draw", {
+    socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
       roomId,
-      actoion: "draw",
+      action: SOCKET_DRAW_ROUTES.DRAW,
       figure: {
         x,
         y,
@@ -75,6 +90,11 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   const stopDrawing = () => {
     if (!isDrawing.current) return;
     isDrawing.current = false;
+    socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
+      roomId,
+      action: SOCKET_DRAW_ROUTES.FINISH,
+      figure: {},
+    });
     saveCanvasState();
   };
 
