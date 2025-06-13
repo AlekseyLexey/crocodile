@@ -50,6 +50,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.rule=Host(`crocdraw.ru`) && PathPrefix(`/`)"
+      - "traefik.http.routers.client.entrypoints=websecure"
       - "traefik.http.routers.client.tls=true"
       - "traefik.http.services.client.loadbalancer.server.port=80"
     networks:
@@ -63,7 +64,11 @@ services:
     container_name: server
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.server.rule=Host(`crocdraw.ru`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.server.rule=Host(`crocdraw.ru`) && (PathPrefix(`/api`) || PathPrefix(`/ws`))"
+      - "traefik.http.routers.server.entrypoints=websecure"
+      - "traefik.http.routers.server.tls=true"
+      - "traefik.http.middlewares.api-strip-prefix.stripprefix.prefixes=/ws"
+      - "traefik.http.routers.server.middlewares=api-strip-prefix"
       - "traefik.http.services.server.loadbalancer.server.port=3000"
     networks:
       - web
