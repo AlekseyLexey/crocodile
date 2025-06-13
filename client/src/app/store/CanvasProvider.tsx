@@ -1,12 +1,16 @@
-import type React from "react";
 import { useRef } from "react";
-import CanvasContext from "./CanvasContex";
+import type { RefObject } from "react";
+import CanvasContext, { type CanvasContextType } from "./CanvasContex";
 
 export function CanvasProvider({ children }: { children: React.ReactNode }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const value: CanvasContextType = {
+    canvasRef: canvasRef as RefObject<HTMLCanvasElement>,
+  };
+
   return (
-    <CanvasContext.Provider value={{ canvasRef }}>
+    <CanvasContext.Provider value={value}>
       {children}
     </CanvasContext.Provider>
   );

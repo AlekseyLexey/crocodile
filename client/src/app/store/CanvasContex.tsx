@@ -1,7 +1,8 @@
 import { createContext } from "react";
+import type { RefObject } from "react";
 
-type CanvasContextType = {
-  canvasRef: HTMLCanvasElement;
+export type CanvasContextType = {
+  canvasRef: RefObject<HTMLCanvasElement>;
 };
 
 const CanvasContext = createContext<CanvasContextType | null>(null);
