@@ -1,51 +1,72 @@
-import React from 'react';
-import { useCanvas } from '@/shared/hooks/useCanvas';
-import { useFloodFill } from '@/shared/hooks/useFloodFill';
+import React, { useEffect } from "react";
+import { useCanvas } from "@/shared/hooks/useCanvas";
+import { useFloodFill } from "@/shared/hooks/useFloodFill";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 
 interface CanvasProps {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   isOwner: boolean;
 }
 
-export const CanvasComponent: React.FC<CanvasProps> = ({
-  canvasRef,
-  isOwner,
-}) => {
-  const { currentColor, activeTool, isDrawing, saveCanvasState } =
-    useCanvas(canvasRef);
+// const roomId = new Date().getMilliseconds();
+const roomId = 1;
 
-  const { floodFill } = useFloodFill(canvasRef);
+export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
+  const { socket } = useSocket();
+  const { canvasRef } = useCanvasContext();
+  const { currentColor, activeTool, isDrawing, saveCanvasState } = useCanvas();
+
+  const { floodFill } = useFloodFill();
+
+  useEffect(() => {
+    socket.on("draw", ({ figure }) => {
+      drawing(figure.x, figure.y);
+    });
+    socket.on("finish", () => {
+      canvasRef.current.getContext("2d")?.beginPath();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
 
-    const ctx = canvasRef.current.getContext('2d');
+    const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    if (activeTool === 'pencil') {
+    if (activeTool === "pencil") {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.strokeStyle = currentColor;
       isDrawing.current = true;
-    } else if (activeTool === 'fill') {
+    } else if (activeTool === "fill") {
       floodFill(x, y, currentColor);
     }
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing.current || !canvasRef.current || activeTool !== 'pencil')
+    if (!isDrawing.current || !canvasRef.current || activeTool !== "pencil")
       return;
 
-    const ctx = canvasRef.current.getContext('2d');
+    const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+
+    socket.emit("draw", {
+      roomId,
+      actoion: "draw",
+      figure: {
+        x,
+        y,
+      },
+    });
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -55,12 +76,14 @@ export const CanvasComponent: React.FC<CanvasProps> = ({
     if (!isDrawing.current) return;
     isDrawing.current = false;
     saveCanvasState();
-
-    if (canvasRef.current) {
-      // const dataURL = canvasRef.current.toDataURL();
-      // console.log("Canvas dataURL:", dataURL);
-    }
   };
+
+  function drawing(x: number, y: number): void {
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
 
   return (
     <canvas
@@ -70,9 +93,9 @@ export const CanvasComponent: React.FC<CanvasProps> = ({
       onMouseMove={draw}
       onMouseLeave={stopDrawing}
       style={{
-        borderRadius: '12px',
-        cursor: activeTool === 'fill' ? 'pointer' : 'default',
-        ...(isOwner ? {} : { pointerEvents: 'none' }),
+        borderRadius: "12px",
+        cursor: activeTool === "fill" ? "pointer" : "default",
+        ...(isOwner ? {} : { pointerEvents: "none" }),
       }}
     />
   );
