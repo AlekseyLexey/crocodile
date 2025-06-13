@@ -1,17 +1,17 @@
-const { Room, User } = require('../../db/models');
-const HttpError = require('../exceptions/HttpError');
+const { Room, User } = require("../../db/models");
+const HttpError = require("../exceptions/HttpError");
 
 class RoomService {
   static async findAllRooms() {
     return await Room.findAll({
-      attributes: ['id', 'pictures', 'status', 'name', 'owner_id'],
+      attributes: ["id", "pictures", "status", "name", "owner_id"],
       include: [
         {
           model: User,
-          as: 'roomUsers',
-          attributes: ['id', 'username', 'point'],
+          as: "roomUsers",
+          attributes: ["id", "username", "point"],
           through: {
-            attributes: ['point'],
+            attributes: ["point"],
           },
         },
       ],
@@ -20,14 +20,14 @@ class RoomService {
 
   static async findRoomById(roomId) {
     return await Room.findByPk(roomId, {
-      attributes: ['id', 'pictures', 'status', 'name', 'owner_id'],
+      attributes: ["id", "pictures", "status", "name", "owner_id"],
       include: [
         {
           model: User,
-          as: 'roomUsers',
-          attributes: ['id', 'username', 'point'],
+          as: "roomUsers",
+          attributes: ["id", "username", "point"],
           through: {
-            attributes: ['point'],
+            attributes: ["point"],
           },
         },
       ],
@@ -50,7 +50,7 @@ class RoomService {
   static async updateRoomById(roomId, roomData) {
     const room = await Room.findByPk(roomId);
     if (!room) {
-      throw new HttpError(404, 'Room not found');
+      throw new HttpError(404, "Room not found");
     }
 
     await room.update({

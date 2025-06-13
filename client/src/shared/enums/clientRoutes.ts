@@ -3,5 +3,6 @@ export enum CLIENT_ROUTES {
   SIGN_IN = "/signin",
   SIGN_UP = "/signup",
   GAME = "/game",
+  GAME_TEST = "/game-test",
   LOBBY_LIST = "/lobbies",
 }
