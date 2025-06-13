@@ -1,16 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useCanvas } from "@/shared/hooks/useCanvas";
 import { useFloodFill } from "@/shared/hooks/useFloodFill";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 
-interface CanvasProps {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-}
+// const roomId = new Date().getMilliseconds();
+const roomId = 1;
 
-export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
-  const { currentColor, activeTool, isDrawing, saveCanvasState } =
-    useCanvas(canvasRef);
+export const CanvasComponent: React.FC = () => {
+  const { socket } = useSocket();
+  const { canvasRef } = useCanvasContext();
+  const { currentColor, activeTool, isDrawing, saveCanvasState } = useCanvas();
 
-  const { floodFill } = useFloodFill(canvasRef);
+  const { floodFill } = useFloodFill();
+
+  useEffect(() => {
+    socket.on("draw", ({ figure }) => {
+      drawing(figure.x, figure.y);
+    });
+    socket.on("finish", ({ figure }) => {
+      canvasRef.current.getContext("2d")?.beginPath();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
@@ -43,6 +55,15 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+    socket.emit("draw", {
+      roomId,
+      actoion: "draw",
+      figure: {
+        x,
+        y,
+      },
+    });
+
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -51,12 +72,14 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
     if (!isDrawing.current) return;
     isDrawing.current = false;
     saveCanvasState();
-
-    if (canvasRef.current) {
-      // const dataURL = canvasRef.current.toDataURL();
-      // console.log("Canvas dataURL:", dataURL);
-    }
   };
+
+  function drawing(x: number, y: number): void {
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
 
   return (
     <canvas

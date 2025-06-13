@@ -1,13 +1,8 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/shared/ui/Button/Button";
 import styles from "./GamePage.module.scss";
-import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
-import {
-  selectCanvas,
-  setTool,
-  clearCanvas,
-} from "@/entities/canvas/slice/canvasSlice";
 import { Tools } from "@/shared/ui/Tools/Tools";
 import { ColorsPanel } from "@/shared/ui/ColorsPanel/ColorsPanel";
 import { Chat } from "@/shared/ui/Chat/Chat";
@@ -20,12 +15,10 @@ import { CLIENT_ROUTES } from "@/shared";
 const roomId = 1;
 
 export const GamePage = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dispatch = useAppDispatch();
   const { room } = useAppSelector((state) => state.room);
-  const { activeTool, dimensions } = useAppSelector(selectCanvas);
-  const { socket } = useSocket();
   const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const { socket } = useSocket();
   const [isJoined, setIsJoined] = useState(false);
   const navigate = useNavigate();
 
@@ -68,25 +61,6 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-  const handleClear = () => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
-    ctx.fillStyle = "#FFF5F5";
-    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-    dispatch(clearCanvas());
-    dispatch(setTool("pencil"));
-  };
-
-  const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
-    dispatch(setTool(tool));
-    if (tool === "clear") {
-      handleClear();
-    }
-  };
-
   return (
     <div className={styles.game}>
       <div className={styles.container}>
@@ -100,10 +74,10 @@ export const GamePage = () => {
           <p>яблоко</p>
         </div>
         <div className={styles.canvas}>
-          <CanvasComponent canvasRef={canvasRef} />
+          <CanvasComponent />
         </div>
         <div className={styles.timer}>00:30</div>
-        <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
+        <Tools />
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
