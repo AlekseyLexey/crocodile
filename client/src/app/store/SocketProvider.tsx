@@ -8,6 +8,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     io("ws://crocdraw.ru", {
       transports: ["websocket"],
       path: "/ws",
+      secure: true,
     })
   );
 
