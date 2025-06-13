@@ -35,7 +35,6 @@ export const GameTest = () => {
       console.log(message);
     });
 
-    
     return () => {
       socket.off("room");
       socket.off("joinedRoom");
@@ -91,7 +90,7 @@ export const GameTest = () => {
           </div>
         ))}
       {isJoined && <ChatTest roomId={roomId} />}
-      {isJoined && <WordTest roomId={roomId}/>}
+      {isJoined && <WordTest roomId={roomId} />}
     </div>
   );
 };

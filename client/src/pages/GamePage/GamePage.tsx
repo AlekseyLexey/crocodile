@@ -1,6 +1,6 @@
 import { Button } from "@/shared/ui/Button/Button";
 import styles from "./GamePage.module.scss";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
 import {
@@ -59,9 +59,6 @@ export const GamePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log('room', room);
-  
-
   const handleExit = () => {
     socket.emit("exit", {
       user,
@@ -92,7 +89,6 @@ export const GamePage = () => {
   };
 
   const isOwner = user?.id === room?.owner_id;
-  
 
   return (
     <div className={styles.game}>
@@ -103,12 +99,14 @@ export const GamePage = () => {
           className={styles.exitButton}
         />
         {isOwner && <ColorsPanel />}
-        {room && <WordPanel isOwner={isOwner}/>}
+        {room && <WordPanel isOwner={isOwner} />}
         <div className={styles.canvas}>
-          <CanvasComponent canvasRef={canvasRef} isOwner={isOwner}/>
+          <CanvasComponent canvasRef={canvasRef} isOwner={isOwner} />
         </div>
         <div className={styles.timer}>00:30</div>
-        {isOwner && <Tools activeTool={activeTool} handleToolChange={handleToolChange} />}
+        {isOwner && (
+          <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
+        )}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
