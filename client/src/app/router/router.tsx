@@ -5,7 +5,6 @@ import { Layout } from "../layout/Layout";
 import { GamePage } from "@/pages/GamePage/GamePage";
 import { LobbyListPage } from "@/pages/LobbyListPage/LobbyListPage";
 
-
 const Router = () => {
   return (
     <BrowserRouter>
@@ -15,7 +14,7 @@ const Router = () => {
           <Route path={CLIENT_ROUTES.GAME} element={<GamePage />} />
           <Route path={CLIENT_ROUTES.SIGN_IN} element={<SignInPage />} />
           <Route path={CLIENT_ROUTES.SIGN_UP} element={<SignUpPage />} />
-          <Route path={CLIENT_ROUTES.LOBBY_LIST} element={<LobbyListPage/>} />
+          <Route path={CLIENT_ROUTES.LOBBY_LIST} element={<LobbyListPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

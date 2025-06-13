@@ -1,0 +1,15 @@
+.gameArea {
+  grid-area: word;
+  width: 464px;
+  height: 27px;
+  border-radius: $br;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  @include text-style-bold;
+  color: #fff5f5;
+  @include flex-center;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
