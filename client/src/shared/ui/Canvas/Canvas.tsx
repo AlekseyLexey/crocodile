@@ -18,8 +18,11 @@ export const CanvasComponent: React.FC = () => {
     socket.on("draw", ({ figure }) => {
       drawing(figure.x, figure.y);
     });
-    socket.on("finish", ({ figure }) => {
-      canvasRef.current.getContext("2d")?.beginPath();
+    socket.on("finish", () => {
+      console.log("finish");
+
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.beginPath();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -57,7 +60,7 @@ export const CanvasComponent: React.FC = () => {
 
     socket.emit("draw", {
       roomId,
-      actoion: "draw",
+      action: "draw",
       figure: {
         x,
         y,
@@ -71,12 +74,16 @@ export const CanvasComponent: React.FC = () => {
   const stopDrawing = () => {
     if (!isDrawing.current) return;
     isDrawing.current = false;
+    socket.emit("draw", {
+      roomId,
+      action: "finish",
+      figure: {},
+    });
     saveCanvasState();
   };
 
   function drawing(x: number, y: number): void {
     const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
     ctx.lineTo(x, y);
     ctx.stroke();
   }

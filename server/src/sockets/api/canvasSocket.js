@@ -14,11 +14,3 @@ module.exports.canvasSocket = (io, socket) => {
     }
   });
 };
-
-const broadcast = (ws, msgObject) => {
-  aWss.clients.forEach((client) => {
-    if (client.id === msgObject.id) {
-      client.send(JSON.stringify(msgObject));
-    }
-  });
-};
