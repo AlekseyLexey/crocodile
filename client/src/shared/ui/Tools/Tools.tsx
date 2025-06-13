@@ -2,15 +2,18 @@ import styles from "./Tools.module.scss";
 import pencilIcon from "@/assets/svg/карандаш.svg";
 import fillIcon from "@/assets/svg/заливка.svg";
 import clearIcon from "@/assets/svg/удалить все.svg";
+import { useCanvas } from "@/shared/hooks/useCanvas";
 
-type ToolType = "pencil" | "fill" | "clear";
+export const Tools = () => {
+  const { activeTool, changeTool, handleClearCanvas } = useCanvas();
 
-interface ToolsProps {
-  activeTool: ToolType;
-  handleToolChange: (tool: ToolType) => void;
-}
+  const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
+    changeTool(tool);
+    if (tool === "clear") {
+      handleClearCanvas();
+    }
+  };
 
-export const Tools = ({ activeTool, handleToolChange }: ToolsProps) => {
   return (
     <div className={styles.tools}>
       <button

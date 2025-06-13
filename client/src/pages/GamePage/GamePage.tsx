@@ -1,22 +1,11 @@
 import { Button } from "@/shared/ui/Button/Button";
 import styles from "./GamePage.module.scss";
-import { useRef } from "react";
-import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
-import {
-  selectCanvas,
-  setTool,
-  clearCanvas,
-} from "@/entities/canvas/slice/canvasSlice";
 import { Tools } from "@/shared/ui/Tools/Tools";
 import { ColorsPanel } from "@/shared/ui/ColorsPanel/ColorsPanel";
 import { Chat } from "@/shared/ui/Chat/Chat";
 
 export const GamePage = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dispatch = useAppDispatch();
-  const { activeTool, dimensions } = useAppSelector(selectCanvas);
-
   const users = [
     { id: "1", username: "Игрок1", score: 150 },
     { id: "2", username: "Игрок2", score: 120 },
@@ -28,25 +17,6 @@ export const GamePage = () => {
     { id: "8", username: "Игрок8", score: 40 },
   ];
 
-  const handleClear = () => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
-    ctx.fillStyle = "#FFF5F5";
-    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-    dispatch(clearCanvas());
-    dispatch(setTool("pencil"));
-  };
-
-  const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
-    dispatch(setTool(tool));
-    if (tool === "clear") {
-      handleClear();
-    }
-  };
-
   return (
     <div className={styles.game}>
       <div className={styles.container}>
@@ -56,10 +26,10 @@ export const GamePage = () => {
           <p>яблоко</p>
         </div>
         <div className={styles.canvas}>
-          <CanvasComponent canvasRef={canvasRef} />
+          <CanvasComponent />
         </div>
         <div className={styles.timer}>00:30</div>
-        <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
+        <Tools />
         <div className={styles.sidebar}>
           {users.map((user) => (
             <div key={user.id} className={styles.userCard}>

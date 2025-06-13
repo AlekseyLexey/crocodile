@@ -9,13 +9,13 @@ import {
 
 type ToolType = "pencil" | "fill" | "clear";
 
-export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
+export const useCanvas = (canvasRef?: React.RefObject<HTMLCanvasElement | null>) => {
   const dispatch = useAppDispatch();
   const { currentColor, activeTool, dimensions } = useAppSelector(selectCanvas);
   const isDrawing = useRef(false);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef?.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -37,17 +37,19 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement | null>) 
   }, [dimensions, currentColor, canvasRef]);
 
   const saveCanvasState = useCallback(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef?.current) return;
     const dataURL = canvasRef.current.toDataURL();
     dispatch(saveCanvas(dataURL));
   }, [dispatch, canvasRef]);
 
   const handleClearCanvas = useCallback(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef?.current) return;
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
 
     ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+    ctx.fillStyle = "#FFF5F5";
+    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
     dispatch(clearCanvas());
     dispatch(setTool("pencil"));
   }, [dispatch, dimensions, canvasRef]);

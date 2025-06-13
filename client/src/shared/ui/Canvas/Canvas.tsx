@@ -2,11 +2,8 @@ import React from "react";
 import { useCanvas } from "@/shared/hooks/useCanvas";
 import { useFloodFill } from "@/shared/hooks/useFloodFill";
 
-interface CanvasProps {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-}
-
-export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
+export const CanvasComponent: React.FC = () => {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const { currentColor, activeTool, isDrawing, saveCanvasState } =
     useCanvas(canvasRef);
 
@@ -51,11 +48,6 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ canvasRef }) => {
     if (!isDrawing.current) return;
     isDrawing.current = false;
     saveCanvasState();
-
-    if (canvasRef.current) {
-      // const dataURL = canvasRef.current.toDataURL();
-      // console.log("Canvas dataURL:", dataURL);
-    }
   };
 
   return (
