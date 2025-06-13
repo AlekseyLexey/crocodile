@@ -1,5 +1,13 @@
-const isCorrectWord = require('../helpers/isCorrectWord')
-const UserRoomService = require('../../services/userRoomService')
+const isCorrectWord = require('../helpers/isCorrectWord');
+const UserRoomService = require('../../services/userRoomService');
+const { initWordsForRoom,
+	clearRoomWords,
+	getCurrentWord,
+	getRandomWordForRoom
+} = require('../helpers/wordStore')
+
+const newWordSendler = require('../helpers/newWordSendler')
+const correctWordHandler = require('../helpers/correctWordHandler')
 
 module.exports.chatSocket = (io, socket) => {
 	socket.on('sendMessage', async ({ message, roomId}) => {
@@ -15,17 +23,11 @@ module.exports.chatSocket = (io, socket) => {
 		if (checker) {
 			console.log(`${socket.user.username} угадал слово!!!!!!!!!`);
 			
-			const quessUser = await UserRoomService.findUserRoomByIds(socket.user.id, roomId);
-			console.log(`${quessUser.user_id} угадал слово quessUser!!`);
-			await UserRoomService.updatePoint({
-				userId: socket.user.id,
-				roomId,
-				point: quessUser.point + 1
-			})
-			io.to(roomId).emit('correctWord', {user: socket.user.username, message})
+			correctWordHandler(io, socket, roomId, message);
+
+				newWordSendler(io, roomId);
 		}
 
-		//после угадвания новое слово пока не летит и у второго слово не показывает
 		
 	})
 

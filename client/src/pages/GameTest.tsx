@@ -10,6 +10,7 @@ const roomId = 1;
 
 export const GameTest = () => {
   const [room, setRoom] = useState(null);
+  const [isJoined, setIsJoined] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const { socket } = useSocket();
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ export const GameTest = () => {
       user,
       roomId,
     });
+
+    socket.on("joinedRoom", () => setIsJoined(true));
 
     socket.on("room", ({ room }) => {
       setRoom(room);
@@ -35,6 +38,7 @@ export const GameTest = () => {
     
     return () => {
       socket.off("room");
+      socket.off("joinedRoom");
       socket.off("message");
       socket.off("exit");
     };
@@ -86,8 +90,8 @@ export const GameTest = () => {
             ) : null}
           </div>
         ))}
-      <ChatTest roomId={roomId} />
-      <WordTest roomId={roomId}/>
+      {isJoined && <ChatTest roomId={roomId} />}
+      {isJoined && <WordTest roomId={roomId}/>}
     </div>
   );
 };

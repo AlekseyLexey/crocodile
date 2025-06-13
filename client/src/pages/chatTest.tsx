@@ -4,7 +4,7 @@ import { useAppSelector } from "@/shared";
 import { useEffect, useState } from "react"
 
 
-// const roomId = 1;
+
 interface IMessage {
 	message: string;
 	sender: IUser
@@ -16,7 +16,6 @@ export const ChatTest = ({ roomId }: { roomId: number }) => {
 	const { socket } = useSocket();
 	const { user } = useAppSelector((state) => state.user);
 	const [inputMessage, setInputMessage] = useState<string>("");
-	// const [isCorrect, setIsCorrect] = useState<boolean>(false)
 
 
 	useEffect(() => {
@@ -26,12 +25,6 @@ export const ChatTest = ({ roomId }: { roomId: number }) => {
 			setMessages(prev => [...prev, {message, sender}])
 		})
 
-		// socket.on('correctWord', ({ user, message }) => {
-			
-		// 	setIsCorrect(true);
-		// 	alert(`${user} угадал ${message}`);
-		// 	socket.emit('getWord', roomId);
-		// })
 
 		return () => {
 			socket.off('newMessage')

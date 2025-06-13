@@ -16,18 +16,15 @@ export const WordTest = ({ roomId }: IWordTestProps) => {
 
   useEffect(() => {
     //тестово пока тема всегда 1, потом это событие по факту лучше в создание румы?
-
+    //эту шляпу нужно переместить на кнопку создания комнаты, пока тут для теста - обновляет слово, что нам не нужно!!!
     socket.emit('chooseTheme', { roomId, themeId: 1 });
-    socket.emit('getWord', roomId);
 
     socket.on('newWord', (randomWord) => {
       setWord(randomWord);
       setIsCorrectWord(false);
     });
 
-		return () => {
-			socket.off('chooseTheme')
-      socket.off('getWord')
+    return () => {
       socket.off('newWord');
     };
   }, [socket, roomId]);
@@ -36,15 +33,12 @@ export const WordTest = ({ roomId }: IWordTestProps) => {
     socket.on('correctWord', ({ user, message }) => {
       setIsCorrectWord(true);
       alert(`${user} угадал ${message}`);
-      socket.emit('getWord', roomId);
-		});
-		
-		return () => {
-			socket.off('correctWord');
-			socket.off('getWord')
-		}
+    });
 
-    
+    return () => {
+      socket.off('correctWord');
+      socket.off('getWord');
+    };
   }, [socket, roomId, isCorrectWord]);
 
   const nextWordHandler = (roomId: number) => {

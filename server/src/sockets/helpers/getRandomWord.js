@@ -1,7 +1,7 @@
 const WordService = require('../../services/wordService');
 const ThemeService = require('../../services/themeService');
 
- async function getRandomWord(roomId, wordsMap) {
+ function getRandomWord(roomId, wordsMap) {
   const currentWordsMap = wordsMap.get(roomId);
 
   console.log('currentWordsMap', currentWordsMap);
