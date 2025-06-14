@@ -31,6 +31,9 @@ export const useCanvas = () => {
       canvas.height = dimensions.height;
     }
 
+    ctx.fillStyle = "#FFF5F5";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.lineWidth = 3;
