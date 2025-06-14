@@ -1,16 +1,17 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './GamePage.module.scss';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./GamePage.module.scss";
 import {
   Button,
   ColorsPanel,
   CLIENT_ROUTES,
   useAppDispatch,
   useAppSelector,
-} from '@/shared';
-import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
-import { useSocket } from '@/app/store/hooks/useSocket';
-import { setRoom } from '@/entities/room';
+} from "@/shared";
+import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+import { Preparation } from "@/widgets";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { setRoom } from "@/entities/room";
 
 // const roomId = new Date().getMilliseconds();
 const roomId = 1;
@@ -18,47 +19,66 @@ const roomId = 1;
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  if (!user) {
+    navigate(CLIENT_ROUTES.SIGN_IN);
+  }
   // const [isJoined, setIsJoined] = useState(false);
   const dispatch = useAppDispatch();
   const { socket } = useSocket();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    socket.emit('joinRoom', {
+    socket.emit("joinRoom", {
       user,
       roomId,
     });
 
-    socket.on('room', ({ room }) => {
+    socket.on("room", ({ room }) => {
       dispatch(setRoom(room));
     });
 
-    socket.on('message', (message) => {
+    socket.on("message", (message) => {
       console.log(message);
     });
 
     //не вижу на серваке эмита такого
-    socket.on('exit', (message) => {
+    socket.on("exit", (message) => {
       console.log(message);
     });
 
-    socket.on('endGame', ({ room }) => {
-      alert('Игра окончена!!!');
+    socket.on("endGame", ({ room }) => {
       dispatch(setRoom(room));
     });
 
     return () => {
-      socket.off('room');
-      socket.off('joinedRoom');
-      socket.off('message');
-      socket.off('exit');
-      socket.off('endGame');
+      socket.off("room");
+      socket.off("joinedRoom");
+      socket.off("message");
+      socket.off("exit");
+      socket.off("endGame");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (room?.status === "end") {
+      const timer = setTimeout(() => {
+        navigate(CLIENT_ROUTES.LOBBY_LIST);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [navigate, room?.status]);
+
+  const handleEndGame = () => {
+    socket.emit("endGame", {
+      roomId,
+    });
+  };
+
   const handleExit = () => {
-    socket.emit('exitRoom', {
+    socket.emit("exitRoom", {
       user,
       roomId,
     });
@@ -77,13 +97,22 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        {isOwner && <ColorsPanel />}
-        {room && <WordPanel isOwner={isOwner} />}
-        <div className={styles.canvas}>
-          <CanvasComponent isOwner={isOwner} />
-        </div>
-        <div className={styles.timer}>00:30</div>
-        {isOwner && <Tools />}
+        {room?.status === "prepare" && <Preparation isOwner={isOwner} />}
+        {room?.status === "active" && (
+          <>
+            {isOwner && <ColorsPanel />}
+            {room && <WordPanel isOwner={isOwner} />}
+            <div className={styles.canvas}>
+              <CanvasComponent isOwner={isOwner} />
+            </div>
+            <div className={styles.timer}>00:30</div>
+            {isOwner && <Tools />}
+            {isOwner && (
+              <Button buttonText="Завершить игру" onClick={handleEndGame} />
+            )}
+          </>
+        )}
+        {room?.status === "end" && <h2>ИГРА ЗАКОНЧЕННА</h2>}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
