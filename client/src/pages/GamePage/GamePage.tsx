@@ -9,6 +9,7 @@ import {
   useAppSelector,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+// import { Preparation } from "@/widgets"
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 
@@ -72,6 +73,7 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
+        {/* <Preparation /> */}
         {isOwner && <ColorsPanel />}
         {room && <WordPanel isOwner={isOwner} />}
         <div className={styles.canvas}>

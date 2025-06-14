@@ -1,0 +1,38 @@
+.preparation {
+  @include flex-center;
+  flex-direction: column;
+  grid-column: colors-start / tools-end;
+  grid-row: word-start / tools-end;
+  width: 100%;
+  height: 100%;
+  background-color: #fff5f5;
+  border-radius: $br;
+  top: 0px;
+}
+
+.title {
+  font-size: 32px;
+  color: #1f1d1d;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #424040;
+  margin-bottom: 2rem;
+}
+
+.startButton {
+  background: $background-modal;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
