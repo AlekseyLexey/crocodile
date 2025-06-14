@@ -18,10 +18,14 @@ const roomId = 1;
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  if (!user) {
+    navigate(CLIENT_ROUTES.SIGN_IN);
+  }
   // const [isJoined, setIsJoined] = useState(false);
   const dispatch = useAppDispatch();
   const { socket } = useSocket();
-  const navigate = useNavigate();
 
   useEffect(() => {
     socket.emit("joinRoom", {
@@ -52,6 +56,28 @@ export const GamePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (room?.status === "end") {
+      const timer = setTimeout(() => {
+        navigate(CLIENT_ROUTES.LOBBY_LIST);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [room?.status]);
+
+  const handleStartGame = () => {
+    socket.emit("startGame", {
+      roomId,
+    });
+  };
+
+  const handleEndGame = () => {
+    socket.emit("endGame", {
+      roomId,
+    });
+  };
+
   const handleExit = () => {
     socket.emit("exit", {
       user,
@@ -72,13 +98,24 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        {isOwner && <ColorsPanel />}
-        {room && <WordPanel isOwner={isOwner} />}
-        <div className={styles.canvas}>
-          <CanvasComponent isOwner={isOwner} />
-        </div>
-        <div className={styles.timer}>00:30</div>
-        {isOwner && <Tools />}
+        {room?.status === "prepare" && room.owner_id === user!.id && (
+          <Button buttonText="Начать игру" onClick={handleStartGame} />
+        )}
+        {room?.status === "active" && (
+          <>
+            {isOwner && <ColorsPanel />}
+            {room && <WordPanel isOwner={isOwner} />}
+            <div className={styles.canvas}>
+              <CanvasComponent isOwner={isOwner} />
+            </div>
+            <div className={styles.timer}>00:30</div>
+            {isOwner && <Tools />}
+          </>
+        )}
+        {room?.status === "end" && <h2>ИГРА ЗАКОНЧЕННА</h2>}
+        {isOwner && room?.status === "active" && (
+          <Button buttonText="Завершить игру" onClick={handleEndGame} />
+        )}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
