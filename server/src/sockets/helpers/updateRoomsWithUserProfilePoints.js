@@ -1,5 +1,9 @@
-const updateUserProfilePoints = async (room) => {
+const { updateUserService } = require('../../services/userService');
+const RoomService = require('../../services/roomService');
+
+const updateRoomsWithUserProfilePoints = async (roomId) => {
   try {
+    const room = await RoomService.updateRoomById(roomId, { status: 'end' });
     const arrayUsersOfRoom = room.roomUsers;
     for (const user of arrayUsersOfRoom) {
       await updateUserService(user.id, {
@@ -15,4 +19,4 @@ const updateUserProfilePoints = async (room) => {
   }
 };
 
-module.exports = updateUserProfilePoints;
+module.exports = updateRoomsWithUserProfilePoints;

@@ -2,8 +2,9 @@ export { $api } from './lib/axiosConfig';
 export {
   CLIENT_ROUTES,
   SOCKET_DRAW_ROUTES,
-	SOCKET_CHAT_ROUTES,
-	SOCKET_WORD_ROUTES
+  SOCKET_CHAT_ROUTES,
+  SOCKET_WORD_ROUTES,
+  SOCKET_GAME_ROUTES,
 } from './enums/clientRoutes';
 export { useAppDispatch, useAppSelector } from './hooks/useReduxHooks';
 export { useCanvas } from './hooks/useCanvas';

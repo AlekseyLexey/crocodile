@@ -20,10 +20,17 @@ export enum SOCKET_CHAT_ROUTES {
   SEND_MESSAGE = 'sendMessage',
 }
 
-
 export enum SOCKET_WORD_ROUTES {
   CHOOSE_THEME = 'chooseTheme',
   NEW_WORD = 'newWord',
   CORRECT_WORD = 'correctWord',
-  GET_WORD = "getWord"
+  GET_WORD = 'getWord',
+}
+
+export enum SOCKET_GAME_ROUTES {
+  JOIN_ROOM = 'joinRoom',
+  ROOM = 'room',
+  MESSAGE = 'message',
+  END_GAME = 'endGame',
+  EXIT_ROOM = 'exitRoom',
 }

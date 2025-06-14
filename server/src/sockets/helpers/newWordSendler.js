@@ -1,15 +1,12 @@
 const { getRandomWordForRoom } = require('./wordStore');
 const RoomService = require('../../services/roomService');
-const updateUserProfilePoints = require('../helpers/updateUserProfilePoints');
+const updateRoomsWithUserProfilePoints = require('./updateRoomsWithUserProfilePoints');
 
 async function newWordSendler(io, roomId) {
   const word = getRandomWordForRoom(roomId);
 
   if (!word) {
-    await RoomService.updateRoomById(roomId, { status: 'end' });
-    const room = await RoomService.findRoomById(roomId);
-
-    const updatedRoom = await updateUserProfilePoints(room);
+    const updatedRoom = await updateRoomsWithUserProfilePoints(roomId);
 
     io.to(roomId).emit('endGame', { updatedRoom });
     // io.to(roomId).emit('newWord', 'Все слова отгаданы');

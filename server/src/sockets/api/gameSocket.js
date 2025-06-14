@@ -1,4 +1,5 @@
 const RoomService = require('../../services/roomService');
+const updateRoomsWithUserProfilePoints = require('../helpers/updateRoomsWithUserProfilePoints');
 
 module.exports.gameSocket = (io, socket) => {
   socket.on('startGame', async ({ roomId }) => {
@@ -21,13 +22,15 @@ module.exports.gameSocket = (io, socket) => {
     io.to(roomId).emit('message', `Смена раунда`);
   });
 
-  socket.on("endGame", async ({ roomId }) => {
-    const room = await RoomService.updateRoomById(roomId, { status: "end" });
+  socket.on('endGame', async ({ roomId }) => {
+    // const room = await RoomService.updateRoomById(roomId, { status: 'end' });
 
-    io.to(roomId).emit("room", {
-      room,
+    const updatedRoom = await updateRoomsWithUserProfilePoints(roomId);
+
+    io.to(roomId).emit('room', {
+      updatedRoom,
     });
 
-    io.to(roomId).emit("message", `Игра законченна`);
+    io.to(roomId).emit('message', `Игра законченна`);
   });
 };
