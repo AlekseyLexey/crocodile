@@ -9,6 +9,7 @@ import {
   useAppSelector,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+// import { Preparation } from "@/widgets"
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 
@@ -98,6 +99,14 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
+        {/* <Preparation /> */}
+        {isOwner && <ColorsPanel />}
+        {room && <WordPanel isOwner={isOwner} />}
+        <div className={styles.canvas}>
+          <CanvasComponent isOwner={isOwner} />
+        </div>
+        <div className={styles.timer}>00:30</div>
+        {isOwner && <Tools />}
         {room?.status === "prepare" && room.owner_id === user!.id && (
           <Button buttonText="Начать игру" onClick={handleStartGame} />
         )}
