@@ -48,7 +48,6 @@ export const GamePage = () => {
     });
 
     socket.on("endGame", ({ room }) => {
-      alert("Игра окончена!!!");
       dispatch(setRoom(room));
     });
 
