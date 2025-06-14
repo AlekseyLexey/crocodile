@@ -8,7 +8,7 @@ module.exports = {
       {
         user_id: 1,
         room_id: 1,
-        point: 10
+        point: 0
       },
       {
         user_id: 2,

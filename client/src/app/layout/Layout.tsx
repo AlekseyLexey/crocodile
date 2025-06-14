@@ -1,11 +1,12 @@
 import { Footer, Header, Wrapper } from "@/widgets";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
 import { refreshThunk } from "@/entities/user";
 import { CLIENT_ROUTES } from "@/shared";
 
 export const Layout = () => {
+  const [isRefreshLoading, setRefreshLoading] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,7 +25,12 @@ export const Layout = () => {
         // navigate(...Куда-нибудь);
       }
     }
+    setRefreshLoading(true);
   };
+
+  if (!isRefreshLoading) {
+    return <div>...LOADING</div>;
+  }
 
   return (
     <>

@@ -116,6 +116,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
         borderRadius: "12px",
         cursor: activeTool === "fill" ? "pointer" : "default",
         ...(isOwner ? {} : { pointerEvents: "none" }),
+        backgroundColor: "#FFF5F5",
       }}
     />
   );

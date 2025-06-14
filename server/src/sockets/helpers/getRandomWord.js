@@ -5,6 +5,10 @@ function getRandomWord(roomId, wordsMap) {
     return null;
   }
 
+  if (currentWordsMap.unUsedWords.length === 0) {
+    return null;
+  }
+
   const randomIndex = Math.floor(
     Math.random() * currentWordsMap.unUsedWords.length
   );

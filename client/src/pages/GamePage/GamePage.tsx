@@ -9,6 +9,7 @@ import {
   useAppSelector,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+import { Finish, Preparation } from "@/widgets";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 
@@ -18,18 +19,20 @@ const roomId = 1;
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  if (!user) {
+    navigate(CLIENT_ROUTES.SIGN_IN);
+  }
   // const [isJoined, setIsJoined] = useState(false);
   const dispatch = useAppDispatch();
   const { socket } = useSocket();
-  const navigate = useNavigate();
 
   useEffect(() => {
     socket.emit("joinRoom", {
       user,
       roomId,
     });
-
-    // socket.on("joinedRoom", () => setIsJoined(true));
 
     socket.on("room", ({ room }) => {
       dispatch(setRoom(room));
@@ -39,8 +42,13 @@ export const GamePage = () => {
       console.log(message);
     });
 
+    //не вижу на серваке эмита такого
     socket.on("exit", (message) => {
       console.log(message);
+    });
+
+    socket.on("endGame", ({ room }) => {
+      dispatch(setRoom(room));
     });
 
     return () => {
@@ -48,12 +56,29 @@ export const GamePage = () => {
       socket.off("joinedRoom");
       socket.off("message");
       socket.off("exit");
+      socket.off("endGame");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // useEffect(() => {
+  //   if (room?.status === "end") {
+  //     const timer = setTimeout(() => {
+  //       navigate(CLIENT_ROUTES.LOBBY_LIST);
+  //     }, 5000);
+
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [navigate, room?.status]);
+
+  const handleEndGame = () => {
+    socket.emit("endGame", {
+      roomId,
+    });
+  };
+
   const handleExit = () => {
-    socket.emit("exit", {
+    socket.emit("exitRoom", {
       user,
       roomId,
     });
@@ -72,13 +97,22 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        {isOwner && <ColorsPanel />}
-        {room && <WordPanel isOwner={isOwner} />}
-        <div className={styles.canvas}>
-          <CanvasComponent isOwner={isOwner} />
-        </div>
-        <div className={styles.timer}>00:30</div>
-        {isOwner && <Tools />}
+        {room?.status === "prepare" && <Preparation isOwner={isOwner} />}
+        {room?.status === "active" && (
+          <>
+            {isOwner && <ColorsPanel />}
+            {room && <WordPanel isOwner={isOwner} />}
+            <div className={styles.canvas}>
+              <CanvasComponent isOwner={isOwner} />
+            </div>
+            <div className={styles.timer}>00:30</div>
+            {isOwner && <Tools />}
+            {isOwner && (
+              <Button buttonText="Завершить игру" onClick={handleEndGame} />
+            )}
+          </>
+        )}
+        {room?.status === "end" && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
