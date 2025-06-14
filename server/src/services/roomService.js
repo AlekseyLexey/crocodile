@@ -37,7 +37,7 @@ class RoomService {
   static async createNewRoom(roomData) {
     const newRoom = await Room.create({
       pictures: roomData.pictures,
-      status: roomData.status,
+      status: "prepare",
       name: roomData.name,
       owner_id: roomData.userId,
     });

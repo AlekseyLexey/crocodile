@@ -1,15 +1,15 @@
-import styles from './WordPanel.module.scss';
-import { useSocket } from '@/app/store/hooks/useSocket';
-import { useAppSelector, SOCKET_WORD_ROUTES } from '@/shared';
-import { useEffect, useState } from 'react';
-import { setRoom } from '@/entities/room';
+import styles from "./WordPanel.module.scss";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { SOCKET_WORD_ROUTES } from "@/shared";
+import { useEffect, useState } from "react";
+import { setRoom } from "@/entities/room";
+import { useParams } from "react-router-dom";
 
 export const WordPanel = ({ isOwner }: { isOwner: boolean }) => {
   const { socket } = useSocket();
-  const { room } = useAppSelector((state) => state.room);
-  const roomId = room?.id;
   const [word, setWord] = useState<string>();
   const [isCorrectWord, setIsCorrectWord] = useState<boolean>(false);
+  const { id: roomId } = useParams();
 
   useEffect(() => {
     //тестово пока тема всегда 1, потом это событие по факту лучше в создание румы?
@@ -41,7 +41,7 @@ export const WordPanel = ({ isOwner }: { isOwner: boolean }) => {
 
   return (
     <>
-      <div className={`${styles.gameArea} ${isOwner ? '' : styles.hidden}`}>
+      <div className={`${styles.gameArea} ${isOwner ? "" : styles.hidden}`}>
         <p>{word}</p>
       </div>
     </>

@@ -16,6 +16,7 @@ export const Header = () => {
 
   useEffect(() => {
     setIsMenuOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   useEffect(() => {
@@ -76,11 +77,11 @@ export const Header = () => {
                     Магазин
                   </Link>
                   <Link
-                    to={CLIENT_ROUTES.GAME}
+                    to={CLIENT_ROUTES.LOBBY_LIST}
                     className={styles.menuItem}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Игры
+                    Список Лобби
                   </Link>
                   <Link
                     to={CLIENT_ROUTES.LOBBY_LIST}
@@ -100,8 +101,8 @@ export const Header = () => {
                 onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
               />
               <ButtonNavigate
-                buttonText="Игры"
-                onClick={() => navigate(CLIENT_ROUTES.GAME)}
+                buttonText="Список Лобби"
+                onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
               />
               <ButtonNavigate
                 buttonText="Профиль"

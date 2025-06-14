@@ -1,12 +1,12 @@
-const RoomService = require('../services/roomService');
-const { formatResponse } = require('../utils/formatResponse');
+const RoomService = require("../services/roomService");
+const { formatResponse } = require("../utils/formatResponse");
 
 class RoomController {
   static async getAllRooms(_, res, next) {
     try {
       const rooms = await RoomService.findAllRooms();
 
-      return res.status(200).json(formatResponse(200, 'Success', rooms));
+      return res.status(200).json(formatResponse(200, "Success", rooms));
     } catch (err) {
       next(err);
     }
@@ -20,10 +20,10 @@ class RoomController {
       if (!room) {
         return res
           .status(404)
-          .json(formatResponse(404, 'Room not found', null));
+          .json(formatResponse(404, "Room not found", null));
       }
 
-      return res.status(200).json(formatResponse(200, 'Success', room));
+      return res.status(200).json(formatResponse(200, "Success", room));
     } catch (err) {
       next(err);
     }
@@ -32,10 +32,9 @@ class RoomController {
   static async createRoom(req, res, next) {
     try {
       const userId = res.locals.user.id;
-      const { pictures, status, name } = req.body;
+      const { pictures = "", name } = req.body;
       const newRoom = await RoomService.createNewRoom({
         pictures,
-        status,
         name,
         userId,
       });
@@ -43,10 +42,10 @@ class RoomController {
       if (!newRoom) {
         return res
           .status(400)
-          .json(formatResponse(400, 'Room was not created', null));
+          .json(formatResponse(400, "Room was not created", null));
       }
 
-      return res.status(201).json(formatResponse(201, 'Success', newRoom));
+      return res.status(201).json(formatResponse(201, "Success", newRoom));
     } catch (err) {
       next(err);
     }
@@ -66,7 +65,7 @@ class RoomController {
         userId,
       });
 
-      return res.status(200).json(formatResponse(200, 'Success', updatedRoom));
+      return res.status(200).json(formatResponse(200, "Success", updatedRoom));
     } catch (err) {
       next(err);
     }

@@ -1,8 +1,7 @@
-const {getCurrentWord} = require('../helpers/wordStore');
+const { getCurrentWord } = require("../helpers/wordStore");
 
 function isCorrectWord(incomeWord, roomId) {
-	const currentWord = getCurrentWord(roomId);
-	
+  const currentWord = getCurrentWord(roomId);
 
   if (currentWord === null) {
     return;

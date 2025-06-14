@@ -26,8 +26,7 @@ router.get("/refresh", refresh);
 router.use("/rooms", authMiddleware, roomRouter);
 router.use("/words", wordRouter);
 router.use("/themes", themeRouter);
-// router.use("/user-room", authMiddleware, userRoomRouter);
-router.use("/user-room", userRoomRouter);//вернуть с авторзацией
+router.use("/user-room", authMiddleware, userRoomRouter);
 router.use("/theme-room", authMiddleware, themeRoomRouter);
 router.use("/buies", authMiddleware, buyRouter);
 router.use("/categories", categoryRouter);

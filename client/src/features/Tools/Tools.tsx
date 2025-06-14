@@ -5,13 +5,12 @@ import clearIcon from "@/assets/svg/удалить все.svg";
 import { useCanvas } from "@/shared/hooks/useCanvas";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { SOCKET_DRAW_ROUTES } from "@/shared";
-
-// const roomId = new Date().getMilliseconds();
-const roomId = 1;
+import { useParams } from "react-router-dom";
 
 export const Tools = () => {
   const { activeTool, changeTool, handleClearCanvas } = useCanvas();
   const { socket } = useSocket();
+  const { id: roomId } = useParams();
 
   const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
     changeTool(tool);

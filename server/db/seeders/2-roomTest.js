@@ -14,13 +14,13 @@ module.exports = {
         },
         {
           pictures: "Draw",
-          status: "GOOD",
+          status: "prepare",
           name: "Отчаянные домохозяйки",
           owner_id: 1,
         },
         {
           pictures: "Photo",
-          status: "BAD",
+          status: "prepare",
           name: "Ходящие в бар",
           owner_id: 2,
         },

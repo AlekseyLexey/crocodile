@@ -1,4 +1,10 @@
-export type StatusRoomType = "prepare" | "active" | "pause" | "end";
+import type { ROOM_STATUSES } from "@/shared";
+
+export type StatusRoomType =
+  | ROOM_STATUSES.PREPARE
+  | ROOM_STATUSES.ACTIVE
+  | ROOM_STATUSES.PAUSE
+  | ROOM_STATUSES.END;
 
 export interface IRoomUser {
   id: number;
@@ -11,11 +17,14 @@ export interface IUserRoom {
   point: number;
 }
 
-export interface IRoom {
+export interface IRoom extends ICreateRoom {
   id: number;
-  pictures: string;
   status: StatusRoomType;
-  name: string;
   owner_id: number;
   roomUsers: IRoomUser[];
+}
+
+export interface ICreateRoom {
+  pictures?: string;
+  name: string;
 }

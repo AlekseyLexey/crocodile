@@ -1,8 +1,12 @@
-const UserRoomService = require('../../services/userRoomService');
-const { getRoom } = require('../helpers/getRoom');
+const UserRoomService = require("../../services/userRoomService");
+const { getRoom } = require("../helpers/getRoom");
 
 module.exports.roomSocket = (io, socket) => {
-  socket.on('joinRoom', async ({ user, roomId }) => {
+  socket.on("joinRoom", async ({ user, roomId }) => {
+    if (!user) {
+      socket.leave(roomId);
+      return;
+    }
     await UserRoomService.createUserRoom({
       userId: user.id,
       roomId,
@@ -12,10 +16,10 @@ module.exports.roomSocket = (io, socket) => {
     socket.join(roomId);
 
     getRoom(io, roomId);
-    socket.to(roomId).emit('message', `Игрок ${user.username} присоеденился`);
+    socket.to(roomId).emit("message", `Игрок ${user.username} присоеденился`);
   });
 
-  socket.on('exitRoom', async ({ user, roomId }) => {
+  socket.on("exitRoom", async ({ user, roomId }) => {
     await UserRoomService.deleteUserRoom({
       userId: user.id,
       roomId,
@@ -23,6 +27,6 @@ module.exports.roomSocket = (io, socket) => {
 
     getRoom(io, roomId);
     socket.leave(roomId);
-    socket.to(roomId).emit('message', `Игрок ${user.username} покинул игру`);
+    socket.to(roomId).emit("message", `Игрок ${user.username} покинул игру`);
   });
 };

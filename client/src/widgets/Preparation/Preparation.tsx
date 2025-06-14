@@ -1,9 +1,8 @@
 import { Button } from "@/shared";
 import styles from "./Preparation.module.scss";
 import { useSocket } from "@/app/store/hooks/useSocket";
-
-// const roomId = new Date().getMilliseconds();
-const roomId = 1;
+import { useParams } from "react-router-dom";
+import { SOCKET_STATUS_ROUTES } from "@/shared";
 
 interface IPreparationProps {
   isOwner: boolean;
@@ -11,9 +10,10 @@ interface IPreparationProps {
 
 export const Preparation: React.FC<IPreparationProps> = ({ isOwner }) => {
   const { socket } = useSocket();
+  const { id: roomId } = useParams();
 
   const handleStartGame = () => {
-    socket.emit("startGame", {
+    socket.emit(SOCKET_STATUS_ROUTES.START, {
       roomId,
     });
   };

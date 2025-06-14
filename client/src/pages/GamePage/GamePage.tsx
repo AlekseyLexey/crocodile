@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./GamePage.module.scss";
 import {
   Button,
@@ -12,29 +12,27 @@ import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
 import { Preparation } from "@/widgets";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
-
-// const roomId = new Date().getMilliseconds();
-const roomId = 1;
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
 
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
+  const { id: roomId } = useParams();
 
   if (!user) {
     navigate(CLIENT_ROUTES.SIGN_IN);
   }
-  // const [isJoined, setIsJoined] = useState(false);
   const dispatch = useAppDispatch();
   const { socket } = useSocket();
 
   useEffect(() => {
-    socket.emit("joinRoom", {
+    socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
       user,
       roomId,
     });
 
-    socket.on("room", ({ room }) => {
+    socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
       dispatch(setRoom(room));
     });
 
@@ -47,16 +45,16 @@ export const GamePage = () => {
       console.log(message);
     });
 
-    socket.on("endGame", ({ room }) => {
+    socket.on(SOCKET_STATUS_ROUTES.END, ({ room }) => {
       dispatch(setRoom(room));
     });
 
     return () => {
-      socket.off("room");
-      socket.off("joinedRoom");
+      socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
+      socket.off(SOCKET_ROOM_ROUTES.ROOM);
       socket.off("message");
       socket.off("exit");
-      socket.off("endGame");
+      socket.off(SOCKET_STATUS_ROUTES.END);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -72,13 +70,13 @@ export const GamePage = () => {
   }, [navigate, room?.status]);
 
   const handleEndGame = () => {
-    socket.emit("endGame", {
+    socket.emit(SOCKET_STATUS_ROUTES.END, {
       roomId,
     });
   };
 
   const handleExit = () => {
-    socket.emit("exitRoom", {
+    socket.emit(SOCKET_ROOM_ROUTES.EXIT_ROOM, {
       user,
       roomId,
     });

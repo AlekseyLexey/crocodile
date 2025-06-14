@@ -2,13 +2,11 @@ import React, { useEffect } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
+import { useParams } from "react-router-dom";
 
 interface CanvasProps {
   isOwner: boolean;
 }
-
-// const roomId = new Date().getMilliseconds();
-const roomId = 1;
 
 export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   const { socket } = useSocket();
@@ -20,6 +18,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     saveCanvasState,
     handleClearCanvas,
   } = useCanvas();
+  const { id: roomId } = useParams();
 
   const { floodFill } = useFloodFill();
 

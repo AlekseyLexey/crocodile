@@ -1,10 +1,11 @@
-import styles from '@/pages/GamePage/GamePage.module.scss';
-import vectorIcon from '@/assets/svg/Vector.svg';
-import { useAppSelector, SOCKET_CHAT_ROUTES } from '@/shared';
-import React, { useEffect, useState } from 'react';
-import type { IUser } from '@/entities/user';
-import { useSocket } from '@/app/store/hooks/useSocket';
-import { ChatMessage } from '../../shared/ui/ChatMessage/ChatMessage';
+import styles from "@/pages/GamePage/GamePage.module.scss";
+import vectorIcon from "@/assets/svg/Vector.svg";
+import { useAppSelector, SOCKET_CHAT_ROUTES } from "@/shared";
+import React, { useEffect, useState } from "react";
+import type { IUser } from "@/entities/user";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { ChatMessage } from "../../shared/ui/ChatMessage/ChatMessage";
+import { useParams } from "react-router-dom";
 
 export interface IMessage {
   message: string;
@@ -13,11 +14,11 @@ export interface IMessage {
 
 export const Chat = () => {
   const { room } = useAppSelector((state) => state.room);
-  const roomId = room?.id;
   const [messages, setMessages] = useState<IMessage[]>([]);
   const { socket } = useSocket();
   const { user } = useAppSelector((state) => state.user);
-  const [inputMessage, setInputMessage] = useState<string>('');
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const { id: roomId } = useParams();
 
   useEffect(() => {
     socket.on(
@@ -40,7 +41,7 @@ export const Chat = () => {
         user,
         roomId,
       });
-      setInputMessage('');
+      setInputMessage("");
     }
   };
 

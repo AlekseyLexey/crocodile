@@ -8,12 +8,17 @@ interface CreateGameModalProps {
   onCreate: (roomName: string) => void;
 }
 
-export const CreateGameModal = ({ isOpen, onClose, onCreate }: CreateGameModalProps) => {
+export const CreateGameModal = ({
+  isOpen,
+  onClose,
+  onCreate,
+}: CreateGameModalProps) => {
   const [roomName, setRoomName] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onCreate(roomName);
+    setRoomName("");
     onClose();
   };
 
@@ -25,7 +30,7 @@ export const CreateGameModal = ({ isOpen, onClose, onCreate }: CreateGameModalPr
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Название комнаты</h2>
         </div>
-        
+
         <form onSubmit={handleSubmit} className={styles.modalForm}>
           <input
             type="text"
@@ -35,7 +40,7 @@ export const CreateGameModal = ({ isOpen, onClose, onCreate }: CreateGameModalPr
             placeholder="Введите название комнаты"
             required
           />
-          
+
           <div className={styles.buttonsContainer}>
             <Button
               type="button"
