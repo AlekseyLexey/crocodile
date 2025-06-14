@@ -11,8 +11,72 @@
   height: 73px;
   background-color: $background-container;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .active {
   color: #ac8c00;
+}
+
+.menuContainer {
+  position: relative;
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+  }
+}
+
+.burgerButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 50px;
+  cursor: pointer;
+  padding-bottom: 10px;
+  z-index: 1001;
+}
+
+.modalMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 164px;
+  height: 217px;
+  position: fixed;
+  top: 73px;
+  left: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  overflow: hidden;
+  background: linear-gradient(90deg, #ff2c68, #387eff);
+}
+
+.menuItem {
+  color: white;
+  font-size: 15px;
+  width: 132px;
+  top: 18px;
+  left: 18px;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+  width: 100%;
+}
+
+.desktopButtons {
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }

@@ -31,16 +31,16 @@ services:
     container_name: postgres_db
     restart: always
     env_file:
-      - ./server/.env
+      - ./.env
     # дублируем ключ, чтобы точно применился даже при пустом .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: crocodile
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - dbdata:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT}:5432"
 
   client:
     build:
@@ -50,6 +50,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.rule=Host(`crocdraw.ru`) && PathPrefix(`/`)"
+      - "traefik.http.routers.client.entrypoints=websecure"
       - "traefik.http.routers.client.tls=true"
       - "traefik.http.services.client.loadbalancer.server.port=80"
     networks:
@@ -63,7 +64,9 @@ services:
     container_name: server
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.server.rule=Host(`crocdraw.ru`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.server.rule=Host(`crocdraw.ru`) && (PathPrefix(`/api`) || PathPrefix(`/socket.io`))"
+      - "traefik.http.routers.server.entrypoints=websecure"
+      - "traefik.http.routers.server.tls=true"
       - "traefik.http.services.server.loadbalancer.server.port=3000"
     networks:
       - web

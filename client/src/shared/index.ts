@@ -7,3 +7,4 @@ export { Button } from "./ui/Button/Button";
 export { Input } from "./ui/Input/Input";
 export { ColorsPanel } from "./ui/ColorsPanel/ColorsPanel";
 export type { IApiResponse } from "./types";
+export { ButtonNavigate } from "./ui/ButtonNavigate/ButtonNavigate"
