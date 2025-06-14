@@ -24,15 +24,14 @@ export const useCanvas = () => {
     if (!ctx) return;
 
     if (
-      canvas.width !== dimensions.width ||
-      canvas.height !== dimensions.height
-    ) {
-      canvas.width = dimensions.width;
-      canvas.height = dimensions.height;
-    }
-
-    ctx.fillStyle = "#FFF5F5";
+    canvas.width !== dimensions.width ||
+    canvas.height !== dimensions.height
+  ) {
+    canvas.width = dimensions.width;
+    canvas.height = dimensions.height;
+    ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
