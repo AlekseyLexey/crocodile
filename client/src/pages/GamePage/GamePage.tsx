@@ -9,7 +9,7 @@ import {
   useAppSelector,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-// import { Preparation } from "@/widgets"
+import { Preparation } from "@/widgets";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 
@@ -34,8 +34,6 @@ export const GamePage = () => {
       roomId,
     });
 
-    // socket.on("joinedRoom", () => setIsJoined(true));
-
     socket.on("room", ({ room }) => {
       dispatch(setRoom(room));
     });
@@ -44,8 +42,14 @@ export const GamePage = () => {
       console.log(message);
     });
 
+    //не вижу на серваке эмита такого
     socket.on("exit", (message) => {
       console.log(message);
+    });
+
+    socket.on("endGame", ({ room }) => {
+      alert("Игра окончена!!!");
+      dispatch(setRoom(room));
     });
 
     return () => {
@@ -53,6 +57,7 @@ export const GamePage = () => {
       socket.off("joinedRoom");
       socket.off("message");
       socket.off("exit");
+      socket.off("endGame");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -65,13 +70,7 @@ export const GamePage = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [room?.status]);
-
-  const handleStartGame = () => {
-    socket.emit("startGame", {
-      roomId,
-    });
-  };
+  }, [navigate, room?.status]);
 
   const handleEndGame = () => {
     socket.emit("endGame", {
@@ -80,7 +79,7 @@ export const GamePage = () => {
   };
 
   const handleExit = () => {
-    socket.emit("exit", {
+    socket.emit("exitRoom", {
       user,
       roomId,
     });
@@ -99,17 +98,7 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        {/* <Preparation /> */}
-        {isOwner && <ColorsPanel />}
-        {room && <WordPanel isOwner={isOwner} />}
-        <div className={styles.canvas}>
-          <CanvasComponent isOwner={isOwner} />
-        </div>
-        <div className={styles.timer}>00:30</div>
-        {isOwner && <Tools />}
-        {room?.status === "prepare" && room.owner_id === user!.id && (
-          <Button buttonText="Начать игру" onClick={handleStartGame} />
-        )}
+        {room?.status === "prepare" && <Preparation isOwner={isOwner} />}
         {room?.status === "active" && (
           <>
             {isOwner && <ColorsPanel />}
@@ -119,12 +108,12 @@ export const GamePage = () => {
             </div>
             <div className={styles.timer}>00:30</div>
             {isOwner && <Tools />}
+            {isOwner && (
+              <Button buttonText="Завершить игру" onClick={handleEndGame} />
+            )}
           </>
         )}
         {room?.status === "end" && <h2>ИГРА ЗАКОНЧЕННА</h2>}
-        {isOwner && room?.status === "active" && (
-          <Button buttonText="Завершить игру" onClick={handleEndGame} />
-        )}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>

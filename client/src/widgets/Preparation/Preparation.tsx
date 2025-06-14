@@ -1,26 +1,38 @@
-import { Button, CLIENT_ROUTES } from "@/shared";
-import { useNavigate } from "react-router-dom";
+import { Button } from "@/shared";
 import styles from "./Preparation.module.scss";
+import { useSocket } from "@/app/store/hooks/useSocket";
 
-export const Preparation = () => {
-  const navigate = useNavigate();
+// const roomId = new Date().getMilliseconds();
+const roomId = 1;
+
+interface IPreparationProps {
+  isOwner: boolean;
+}
+
+export const Preparation: React.FC<IPreparationProps> = ({ isOwner }) => {
+  const { socket } = useSocket();
 
   const handleStartGame = () => {
-    navigate(CLIENT_ROUTES.GAME);
+    socket.emit("startGame", {
+      roomId,
+    });
   };
 
   return (
     <div className={styles.preparation}>
       <h1 className={styles.title}>Приготовьтесь к игре!</h1>
-      <p className={styles.description}>
-        Когда будете готовы, нажмите кнопку ниже
-      </p>
-
-      <Button
-        onClick={handleStartGame}
-        buttonText="Начать игру"
-        className={styles.startButton}
-      />
+      {isOwner && (
+        <>
+          <p className={styles.description}>
+            Когда будете готовы, нажмите кнопку ниже
+          </p>
+          <Button
+            onClick={handleStartGame}
+            buttonText="Начать игру"
+            className={styles.startButton}
+          />
+        </>
+      )}
     </div>
   );
 };
