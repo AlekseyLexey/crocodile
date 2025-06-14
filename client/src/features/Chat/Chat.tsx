@@ -1,7 +1,7 @@
 import styles from "@/pages/GamePage/GamePage.module.scss";
 import vectorIcon from "@/assets/svg/Vector.svg";
 import { useAppSelector, SOCKET_CHAT_ROUTES } from "@/shared";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { IUser } from "@/entities/user";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { ChatMessage } from "../../shared/ui/ChatMessage/ChatMessage";
@@ -18,7 +18,11 @@ export const Chat = () => {
   const { socket } = useSocket();
   const { user } = useAppSelector((state) => state.user);
   const [inputMessage, setInputMessage] = useState<string>("");
-  const { id: roomId } = useParams();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
 
   useEffect(() => {
     socket.on(

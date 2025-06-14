@@ -6,11 +6,16 @@ import { useCanvas } from "@/shared/hooks/useCanvas";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { SOCKET_DRAW_ROUTES } from "@/shared";
 import { useParams } from "react-router-dom";
+import { useMemo } from "react";
 
 export const Tools = () => {
   const { activeTool, changeTool, handleClearCanvas } = useCanvas();
   const { socket } = useSocket();
-  const { id: roomId } = useParams();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
 
   const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
     changeTool(tool);

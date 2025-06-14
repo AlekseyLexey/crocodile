@@ -6,7 +6,7 @@ const roomWords = new Map();
 async function initWordsForRoom(themeId, roomId) {
   const words = await getWordsByTheme(themeId);
 
-  roomWords.set(Number(roomId), {
+  roomWords.set(roomId, {
     allWords: words,
     unUsedWords: [...words],
     usedWords: [],
@@ -15,17 +15,17 @@ async function initWordsForRoom(themeId, roomId) {
 }
 
 function clearRoomWords(roomId) {
-  roomWords.delete(Number(roomId));
+  roomWords.delete(roomId);
 }
 
 function getCurrentWord(roomId) {
-  const state = roomWords.get(Number(roomId));
+  const state = roomWords.get(roomId);
 
   return state?.currentWord || null;
 }
 
 function getRandomWordForRoom(roomId) {
-  return getRandomWord(Number(roomId), roomWords);
+  return getRandomWord(roomId, roomWords);
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
@@ -18,7 +18,11 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     saveCanvasState,
     handleClearCanvas,
   } = useCanvas();
-  const { id: roomId } = useParams();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
 
   const { floodFill } = useFloodFill();
 

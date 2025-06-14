@@ -1,7 +1,7 @@
 import styles from "./WordPanel.module.scss";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { SOCKET_WORD_ROUTES } from "@/shared";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { setRoom } from "@/entities/room";
 import { useParams } from "react-router-dom";
 
@@ -9,12 +9,19 @@ export const WordPanel = ({ isOwner }: { isOwner: boolean }) => {
   const { socket } = useSocket();
   const [word, setWord] = useState<string>();
   const [isCorrectWord, setIsCorrectWord] = useState<boolean>(false);
-  const { id: roomId } = useParams();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
 
   useEffect(() => {
     //тестово пока тема всегда 1, потом это событие по факту лучше в создание румы?
     //эту шляпу нужно переместить на кнопку создания комнаты, пока тут для теста - обновляет слово, что нам не нужно!!!
-    socket.emit(SOCKET_WORD_ROUTES.CHOOSE_THEME, { roomId, themeId: 1 });
+    socket.emit(SOCKET_WORD_ROUTES.CHOOSE_THEME, {
+      roomId,
+      themeId: 1,
+    });
 
     socket.on(SOCKET_WORD_ROUTES.NEW_WORD, (randomWord) => {
       setWord(randomWord);

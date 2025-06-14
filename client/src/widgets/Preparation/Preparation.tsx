@@ -3,6 +3,7 @@ import styles from "./Preparation.module.scss";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useParams } from "react-router-dom";
 import { SOCKET_STATUS_ROUTES } from "@/shared";
+import { useMemo } from "react";
 
 interface IPreparationProps {
   isOwner: boolean;
@@ -10,7 +11,11 @@ interface IPreparationProps {
 
 export const Preparation: React.FC<IPreparationProps> = ({ isOwner }) => {
   const { socket } = useSocket();
-  const { id: roomId } = useParams();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
 
   const handleStartGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.START, {

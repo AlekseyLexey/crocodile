@@ -15,9 +15,19 @@ export const CreateGameModal = ({
 }: CreateGameModalProps) => {
   const [roomName, setRoomName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // const resCreate = await onCreate(roomName);
+    // const roomId = resCreate.payload?.data?.id;
+    // const themeId = 1;
+
+    // await $api.post("/theme-room", { roomId, themeId });
+    // socket.emit(SOCKET_WORD_ROUTES.CHOOSE_THEME, {
+    //   roomId,
+    //   themeId,
+    // });
     onCreate(roomName);
+
     setRoomName("");
     onClose();
   };
