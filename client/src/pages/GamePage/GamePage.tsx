@@ -1,16 +1,16 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "./GamePage.module.scss";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from './GamePage.module.scss';
 import {
   Button,
   ColorsPanel,
   CLIENT_ROUTES,
   useAppDispatch,
   useAppSelector,
-} from "@/shared";
-import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { useSocket } from "@/app/store/hooks/useSocket";
-import { setRoom } from "@/entities/room";
+} from '@/shared';
+import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
+import { useSocket } from '@/app/store/hooks/useSocket';
+import { setRoom } from '@/entities/room';
 
 // const roomId = new Date().getMilliseconds();
 const roomId = 1;
@@ -24,36 +24,41 @@ export const GamePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    socket.emit("joinRoom", {
+    socket.emit('joinRoom', {
       user,
       roomId,
     });
 
-    // socket.on("joinedRoom", () => setIsJoined(true));
-
-    socket.on("room", ({ room }) => {
+    socket.on('room', ({ room }) => {
       dispatch(setRoom(room));
     });
 
-    socket.on("message", (message) => {
+    socket.on('message', (message) => {
       console.log(message);
     });
 
-    socket.on("exit", (message) => {
+    //не вижу на серваке эмита такого
+    socket.on('exit', (message) => {
       console.log(message);
+    });
+
+    socket.on('endGame', ({ room }) => {
+      alert('Игра окончена!!!');
+      dispatch(setRoom(room));
     });
 
     return () => {
-      socket.off("room");
-      socket.off("joinedRoom");
-      socket.off("message");
-      socket.off("exit");
+      socket.off('room');
+      socket.off('joinedRoom');
+      socket.off('message');
+      socket.off('exit');
+      socket.off('endGame');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleExit = () => {
-    socket.emit("exit", {
+    socket.emit('exitRoom', {
       user,
       roomId,
     });
