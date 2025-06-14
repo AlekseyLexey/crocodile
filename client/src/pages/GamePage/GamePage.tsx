@@ -9,7 +9,7 @@ import {
   useAppSelector,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { Preparation } from "@/widgets";
+import { Finish, Preparation } from "@/widgets";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
@@ -113,7 +113,7 @@ export const GamePage = () => {
             )}
           </>
         )}
-        {room?.status === "end" && <h2>ИГРА ЗАКОНЧЕННА</h2>}
+        {room?.status === "end" && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>

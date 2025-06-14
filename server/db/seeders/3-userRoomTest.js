@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      'UserRooms',
+      "UserRooms",
       [
         {
           user_id: 1,
@@ -27,6 +27,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('UserRooms', null, {});
+    await queryInterface.bulkDelete("UserRooms", null, {});
   },
 };
