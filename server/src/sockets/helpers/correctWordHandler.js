@@ -1,5 +1,5 @@
-const UserRoomService = require("../../services/userRoomService");
-const RoomService = require('../../services/roomService')
+const UserRoomService = require('../../services/userRoomService');
+const RoomService = require('../../services/roomService');
 
 async function correctWordHandler(io, socket, roomId, message) {
   const quessUser = await UserRoomService.findUserRoomByIds(
@@ -12,11 +12,11 @@ async function correctWordHandler(io, socket, roomId, message) {
     point: quessUser.point + 1,
   });
   const room = await RoomService.findRoomById(roomId);
-  io.to(roomId).emit("correctWord", { user: socket.user.username, message });
+  io.to(roomId).emit('correctWord', { user: socket.user.username, message });
   io.to(roomId).emit('room', {
-      room,
-    });
-  io.to(roomId).emit("clear", {
+    room,
+  });
+  io.to(roomId).emit('clear', {
     figure: {},
   });
 }

@@ -40,14 +40,14 @@ export const GamePage = () => {
       dispatch(setRoom(room));
     });
 
-    socket.on("message", (message) => {
+    socket.on("message", (message: string) => {
       console.log(message);
     });
 
     //не вижу на серваке эмита такого
-    socket.on("exit", (message) => {
-      console.log(message);
-    });
+    // socket.on("exit", (message) => {
+    //   console.log(message);
+    // });
 
     socket.on(SOCKET_STATUS_ROUTES.END, ({ room }) => {
       dispatch(setRoom(room));
@@ -57,7 +57,6 @@ export const GamePage = () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
       socket.off("message");
-      socket.off("exit");
       socket.off(SOCKET_STATUS_ROUTES.END);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
