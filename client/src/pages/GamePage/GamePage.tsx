@@ -13,6 +13,7 @@ import { Finish, Preparation } from "@/widgets";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
+import { setColor } from "@/entities/canvas/slice/canvasSlice";
 
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
@@ -34,6 +35,10 @@ export const GamePage = () => {
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
       user,
       roomId,
+    });
+
+    socket.on("color", ({ color }) => {
+      dispatch(setColor(color));
     });
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
@@ -58,6 +63,7 @@ export const GamePage = () => {
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
       socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
+      socket.off("color");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
