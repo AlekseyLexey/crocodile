@@ -70,7 +70,7 @@ export const Header = () => {
               {isMenuOpen && (
                 <div className={styles.modalMenu}>
                   <Link
-                    to={CLIENT_ROUTES.LOBBY_LIST}
+                    to={CLIENT_ROUTES.SHOP}
                     className={styles.menuItem}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -98,7 +98,7 @@ export const Header = () => {
             <div className={styles.desktopButtons}>
               <ButtonNavigate
                 buttonText="Магазин"
-                onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
+                onClick={() => navigate(CLIENT_ROUTES.SHOP)}
               />
               <ButtonNavigate
                 buttonText="Список Лобби"
