@@ -7,7 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       theme_id: {
         type: Sequelize.INTEGER,
@@ -15,8 +15,9 @@ module.exports = {
           model: 'Themes',
           key: 'id',
         },
-        onDelete: 'CASCADE',
-        allowNull: false
+        onDelete: 'SET NULL',
+        allowNull: true,
+        onUpdate: 'CASCADE',
       },
       room_id: {
         type: Sequelize.INTEGER,
@@ -25,21 +26,22 @@ module.exports = {
           key: 'id',
         },
         onDelete: 'CASCADE',
-        allowNull: false
+        allowNull: false,
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
-      }
+        defaultValue: Sequelize.fn('now'),
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('ThemeRooms');
-  }
+  },
 };

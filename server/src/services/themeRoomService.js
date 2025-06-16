@@ -17,6 +17,14 @@ class ThemeRoomService {
       });
     }
   }
+
+  static async getThemeIdByRoomId(roomId) {
+    const themeRoom = await ThemeRoom.findOne({
+      where: { room_id: roomId },
+    });
+
+    return themeRoom?.theme_id ?? null;
+  }
 }
 
 module.exports = ThemeRoomService;

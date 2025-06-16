@@ -1,18 +1,18 @@
-import { useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import styles from "./GamePage.module.scss";
+import { useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import styles from './GamePage.module.scss';
 import {
   Button,
   ColorsPanel,
   CLIENT_ROUTES,
   useAppDispatch,
   useAppSelector,
-} from "@/shared";
-import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { Finish, Preparation } from "@/widgets";
-import { useSocket } from "@/app/store/hooks/useSocket";
-import { setRoom } from "@/entities/room";
-import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
+} from '@/shared';
+import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
+import { Finish, Preparation } from '@/widgets';
+import { useSocket } from '@/app/store/hooks/useSocket';
+import { setRoom } from '@/entities/room';
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from '@/shared';
 
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
@@ -40,14 +40,9 @@ export const GamePage = () => {
       dispatch(setRoom(room));
     });
 
-    socket.on("message", (message: string) => {
+    socket.on('message', (message: string) => {
       console.log(message);
     });
-
-    //не вижу на серваке эмита такого
-    // socket.on("exit", (message) => {
-    //   console.log(message);
-    // });
 
     socket.on(SOCKET_STATUS_ROUTES.END, ({ room }) => {
       dispatch(setRoom(room));
@@ -56,14 +51,14 @@ export const GamePage = () => {
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
-      socket.off("message");
+      socket.off('message');
       socket.off(SOCKET_STATUS_ROUTES.END);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (room?.status === "end") {
+    if (room?.status === 'end') {
       const timer = setTimeout(() => {
         navigate(CLIENT_ROUTES.LOBBY_LIST);
       }, 5000);
@@ -98,8 +93,8 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        {room?.status === "prepare" && <Preparation isOwner={isOwner} />}
-        {room?.status === "active" && (
+        {room?.status === 'prepare' && <Preparation isOwner={isOwner} />}
+        {room?.status === 'active' && (
           <>
             {isOwner && <ColorsPanel />}
             {room && <WordPanel isOwner={isOwner} />}
@@ -113,7 +108,7 @@ export const GamePage = () => {
             )}
           </>
         )}
-        {room?.status === "end" && <Finish />}
+        {room?.status === 'end' && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>
