@@ -4,18 +4,38 @@
   align-items: center;
 }
 
+//для всех текстов
 @mixin text-style-bold {
   font-family: "Shantell Sans", cursive;
   font-optical-sizing: auto;
   font-size: 15px;
   font-weight: 800;
   letter-spacing: 12%;
+  color: #2B640B;
 }
 
+//для текста внутри сайдбара
 @mixin text-style-semibold {
   font-family: "Shantell Sans", cursive;
   font-optical-sizing: auto;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0%;
+  color: #2B640B;
+}
+
+//для маленьких кнопок
+@mixin button {
+  width: 109px;
+  height: 41px;
+  background-color: #71A47350;
+  stroke: #3B673D50;
+}
+
+//для больших кнопок
+@mixin big-button {
+  width: 250px;
+  height: 50px;
+  background-color: #71A47350;
+  stroke: #3B673D50;
 }
