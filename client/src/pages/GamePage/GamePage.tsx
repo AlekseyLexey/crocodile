@@ -11,7 +11,7 @@ import {
   ROOM_STATUSES,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { Finish, Preparation } from "@/widgets";
+import { ChangeOfRound, Finish, Preparation } from "@/widgets";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { setRoom } from "@/entities/room";
 import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
@@ -80,6 +80,12 @@ export const GamePage = () => {
     }
   }, [navigate, room?.status]);
 
+  const handleChangeGame = () => {
+    socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
+      roomId,
+    });
+  };
+
   const handleEndGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.END, {
       roomId,
@@ -121,8 +127,12 @@ export const GamePage = () => {
             {isOwner && (
               <Button buttonText="Завершить игру" onClick={handleEndGame} />
             )}
+            {isOwner && (
+              <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
+            )}
           </>
         )}
+        {room?.status === ROOM_STATUSES.PAUSE && <ChangeOfRound />}
         {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
