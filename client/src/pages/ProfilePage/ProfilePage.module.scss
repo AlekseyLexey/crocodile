@@ -1,24 +1,65 @@
+
 .profile {
   margin: 42px 164px 130px 164px;
   display: grid;
-  grid-template-columns: repeat(2, 250px);
+  grid-template-columns: 1fr 1fr;
+  background-color: $background-container;
+  border-radius: 12px;
 }
 
-.section {
-    display: inline-grid
+.section1 {
+    display: grid;
+    grid-template-rows: 150px 1fr;
+    width: 440px;
+    height: 490px;
+    place-items: center;
 }
+
+.section2 {
+    display: grid;
+    place-items: center;
+    grid-template-rows: 77px 1fr;
+}
+
+
 .profileHeader {}
 
-.avatarContainer {}
+.password {
+    place-items: center;
+    
+}
 
-.username {}
+.avatarContainer {
+
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background-color: #2B640B;
+}
+
+.username {
+}
 
 
 
-.sectionTitle{}
+.sectionTitle{
+    @include text-style-bold;
+    
+}
 
 .input {}
 
-.submitButton {}
 
-.gamesHistory {}
+.submitButton {
+    width: 200px;
+    height: 41px;
+
+}
+
+.gamesHistory {
+    
+}
+
+.results {
+
+} 
