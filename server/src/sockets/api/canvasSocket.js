@@ -1,18 +1,30 @@
+const CANVAS_ROUTES = {
+  DRAW: "draw",
+  FILL: "fill",
+  FINISH: "finish",
+  CLEAR: "clear",
+};
+
 module.exports.canvasSocket = (io, socket) => {
-  socket.on("draw", async ({ roomId, action, figure }) => {
+  socket.on(CANVAS_ROUTES.DRAW, async ({ roomId, action, figure }) => {
     switch (action) {
-      case "draw":
-        io.to(roomId).emit("draw", {
+      case CANVAS_ROUTES.DRAW:
+        io.to(roomId).emit(CANVAS_ROUTES.DRAW, {
           figure,
         });
         break;
-      case "finish":
-        io.to(roomId).emit("finish", {
+      case CANVAS_ROUTES.FILL:
+        io.to(roomId).emit(CANVAS_ROUTES.FILL, {
           figure,
         });
         break;
-      case "clear":
-        io.to(roomId).emit("clear", {
+      case CANVAS_ROUTES.FINISH:
+        io.to(roomId).emit(CANVAS_ROUTES.FINISH, {
+          figure,
+        });
+        break;
+      case CANVAS_ROUTES.CLEAR:
+        io.to(roomId).emit(CANVAS_ROUTES.CLEAR, {
           figure,
         });
         break;

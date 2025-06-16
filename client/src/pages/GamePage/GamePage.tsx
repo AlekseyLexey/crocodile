@@ -7,6 +7,8 @@ import {
   CLIENT_ROUTES,
   useAppDispatch,
   useAppSelector,
+  SOCKET_DRAW_ROUTES,
+  ROOM_STATUSES,
 } from "@/shared";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
 import { Finish, Preparation } from "@/widgets";
@@ -37,7 +39,7 @@ export const GamePage = () => {
       roomId,
     });
 
-    socket.on("color", ({ color }) => {
+    socket.on(SOCKET_DRAW_ROUTES.COLOR, ({ color }) => {
       dispatch(setColor(color));
     });
 
@@ -63,13 +65,13 @@ export const GamePage = () => {
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
       socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
-      socket.off("color");
+      socket.off(SOCKET_DRAW_ROUTES.COLOR);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (room?.status === "end") {
+    if (room?.status === ROOM_STATUSES.END) {
       const timer = setTimeout(() => {
         navigate(CLIENT_ROUTES.LOBBY_LIST);
       }, 5000);
@@ -104,8 +106,10 @@ export const GamePage = () => {
           buttonText="Выйти из игры"
           className={styles.exitButton}
         />
-        {room?.status === "prepare" && <Preparation isOwner={isOwner} />}
-        {room?.status === "active" && (
+        {room?.status === ROOM_STATUSES.PREPARE && (
+          <Preparation isOwner={isOwner} />
+        )}
+        {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
             {isOwner && <ColorsPanel />}
             {room && <WordPanel isOwner={isOwner} />}
@@ -119,7 +123,7 @@ export const GamePage = () => {
             )}
           </>
         )}
-        {room?.status === "end" && <Finish />}
+        {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
             <div key={user.id} className={styles.userCard}>

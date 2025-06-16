@@ -11,8 +11,11 @@ export enum CLIENT_ROUTES {
 
 export enum SOCKET_DRAW_ROUTES {
   DRAW = "draw",
+  PENCIL = "pencil",
+  FILL = "fill",
   FINISH = "finish",
   CLEAR = "clear",
+  COLOR = "color",
 }
 
 export enum SOCKET_ROOM_ROUTES {
