@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { userReducer } from "@/entities/user";
-import {canvasReducer} from "@/entities/canvas/slice/canvasSlice";
-import { lobbyReducer } from '@/features/lobby/slice/lobbySlice';
+import { canvasReducer } from "@/entities/canvas/slice/canvasSlice";
+import { roomReducer } from "@/entities/room";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
     canvas: canvasReducer,
-    lobby: lobbyReducer,
+    room: roomReducer,
   },
 });
 

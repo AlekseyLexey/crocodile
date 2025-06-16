@@ -18,17 +18,17 @@
   grid-template-rows: 27px 426px 83px;
   gap: 16px;
   grid-template-areas:
-    "colors word timer chat"
-    "colors canvas tools chat"
-    "sidebar sidebar sidebar chat"; 
+    'colors word timer chat'
+    'colors canvas tools chat'
+    'sidebar sidebar sidebar chat';
   box-sizing: border-box;
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 
 .exitButton {
   position: absolute;
-  top: 16px; 
-  left: calc(50% - 476px - 109px - 20px); 
+  top: 16px;
+  left: calc(50% - 476px - 109px - 20px);
   width: 109px;
   height: 41px;
   transform: translateX(-100%);
@@ -40,18 +40,18 @@
   width: 100px;
   height: 470px;
   border-radius: $br;
-  background-color: #FFEFEF28;
+  background-color: #ffefef28;
   display: flex;
   flex-direction: column;
-  padding-top: 38px; 
-  padding-bottom: 39px; 
+  padding-top: 38px;
+  padding-bottom: 39px;
 }
 
 .colorRow {
   display: flex;
   justify-content: center;
-  margin-bottom: 52px; 
-  
+  margin-bottom: 52px;
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -70,28 +70,18 @@
   cursor: pointer;
   flex-shrink: 0;
   box-shadow: inset 0 5px 3px -3px rgba(0, 0, 0, 0.5);
-  
-  
+
   &.selected {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
   }
 }
 
-.gameArea {
-  grid-area: word;
-  width: 464px;
-  height: 27px;
-  border-radius: $br;
-  border: 3px solid rgba(0, 0, 0, 0.2);
-  @include text-style-bold;
-}
-
 .canvas {
   grid-area: canvas;
   width: 464px;
   height: 426px;
-  background-color: #FFF5F5;
+  background-color: #fff5f5;
   border-radius: $br;
   top: 0px;
 }
@@ -104,15 +94,56 @@
   margin-right: 10px;
   color: $color;
   @include text-style-bold;
+  @include flex-center;
 }
 
 .sidebar {
   grid-area: sidebar;
-  width: 661px; 
+  width: 661px;
   height: 83px;
   background-color: $background-mini;
+  color: $color;
   border-radius: $br;
   @include text-style-semibold;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  align-items: center;
+}
+
+.userCard {
+  width: 72px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4px;
+  box-sizing: border-box;
+
+  .userAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-bottom: 4px;
+    background-color: #ccc;
+  }
+
+  .userName {
+    font-size: 10px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .userScore {
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 2px;
+  }
 }
 
 .chat {
@@ -123,4 +154,96 @@
   border-radius: $br;
   margin-right: 16px;
   @include text-style-bold;
+  display: flex;
+  flex-direction: column;
+}
+
+.messagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @include text-style-bold;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+}
+
+.roomName {
+  background-color: #fff5f5;
+  width: 100%;
+  height: 35px;
+  border-radius: 12px 12px 0 0;
+  @include flex-center;
+  @include text-style-bold;
+  position: relative;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+  height: 74px;
+  box-sizing: border-box;
+  background-color: $white;
+  border-radius: 0 0 12px 12px;
+  flex-shrink: 0;
+  box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.chatInput {
+  position: absolute;
+  right: 40px;
+  height: 74px;
+  width: 204px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  @include text-style-semibold;
+  background-color: $white;
+  border-radius: 8px;
+
+  &:focus {
+    outline: none;
+    border-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.sendButton {
+  position: absolute;
+  right: 12px;
+  top: 16px;
+  width: 25px;
+  height: 21px;
+  cursor: pointer;
+  @include flex-center;
+  background: none;
+  border: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  .toolIcon {
+    width: 100%;
+    height: 100%;
+  }
 }

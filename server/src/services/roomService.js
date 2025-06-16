@@ -19,7 +19,7 @@ class RoomService {
   }
 
   static async findRoomById(roomId) {
-    return await Room.findByPk(roomId, {
+    const room = await Room.findByPk(roomId, {
       attributes: ['id', 'pictures', 'status', 'name', 'owner_id'],
       include: [
         {
@@ -32,12 +32,13 @@ class RoomService {
         },
       ],
     });
+    return room.get({ plain: true });
   }
 
   static async createNewRoom(roomData) {
     const newRoom = await Room.create({
       pictures: roomData.pictures,
-      status: roomData.status,
+      status: "prepare",
       name: roomData.name,
       owner_id: roomData.userId,
     });

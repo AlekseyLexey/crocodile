@@ -1,6 +1,8 @@
+import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 import { useCallback } from "react";
 
-export const useFloodFill = (canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
+export const useFloodFill = () => {
+  const { canvasRef } = useCanvasContext();
   const floodFill = useCallback(
     (x: number, y: number, fillColor: string) => {
       if (!canvasRef.current) return;

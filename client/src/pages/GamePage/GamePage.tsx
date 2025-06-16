@@ -1,80 +1,129 @@
-import { Button } from "@/shared/ui/Button/Button";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./GamePage.module.scss";
-import { useRef } from "react";
-import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
-import { CanvasComponent } from "@/shared/ui/Canvas/Canvas";
 import {
-  selectCanvas,
-  setColor,
-  setTool,
-  clearCanvas,
-} from "@/entities/canvas/slice/canvasSlice";
-import { Tools } from "@/shared/ui/Tools/Tools";
+  Button,
+  ColorsPanel,
+  CLIENT_ROUTES,
+  useAppDispatch,
+  useAppSelector,
+} from "@/shared";
+import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+import { Finish, Preparation } from "@/widgets";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { setRoom } from "@/entities/room";
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
 
 export const GamePage = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { room } = useAppSelector((state) => state.room);
+  const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
+
+  if (!user) {
+    navigate(CLIENT_ROUTES.SIGN_IN);
+  }
   const dispatch = useAppDispatch();
-  const { currentColor, activeTool, dimensions } = useAppSelector(selectCanvas);
+  const { socket } = useSocket();
 
-  const colorPairs = [
-    ["#FF0000", "#FF6200"],
-    ["#0EA700", "#FFD900"],
-    ["#FF007B", "#B700FF"],
-    ["#0004FF", "#00D9FF"],
-    ["#613528", "#000000"],
-  ];
+  useEffect(() => {
+    socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
+      user,
+      roomId,
+    });
 
-  const handleClear = () => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
+    socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
+      dispatch(setRoom(room));
+    });
 
-    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
-    ctx.fillStyle = "#FFF5F5";
-    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-    dispatch(clearCanvas());
-    dispatch(setTool("pencil"));
-  };
+    socket.on("message", (message: string) => {
+      console.log(message);
+    });
 
-  const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
-    dispatch(setTool(tool));
-    if (tool === "clear") {
-      handleClear();
+    //не вижу на серваке эмита такого
+    // socket.on("exit", (message) => {
+    //   console.log(message);
+    // });
+
+    socket.on(SOCKET_STATUS_ROUTES.END, ({ room }) => {
+      dispatch(setRoom(room));
+    });
+
+    return () => {
+      socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
+      socket.off(SOCKET_ROOM_ROUTES.ROOM);
+      socket.off("message");
+      socket.off(SOCKET_STATUS_ROUTES.END);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (room?.status === "end") {
+      const timer = setTimeout(() => {
+        navigate(CLIENT_ROUTES.LOBBY_LIST);
+      }, 5000);
+
+      return () => clearTimeout(timer);
     }
+  }, [navigate, room?.status]);
+
+  const handleEndGame = () => {
+    socket.emit(SOCKET_STATUS_ROUTES.END, {
+      roomId,
+    });
   };
+
+  const handleExit = () => {
+    socket.emit(SOCKET_ROOM_ROUTES.EXIT_ROOM, {
+      user,
+      roomId,
+    });
+
+    dispatch(setRoom(null));
+    navigate(CLIENT_ROUTES.MAIN);
+  };
+
+  const isOwner = user?.id === room?.owner_id;
 
   return (
     <div className={styles.game}>
       <div className={styles.container}>
-        <Button buttonText="Выйти из игры" className={styles.exitButton} />
-
-        <div className={styles.colorsPanel}>
-          {colorPairs.map((pair, index) => (
-            <div key={index} className={styles.colorRow}>
-              <div className={styles.colorPair}>
-                {pair.map((color) => (
-                  <div
-                    key={color}
-                    className={`${styles.color} ${
-                      currentColor === color ? styles.selected : ""
-                    }`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => dispatch(setColor(color))}
-                  />
-                ))}
-              </div>
+        <Button
+          onClick={handleExit}
+          buttonText="Выйти из игры"
+          className={styles.exitButton}
+        />
+        {room?.status === "prepare" && <Preparation isOwner={isOwner} />}
+        {room?.status === "active" && (
+          <>
+            {isOwner && <ColorsPanel />}
+            {room && <WordPanel isOwner={isOwner} />}
+            <div className={styles.canvas}>
+              <CanvasComponent isOwner={isOwner} />
+            </div>
+            <div className={styles.timer}>00:30</div>
+            {isOwner && <Tools />}
+            {isOwner && (
+              <Button buttonText="Завершить игру" onClick={handleEndGame} />
+            )}
+          </>
+        )}
+        {room?.status === "end" && <Finish />}
+        <div className={styles.sidebar}>
+          {room?.roomUsers.map((user) => (
+            <div key={user.id} className={styles.userCard}>
+              <div className={styles.userAvatar} />
+              <div className={styles.userName}>{user.username}</div>
+              <div className={styles.userScore}>{user.UserRoom.point}</div>
             </div>
           ))}
         </div>
-
-        <div className={styles.gameArea}></div>
-        <div className={styles.canvas}>
-          <CanvasComponent canvasRef={canvasRef} />
-        </div>
-        <div className={styles.timer}>00:30</div>
-        <Tools activeTool={activeTool} handleToolChange={handleToolChange} />
-        <div className={styles.sidebar}></div>
-        <div className={styles.chat}></div>
+        {room && <Chat />}
       </div>
     </div>
   );

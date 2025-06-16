@@ -35,8 +35,8 @@ $api.interceptors.response.use(
     const prevReq: InternalAxiosRequestConfig | undefined = error.config;
     if (error.response!.status == 401) {
       try {
-        const res = await $api.get("/refresh");
-        localStorage.setItem("token", res.data.accessToken);
+        const { data } = await $api.get("/refresh");
+        localStorage.setItem("token", data.data.accessToken);
         return $api.request(prevReq!);
       } catch (error) {
         return Promise.reject(error);

@@ -1,3 +1,5 @@
+import { LobbyList } from "@/widgets";
+
 export const MainPage = () => {
-  return <div>MainPage</div>;
+  return <LobbyList />;
 };

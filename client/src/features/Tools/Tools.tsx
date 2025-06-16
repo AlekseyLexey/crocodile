@@ -2,15 +2,33 @@ import styles from "./Tools.module.scss";
 import pencilIcon from "@/assets/svg/карандаш.svg";
 import fillIcon from "@/assets/svg/заливка.svg";
 import clearIcon from "@/assets/svg/удалить все.svg";
+import { useCanvas } from "@/shared/hooks/useCanvas";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { SOCKET_DRAW_ROUTES } from "@/shared";
+import { useParams } from "react-router-dom";
+import { useMemo } from "react";
 
-type ToolType = "pencil" | "fill" | "clear";
+export const Tools = () => {
+  const { activeTool, changeTool, handleClearCanvas } = useCanvas();
+  const { socket } = useSocket();
+  const { id } = useParams();
 
-interface ToolsProps {
-  activeTool: ToolType;
-  handleToolChange: (tool: ToolType) => void;
-}
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
 
-export const Tools = ({ activeTool, handleToolChange }: ToolsProps) => {
+  const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
+    changeTool(tool);
+    if (tool === "clear") {
+      socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
+        roomId,
+        action: SOCKET_DRAW_ROUTES.CLEAR,
+        figure: {},
+      });
+      handleClearCanvas();
+    }
+  };
+
   return (
     <div className={styles.tools}>
       <button
