@@ -4,6 +4,7 @@ import { CLIENT_ROUTES } from "@/shared";
 import { Layout } from "../layout/Layout";
 import { GamePage } from "@/pages/GamePage/GamePage";
 import { LobbyList } from "@/widgets";
+import { ShopPage } from "@/pages/ShopPage/ShopPage";
 
 const Router = () => {
   return (
@@ -15,6 +16,7 @@ const Router = () => {
           <Route path={CLIENT_ROUTES.SIGN_IN} element={<SignInPage />} />
           <Route path={CLIENT_ROUTES.SIGN_UP} element={<SignUpPage />} />
           <Route path={CLIENT_ROUTES.LOBBY_LIST} element={<LobbyList />} />
+          <Route path={CLIENT_ROUTES.SHOP} element={<ShopPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
