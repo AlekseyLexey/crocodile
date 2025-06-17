@@ -1,6 +1,7 @@
 .shopPage {
     padding-top: 40px;
     background-color: $background-main;
+    width: 100%;
 }
 
 .title {
@@ -13,10 +14,13 @@
 
 .productsGrid {
     display: grid;
-    grid-template-columns: repeat(6, 140px);
-    gap: 62px 80px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 80px 62px; /* Вертикальный отступ 80px, горизонтальный 62px */
     padding: 0 20px;
-    justify-content: center;
+    justify-items: center; /* Центрируем карточки внутри ячеек сетки */
+    width: 100%;
+    max-width: 1200px; /* Опционально: ограничение макс. ширины */
+    margin: 0 auto; /* Центрируем сетку на странице */
 }
 
 .productCard {
@@ -37,7 +41,6 @@
     position: relative;
 }
 
-/* Название товара - СВЕРХУ картинки */
 .productName {
     @include text-style-semibold;
     position: absolute;
@@ -52,11 +55,10 @@
     z-index: 2;
 }
 
-/* Цена - ВНИЗУ картинки */
 .productPrice {
     @include text-style-bold;
     position: absolute;
-    bottom: 30px; // Оставляем место для кнопки
+    bottom: 30px;
     left: 0;
     right: 0;
     font-size: 16px;
@@ -67,7 +69,6 @@
     z-index: 2;
 }
 
-/* Кнопка "Купить" - ВНИЗУ карточки */
 .buyButton {
     position: absolute;
     bottom: 8px;
