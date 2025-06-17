@@ -13,19 +13,19 @@ module.exports = {
       [
         {
           username: "Cooper",
-          email: "Cooper@test.com",
+          email: "Cooper@gmail.com",
           password: await hashPassword("123qwe"),
           point: 0,
         },
         {
           username: "John",
-          email: "John@test.com",
+          email: "John@gmail.com",
           password: await hashPassword("123qwe"),
           point: 0,
         },
         {
           username: "Snow",
-          email: "Snow@test.com",
+          email: "Snow@gmail.com",
           password: await hashPassword("123qwe"),
           point: 0,
         },

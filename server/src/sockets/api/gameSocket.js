@@ -2,6 +2,7 @@ const RoomService = require('../../services/roomService');
 const updateRoomsWithUserProfilePoints = require('../helpers/updateRoomsWithUserProfilePoints');
 const { sendRoom } = require('../helpers/sendRoom');
 const nextLeadHandler = require('../helpers/nextLeadHandler');
+const { initTimerForRoom } = require("../helpers/timerStore");
 
 const GAME_ROUTES = {
   START: 'startGame',
@@ -22,8 +23,10 @@ module.exports.gameSocket = (io, socket) => {
       status: ROOM_STATUS.ACTIVE,
     });
 
+    initTimerForRoom(io, roomId, ROOM_STATUS.ACTIVE);
+
     sendRoom(io, roomId, room);
-    io.to(roomId).emit('message', `Игра Началась!`);
+    io.to(roomId).emit('message', `Раунд начался!`);
   });
 
   socket.on(GAME_ROUTES.PAUSE, async ({ roomId }) => {
@@ -31,11 +34,15 @@ module.exports.gameSocket = (io, socket) => {
       status: ROOM_STATUS.PAUSE,
     });
 
-    //мультирежим
+     //мультирежим
     if (room.type === 'multi') {
       await nextLeadHandler(roomId);
     }
-    //
+    
+
+    initTimerForRoom(io, roomId, ROOM_STATUS.PAUSE);
+
+   
 
     // sendRoom(io, roomId, room);
     //не будем пробрасывать, обновим в любом случае
