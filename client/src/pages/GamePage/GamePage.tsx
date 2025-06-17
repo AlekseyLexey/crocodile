@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./GamePage.module.scss";
 import { useSocket } from "@/app/store/hooks/useSocket";
@@ -7,11 +7,7 @@ import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
 import { setRoom } from "@/entities/room";
 import { setColor } from "@/entities/canvas/slice/canvasSlice";
 import { setTime } from "@/entities/room/slice/RoomSlice";
-import {
-  SOCKET_ROOM_ROUTES,
-  SOCKET_STATUS_ROUTES,
-  SOCKET_WORD_ROUTES,
-} from "@/shared";
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
 import {
   Button,
   ColorsPanel,
@@ -23,8 +19,6 @@ import {
 } from "@/shared";
 
 export const GamePage = () => {
-  const [word, setWord] = useState<string>("");
-  const [isCorrectWord, setIsCorrectWord] = useState<boolean>(false);
   const { room, time } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -46,8 +40,6 @@ export const GamePage = () => {
       user,
       roomId,
     });
-
-    socket.on(SOCKET_WORD_ROUTES.NEW_WORD, newWordHandler);
 
     socket.on(SOCKET_DRAW_ROUTES.COLOR, ({ color }) => {
       dispatch(setColor(color));
@@ -104,32 +96,6 @@ export const GamePage = () => {
     };
   }, [dispatch, user, socket, roomId, navigate, room?.status]);
 
-  useEffect(() => {
-    if (room?.owner_id === user?.id) {
-      socket.emit(SOCKET_WORD_ROUTES.CHOOSE_THEME, {
-        roomId,
-      });
-    }
-  }, [dispatch, user, socket, roomId, room?.owner_id, user?.id]);
-
-  useEffect(() => {
-    socket.on(SOCKET_WORD_ROUTES.CORRECT_WORD, ({ user, message, room }) => {
-      setIsCorrectWord(true);
-      setRoom(room);
-      alert(`${user} угадал слово: ${message}!`);
-    });
-
-    return () => {
-      socket.off(SOCKET_WORD_ROUTES.CORRECT_WORD);
-      socket.off(SOCKET_WORD_ROUTES.GET_WORD);
-    };
-  }, [dispatch, user, socket, roomId, isCorrectWord]);
-
-  const newWordHandler = ({ word }: { word: string }) => {
-    setWord(word);
-    setIsCorrectWord(false);
-  };
-
   const handleChangeGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
       roomId,
@@ -171,7 +137,7 @@ export const GamePage = () => {
         {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
             {isOwner && <ColorsPanel />}
-            {room && <WordPanel isOwner={isOwner} word={word} />}
+            {room && <WordPanel isOwner={isOwner} />}
             <div className={styles.canvas}>
               <CanvasComponent isOwner={isOwner} />
             </div>

@@ -5,6 +5,9 @@ const ThemeRoomService = require("../../services/themeRoomService");
 const roomWords = new Map();
 
 async function initWordsForRoom(roomId) {
+  if (roomWords.get(roomId)) {
+    return;
+  }
   const themeId = await ThemeRoomService.getThemeIdByRoomId(roomId);
 
   const words = await getWordsByTheme(themeId);

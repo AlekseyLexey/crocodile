@@ -12,8 +12,7 @@ function getRandomWord(roomId, wordsMap) {
   const randomIndex = Math.floor(
     Math.random() * currentWordsMap.unUsedWords.length
   );
-  const word = currentWordsMap.unUsedWords.splice(randomIndex, 1)[0];
-  currentWordsMap.usedWords.push(word);
+  const word = currentWordsMap.unUsedWords[randomIndex];
   currentWordsMap.currentWord = word;
 
   return word;
