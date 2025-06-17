@@ -13,11 +13,11 @@ export const AuthPage = () => {
 
   return (
     <div className={styles.authContainer}>
-      {/* Десктопные животные (медведь и олень) */}
+      {/* Десктопные животные */}
       <img src={bearSvg} alt="Медведь" className={styles.animalLeft} />
       <img src={deerSvg} alt="Олень" className={styles.animalRight} />
       
-      {/* Мобильные животные (лиса и динозавр) */}
+      {/* Мобильные животные */}
       <img src={foxSvg} alt="Лиса" className={styles.mobileAnimalLeft} />
       <img src={dinoSvg} alt="Динозавр" className={styles.mobileAnimalRight} />
       
@@ -25,10 +25,11 @@ export const AuthPage = () => {
       <img src={crocodileSvg} alt="Логотип" className={styles.logo} />
       <div className={styles.formWrapper}>
         <h2>{isLogin ? "Вход" : "Регистрация"}</h2>
-        <AuthForm />
+        <AuthForm isLogin={isLogin} />
         <Button
           buttonText={isLogin ? "Регистрация" : "Войти в профиль"}
           onClick={() => setIsLogin(!isLogin)}
+          variant="text"
         />
       </div>
     </div>
