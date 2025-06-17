@@ -8,19 +8,24 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
 import { useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { signInThunk, signUpThunk } from "@/entities/user";
-import { registrationSchema,  type RegistrationFormData } from "@/shared/validation/validationSchemas";
+import {
+  registrationSchema,
+  type RegistrationFormData,
+} from "@/shared/validation/validationSchemas";
 import styles from "./AuthForm.module.scss";
+import { useAlert } from "@/shared/hooks/useAlert";
 
 export const AuthForm = () => {
+  const { showAlert } = useAlert();
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const location = window.location.pathname;
   const navigate = useNavigate();
 
-  const {
+ const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors},
     reset,
   } = useForm<RegistrationFormData>({
     resolver: yupResolver(registrationSchema),
@@ -31,27 +36,30 @@ export const AuthForm = () => {
   }, [user, navigate]);
 
   const onSubmit = async (formData: RegistrationFormData) => {
-    let res = null;
     try {
+      let result;
+      
       if (location === CLIENT_ROUTES.SIGN_IN) {
-        res = await dispatch(signInThunk(formData));
+        result = await dispatch(signInThunk(formData));
       } else if (location === CLIENT_ROUTES.SIGN_UP) {
-        res = await dispatch(signUpThunk(formData));
+        result = await dispatch(signUpThunk(formData));
       } else {
-        alert("Что то пошло не так...");
+        showAlert("Неизвестный маршрут", "error");
         return;
       }
 
-      if (signInThunk.rejected.match(res) || signUpThunk.rejected.match(res)) {
-        alert(res.payload?.message);
+      if (signInThunk.rejected.match(result) || signUpThunk.rejected.match(result)) {
+        const errorMessage = result.payload?.message || "Произошла ошибка";
+        showAlert(errorMessage, "error");
         return;
       }
 
-      alert("Успешно!");
+      showAlert(location === CLIENT_ROUTES.SIGN_IN ? "Вход выполнен!" : "Регистрация успешна!", "success");
       reset();
       navigate(CLIENT_ROUTES.MAIN);
     } catch (error) {
-      console.error("Ошибка!", error);
+      console.error("Auth error:", error);
+      showAlert("Неожиданная ошибка", "error");
     }
   };
 
