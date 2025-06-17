@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import { $api, Button, CLIENT_ROUTES } from '@/shared';
-import styles from './CreateGameModal.module.scss';
-import { ThemesSelect } from '@/features/Select/ThemesSelect';
-import { useAppDispatch } from '@/shared';
-import { createRoomThunk, getAllRoomThunk } from '@/entities/room/api/RoomApi';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { $api, Button, CLIENT_ROUTES, useAppDispatch } from "@/shared";
+import { ThemesSelect } from "@/features";
+import { createRoomThunk, getAllRoomThunk } from "@/entities/room";
+import styles from "./CreateGameModal.module.scss";
 
 interface CreateGameModalProps {
   isOpen: boolean;
@@ -12,8 +11,8 @@ interface CreateGameModalProps {
 }
 
 export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
-  const [roomName, setRoomName] = useState<string>('');
-  const [theme, setTheme] = useState<string>('');
+  const [roomName, setRoomName] = useState<string>("");
+  const [theme, setTheme] = useState<string>("");
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -28,9 +27,9 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
 
     const roomId = resCreate.payload?.data?.id;
 
-    const themeId = theme === 'all' ? null : Number(theme);
+    const themeId = theme === "all" ? null : Number(theme);
 
-    await $api.post('/theme-room', { themeId, roomId });
+    await $api.post("/theme-room", { themeId, roomId });
 
     return roomId;
   };
@@ -50,7 +49,7 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
 
     navigate(`${CLIENT_ROUTES.GAME}/${roomId}`);
 
-    setRoomName('');
+    setRoomName("");
     onClose();
   };
 
