@@ -1,9 +1,12 @@
-const getWordsByTheme = require("./getWordsByTheme");
-const getRandomWord = require("./getRandomWord");
+const getWordsByTheme = require('./getWordsByTheme');
+const getRandomWord = require('./getRandomWord');
+const ThemeRoomService = require('../../services/themeRoomService');
 
 const roomWords = new Map();
 
-async function initWordsForRoom(themeId, roomId) {
+async function initWordsForRoom(roomId) {
+  const themeId = await ThemeRoomService.getThemeIdByRoomId(roomId);
+
   const words = await getWordsByTheme(themeId);
 
   roomWords.set(roomId, {

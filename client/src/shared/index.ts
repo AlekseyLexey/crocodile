@@ -14,5 +14,6 @@ export { useFloodFill } from "./hooks/useFloodFill";
 export { Button } from "./ui/Button/Button";
 export { Input } from "./ui/Input/Input";
 export { ColorsPanel } from "./ui/ColorsPanel/ColorsPanel";
+export { CreateGameModal } from "./ui/Modal/CreateGameModal";
 export type { IApiResponse } from "./types";
 export { ButtonNavigate } from "./ui/ButtonNavigate/ButtonNavigate";

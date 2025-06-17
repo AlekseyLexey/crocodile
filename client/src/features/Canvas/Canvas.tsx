@@ -3,6 +3,7 @@ import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
 import { useParams } from "react-router-dom";
+import { getCursorPosition } from "./helpers/getCursorPosition";
 
 interface CanvasProps {
   isOwner: boolean;
@@ -30,6 +31,9 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     socket.on(SOCKET_DRAW_ROUTES.DRAW, ({ figure }) => {
       drawing(figure.x, figure.y);
     });
+    socket.on(SOCKET_DRAW_ROUTES.FILL, ({ figure }) => {
+      floodFill(figure.x, figure.y, figure.currentColor);
+    });
     socket.on(SOCKET_DRAW_ROUTES.FINISH, () => {
       const ctx = canvasRef.current.getContext("2d");
       ctx!.beginPath();
@@ -40,6 +44,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
 
     return () => {
       socket.off(SOCKET_DRAW_ROUTES.DRAW);
+      socket.off(SOCKET_DRAW_ROUTES.FILL);
       socket.off(SOCKET_DRAW_ROUTES.FINISH);
       socket.off(SOCKET_DRAW_ROUTES.CLEAR);
     };
@@ -52,30 +57,39 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getCursorPosition(e, canvasRef);
 
-    if (activeTool === "pencil") {
+    if (activeTool === SOCKET_DRAW_ROUTES.PENCIL) {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.strokeStyle = currentColor;
       isDrawing.current = true;
-    } else if (activeTool === "fill") {
+    } else if (activeTool === SOCKET_DRAW_ROUTES.FILL) {
+      socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
+        roomId,
+        action: SOCKET_DRAW_ROUTES.FILL,
+        figure: {
+          x,
+          y,
+          currentColor,
+        },
+      });
       floodFill(x, y, currentColor);
     }
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing.current || !canvasRef.current || activeTool !== "pencil")
+    if (
+      !isDrawing.current ||
+      !canvasRef.current ||
+      activeTool !== SOCKET_DRAW_ROUTES.PENCIL
+    )
       return;
 
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getCursorPosition(e, canvasRef);
 
     socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
       roomId,
@@ -85,9 +99,6 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
         y,
       },
     });
-
-    ctx.lineTo(x, y);
-    ctx.stroke();
   };
 
   const stopDrawing = () => {
@@ -117,7 +128,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
       onMouseLeave={stopDrawing}
       style={{
         borderRadius: "12px",
-        cursor: activeTool === "fill" ? "pointer" : "default",
+        cursor: activeTool === SOCKET_DRAW_ROUTES.FILL ? "pointer" : "default",
         ...(isOwner ? {} : { pointerEvents: "none" }),
         backgroundColor: "#FFF5F5",
       }}

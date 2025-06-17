@@ -1,5 +1,5 @@
-const WordService = require("../../services/wordService");
-const ThemeService = require("../../services/themeService");
+const WordService = require('../../services/wordService');
+const ThemeService = require('../../services/themeService');
 
 async function getWordsByTheme(themeId = null) {
   if (themeId === null) {

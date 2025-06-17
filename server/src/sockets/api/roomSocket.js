@@ -1,5 +1,5 @@
 const UserRoomService = require("../../services/userRoomService");
-const { getRoom } = require("../helpers/getRoom");
+const { sendRoom } = require("../helpers/sendRoom");
 
 module.exports.roomSocket = (io, socket) => {
   socket.on("joinRoom", async ({ user, roomId }) => {
@@ -15,7 +15,7 @@ module.exports.roomSocket = (io, socket) => {
     socket.user = user;
     socket.join(roomId);
 
-    getRoom(io, roomId);
+    sendRoom(io, roomId);
     socket.to(roomId).emit("message", `Игрок ${user.username} присоеденился`);
   });
 
@@ -25,7 +25,7 @@ module.exports.roomSocket = (io, socket) => {
       roomId,
     });
 
-    getRoom(io, roomId);
+    sendRoom(io, roomId);
     socket.leave(roomId);
     socket.to(roomId).emit("message", `Игрок ${user.username} покинул игру`);
   });
