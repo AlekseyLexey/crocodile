@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: 5px solid #3B673D50;
   border-radius: 12px; 
   cursor: pointer;
   transition: all 0.2s ease-out;
@@ -14,7 +14,7 @@
   height: 41px;
 
   background-color: #71A47350;
-  stroke: #3B673D50;
+ 
 
   @include text-style-bold;
 
