@@ -6,7 +6,7 @@ const initTimerForRoom = (io, roomId, status) => {
   let time;
   switch (status) {
     case "active":
-      time = 15000;
+      time = 20000;
       break;
     case "pause":
       time = 7000;
