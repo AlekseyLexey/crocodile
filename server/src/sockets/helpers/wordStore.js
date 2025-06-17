@@ -1,6 +1,6 @@
-const getWordsByTheme = require('./getWordsByTheme');
-const getRandomWord = require('./getRandomWord');
-const ThemeRoomService = require('../../services/themeRoomService');
+const getWordsByTheme = require("./getWordsByTheme");
+const getRandomWord = require("./getRandomWord");
+const ThemeRoomService = require("../../services/themeRoomService");
 
 const roomWords = new Map();
 
