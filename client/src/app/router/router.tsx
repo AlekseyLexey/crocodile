@@ -17,6 +17,8 @@ const Router = () => {
           <Route path={CLIENT_ROUTES.SIGN_IN} element={<AuthPage />} />
           <Route path={CLIENT_ROUTES.SIGN_UP} element={<AuthPage />} />
           <Route path={CLIENT_ROUTES.LOBBY_LIST} element={<LobbyList />} />
+          <Route path={CLIENT_ROUTES.PROFILE} element={<ProfilePage />} />
+          <Route path={CLIENT_ROUTES.SHOP} element={<ShopPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

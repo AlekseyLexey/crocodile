@@ -3,7 +3,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   background-color: $background-container;
-  border-radius: 12px;
+  border-radius: $br;
+  position: relative;
+  box-shadow: $box;
 }
 
 .section1 {
