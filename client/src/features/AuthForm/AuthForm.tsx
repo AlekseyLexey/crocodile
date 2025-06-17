@@ -1,84 +1,83 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "@/shared";
 import { Button } from "@/shared";
-import type { IAuthForm } from "./index";
 import { CLIENT_ROUTES } from "@/shared/enums/clientRoutes";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
 import { useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { signInThunk, signUpThunk } from "@/entities/user";
+import { registrationSchema,  type RegistrationFormData } from "@/shared/validation/validationSchemas";
 import styles from "./AuthForm.module.scss";
 
-const initialState: IAuthForm = {
-  username: "",
-  email: "",
-  password: "",
-};
-
 export const AuthForm = () => {
-  const [formData, setFormData] = useState<IAuthForm>(initialState);
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const location = window.location.pathname;
   const navigate = useNavigate();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<RegistrationFormData>({
+    resolver: yupResolver(registrationSchema),
+  });
+
   useEffect(() => {
     if (user) navigate(CLIENT_ROUTES.MAIN);
-    //eslint-disable-next-line
-  }, []);
+  }, [user, navigate]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (formData: RegistrationFormData) => {
     let res = null;
-    if (location === CLIENT_ROUTES.SIGN_IN) {
-      res = await dispatch(signInThunk(formData));
-    } else if (location === CLIENT_ROUTES.SIGN_UP) {
-      res = await dispatch(signUpThunk(formData));
-    } else {
-      alert("Что-то пошло не так...");
-      return;
-    }
+    try {
+      if (location === CLIENT_ROUTES.SIGN_IN) {
+        res = await dispatch(signInThunk(formData));
+      } else if (location === CLIENT_ROUTES.SIGN_UP) {
+        res = await dispatch(signUpThunk(formData));
+      } else {
+        alert("Что то пошло не так...");
+        return;
+      }
 
-    if (signInThunk.rejected.match(res) || signUpThunk.rejected.match(res)) {
-      alert(res.payload?.message);
-      return;
-    }
+      if (signInThunk.rejected.match(res) || signUpThunk.rejected.match(res)) {
+        alert(res.payload?.message);
+        return;
+      }
 
-    alert("Успешно!");
-    setFormData(initialState);
-    navigate(CLIENT_ROUTES.MAIN);
+      alert("Успешно!");
+      reset();
+      navigate(CLIENT_ROUTES.MAIN);
+    } catch (error) {
+      console.error("Ошибка!", error);
+    }
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <Input
-        value={formData.username}
-        onChange={handleChange}
-        name="username"
+        {...register("username")}
+        error={errors.username?.message}
         labelText="Username"
         placeholder="Username"
       />
       <Input
-        value={formData.email}
-        onChange={handleChange}
+        {...register("email")}
         type="email"
-        name="email"
+        error={errors.email?.message}
         labelText="Email"
         placeholder="Email"
       />
       <Input
-        value={formData.password}
-        onChange={handleChange}
+        {...register("password")}
         type="password"
-        name="password"
+        error={errors.password?.message}
         labelText="Password"
         placeholder="Password"
       />
-      <Button type="submit" buttonText="Отправить" />
+      <Button type="submit" buttonText="Submit" />
     </form>
   );
 };
