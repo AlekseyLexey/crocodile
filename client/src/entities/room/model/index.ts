@@ -15,6 +15,7 @@ export interface IRoomUser {
 
 export interface IUserRoom {
   point: number;
+  is_lead: boolean
 }
 
 export interface IRoom extends ICreateRoom {
@@ -22,9 +23,11 @@ export interface IRoom extends ICreateRoom {
   status: StatusRoomType;
   owner_id: number;
   roomUsers: IRoomUser[];
+  type: 'mono' | 'multi'
 }
 
 export interface ICreateRoom {
   pictures?: string;
   name: string;
+  
 }

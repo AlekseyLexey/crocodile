@@ -1,18 +1,19 @@
-const RoomService = require("../../services/roomService");
-const updateRoomsWithUserProfilePoints = require("../helpers/updateRoomsWithUserProfilePoints");
-const { sendRoom } = require("../helpers/sendRoom");
+const RoomService = require('../../services/roomService');
+const updateRoomsWithUserProfilePoints = require('../helpers/updateRoomsWithUserProfilePoints');
+const { sendRoom } = require('../helpers/sendRoom');
+const nextLeadHandler = require('../helpers/nextLeadHandler');
 
 const GAME_ROUTES = {
-  START: "startGame",
-  PAUSE: "pauseGame",
-  END: "endGame",
+  START: 'startGame',
+  PAUSE: 'pauseGame',
+  END: 'endGame',
 };
 
 const ROOM_STATUS = {
-  PREPARE: "prepare",
-  ACTIVE: "active",
-  PAUSE: "pause",
-  END: "end",
+  PREPARE: 'prepare',
+  ACTIVE: 'active',
+  PAUSE: 'pause',
+  END: 'end',
 };
 
 module.exports.gameSocket = (io, socket) => {
@@ -22,7 +23,7 @@ module.exports.gameSocket = (io, socket) => {
     });
 
     sendRoom(io, roomId, room);
-    io.to(roomId).emit("message", `Игра Началась!`);
+    io.to(roomId).emit('message', `Игра Началась!`);
   });
 
   socket.on(GAME_ROUTES.PAUSE, async ({ roomId }) => {
@@ -30,8 +31,16 @@ module.exports.gameSocket = (io, socket) => {
       status: ROOM_STATUS.PAUSE,
     });
 
-    sendRoom(io, roomId, room);
-    io.to(roomId).emit("message", `Смена раунда`);
+    //мультирежим
+    if (room.type === 'multi') {
+      await nextLeadHandler(roomId);
+    }
+    //
+
+    // sendRoom(io, roomId, room);
+    //не будем пробрасывать, обновим в любом случае
+    sendRoom(io, roomId);
+    io.to(roomId).emit('message', `Смена раунда`);
   });
 
   socket.on(GAME_ROUTES.END, async ({ roomId }) => {
@@ -40,6 +49,6 @@ module.exports.gameSocket = (io, socket) => {
     const room = await updateRoomsWithUserProfilePoints(roomId);
 
     sendRoom(io, roomId, room);
-    io.to(roomId).emit("message", `Игра законченна`);
+    io.to(roomId).emit('message', `Игра законченна`);
   });
 };

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './GamePage.module.scss';
 import {
@@ -9,19 +9,21 @@ import {
   useAppSelector,
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
-} from "@/shared";
-import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { Finish, Preparation } from "@/widgets";
-import { useSocket } from "@/app/store/hooks/useSocket";
-import { setRoom } from "@/entities/room";
-import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
-import { setColor } from "@/entities/canvas/slice/canvasSlice";
+} from '@/shared';
+import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
+import { Finish, Preparation } from '@/widgets';
+import { useSocket } from '@/app/store/hooks/useSocket';
+import { setRoom, type IRoomUser } from '@/entities/room';
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from '@/shared';
+import { setColor } from '@/entities/canvas/slice/canvasSlice';
 
 export const GamePage = () => {
   const { room } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const [lead, setLead] = useState<number | null>(null);
 
   const roomId: number = useMemo(() => {
     return Number(id);
@@ -45,6 +47,14 @@ export const GamePage = () => {
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
       dispatch(setRoom(room));
+      //тут по идее сетить лидера
+
+      const userLead = room.roomUsers.filter(
+        (user: IRoomUser) => user.UserRoom.is_lead
+      );
+      console.log('room ===>', room);
+      
+      setLead(userLead[0].id);
     });
 
     socket.on('message', (message: string) => {
@@ -91,7 +101,9 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-  const isOwner = user?.id === room?.owner_id;
+  // const isOwner = user?.id === room?.owner_id;
+
+  const isLead = lead === user?.id;
 
   return (
     <div className={styles.game}>
@@ -102,18 +114,18 @@ export const GamePage = () => {
           className={styles.exitButton}
         />
         {room?.status === ROOM_STATUSES.PREPARE && (
-          <Preparation isOwner={isOwner} />
+          <Preparation isOwner={isLead} />
         )}
         {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
-            {isOwner && <ColorsPanel />}
-            {room && <WordPanel isOwner={isOwner} />}
+            {isLead && <ColorsPanel />}
+            {room && <WordPanel isOwner={isLead} />}
             <div className={styles.canvas}>
-              <CanvasComponent isOwner={isOwner} />
+              <CanvasComponent isOwner={isLead} />
             </div>
             <div className={styles.timer}>00:30</div>
-            {isOwner && <Tools />}
-            {isOwner && (
+            {isLead && <Tools />}
+            {isLead && (
               <Button buttonText="Завершить игру" onClick={handleEndGame} />
             )}
           </>
