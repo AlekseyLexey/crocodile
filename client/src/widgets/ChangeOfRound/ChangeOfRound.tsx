@@ -1,43 +1,17 @@
-import {
-  Button,
-  SOCKET_STATUS_ROUTES,
-  useAppDispatch,
-  useAppSelector,
-} from "@/shared";
+import { Button, SOCKET_STATUS_ROUTES, useAppSelector } from "@/shared";
 import styles from "../Finish/Finish.module.scss";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
-import { setTime } from "@/entities/room/slice/RoomSlice";
 import { useParams } from "react-router-dom";
 
 export const ChangeOfRound = () => {
   const { room, time } = useAppSelector((state) => state.room);
-  const dispatch = useAppDispatch();
   const { socket } = useSocket();
   const { id } = useParams();
 
   const roomId: number = useMemo(() => {
     return Number(id);
   }, [id]);
-
-  useEffect(() => {
-    socket.on("timer", ({ time }) => {
-      if (time === null) {
-        socket.emit(SOCKET_STATUS_ROUTES.START, { roomId });
-        dispatch(setTime(null));
-        return;
-      }
-
-      const seconds = Math.round(time / 1000);
-      console.log("time", seconds);
-
-      dispatch(setTime(seconds));
-    });
-
-    return () => {
-      socket.off("timer");
-    };
-  }, [dispatch, socket, roomId]);
 
   const handleChangeGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.START, {
@@ -65,7 +39,7 @@ export const ChangeOfRound = () => {
             </div>
           ))}
       </div>
-      <h3>Таймер: {time} сек</h3>
+      <h3>До нового раунда: {time} сек</h3>
       <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
     </div>
   );

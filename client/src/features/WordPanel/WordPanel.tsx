@@ -1,11 +1,11 @@
-import styles from './WordPanel.module.scss';
-import { useSocket } from '@/app/store/hooks/useSocket';
-import { SOCKET_WORD_ROUTES } from '@/shared';
-import { useEffect, useMemo, useState } from 'react';
-import { setRoom } from '@/entities/room';
-import { useParams } from 'react-router-dom';
+import styles from "./WordPanel.module.scss";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { SOCKET_WORD_ROUTES } from "@/shared";
+import { memo, useEffect, useMemo, useState } from "react";
+import { setRoom } from "@/entities/room";
+import { useParams } from "react-router-dom";
 
-export const WordPanel = ({ isOwner }: { isOwner: boolean }) => {
+export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
   const { socket } = useSocket();
   const [word, setWord] = useState<string>();
   const [isCorrectWord, setIsCorrectWord] = useState<boolean>(false);
@@ -18,10 +18,8 @@ export const WordPanel = ({ isOwner }: { isOwner: boolean }) => {
   useEffect(() => {
     if (!roomId || !isOwner) return;
 
-    //оставим это событие только овнеру
     socket.emit(SOCKET_WORD_ROUTES.CHOOSE_THEME, {
       roomId,
-      // themeId: 1,
     });
   }, [socket, roomId, isOwner]);
 
@@ -53,9 +51,9 @@ export const WordPanel = ({ isOwner }: { isOwner: boolean }) => {
 
   return (
     <>
-      <div className={`${styles.gameArea} ${isOwner ? '' : styles.hidden}`}>
+      <div className={`${styles.gameArea} ${isOwner ? "" : styles.hidden}`}>
         <p>{word}</p>
       </div>
     </>
   );
-};
+});

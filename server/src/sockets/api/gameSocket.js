@@ -22,8 +22,10 @@ module.exports.gameSocket = (io, socket) => {
       status: ROOM_STATUS.ACTIVE,
     });
 
+    initTimerForRoom(io, roomId, ROOM_STATUS.ACTIVE);
+
     sendRoom(io, roomId, room);
-    io.to(roomId).emit("message", `Игра Началась!`);
+    io.to(roomId).emit("message", `Раунд начался!`);
   });
 
   socket.on(GAME_ROUTES.PAUSE, async ({ roomId }) => {
