@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Button,
   CLIENT_ROUTES,
   ROOM_STATUSES,
   useAppDispatch,
   useAppSelector,
-} from "@/shared";
-import { CreateGameModal } from "@/shared/ui/Modal/CreateGameModal";
-import styles from "./LobbyList.module.scss";
-import { createRoomThunk, getAllRoomThunk } from "@/entities/room/api/RoomApi";
-import type { IRoom } from "@/entities/room";
-import { useNavigate } from "react-router-dom";
+} from '@/shared';
+import { CreateGameModal } from '@/shared/ui/Modal/CreateGameModal';
+import styles from './LobbyList.module.scss';
+import { getAllRoomThunk } from '@/entities/room/api/RoomApi';
+import type { IRoom } from '@/entities/room';
+import { useNavigate } from 'react-router-dom';
 
 export const LobbyList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,8 +25,7 @@ export const LobbyList = () => {
       alert(res.payload?.message);
       return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   if (!rooms.length) {
     return <h2>Лобби пока что нет...</h2>;
@@ -34,23 +33,6 @@ export const LobbyList = () => {
 
   const handleJoinGame = (id: number) => {
     navigate(`${CLIENT_ROUTES.GAME}/${id}`);
-  };
-  const handleCreateGame = async (roomName: string) => {
-    const resCreate = await dispatch(createRoomThunk({ name: roomName }));
-
-    if (getAllRoomThunk.rejected.match(resCreate)) {
-      alert(resCreate.payload?.message);
-      return;
-    }
-
-    const res = dispatch(getAllRoomThunk());
-
-    if (getAllRoomThunk.rejected.match(res)) {
-      alert(res.payload?.message);
-      return;
-    }
-
-    navigate(`${CLIENT_ROUTES.GAME}/${resCreate.payload?.data?.id}`);
   };
 
   return (
@@ -89,7 +71,6 @@ export const LobbyList = () => {
       <CreateGameModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onCreate={handleCreateGame}
       />
     </>
   );

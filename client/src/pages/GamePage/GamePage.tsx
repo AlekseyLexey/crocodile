@@ -1,6 +1,6 @@
-import { useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import styles from "./GamePage.module.scss";
+import { useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import styles from './GamePage.module.scss';
 import {
   Button,
   ColorsPanel,
@@ -47,14 +47,9 @@ export const GamePage = () => {
       dispatch(setRoom(room));
     });
 
-    socket.on("message", (message: string) => {
+    socket.on('message', (message: string) => {
       console.log(message);
     });
-
-    //не вижу на серваке эмита такого
-    // socket.on("exit", (message) => {
-    //   console.log(message);
-    // });
 
     socket.on(SOCKET_STATUS_ROUTES.END, ({ room }) => {
       dispatch(setRoom(room));
@@ -63,7 +58,7 @@ export const GamePage = () => {
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
-      socket.off("message");
+      socket.off('message');
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
     };
