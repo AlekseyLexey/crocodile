@@ -4,7 +4,13 @@ import { io, Socket } from "socket.io-client";
 import SocketContext from "./SocketContex";
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const [socket, setSocket] = useState<Socket>(io("ws://localhost:3000"));
+  const [socket, setSocket] = useState<Socket>(
+    io("wss://crocdraw.ru", {
+      transports: ["websocket"],
+      path: "/socket.io",
+      secure: true,
+    })
+  );
 
   return (
     <SocketContext.Provider value={{ socket, setSocket }}>
