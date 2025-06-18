@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styles from './GamePage.module.scss';
-import { useSocket } from '@/app/store/hooks/useSocket';
-import { ChangeOfRound, Finish, Preparation } from '@/widgets';
-import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
-import { setRoom, type IRoomUser } from '@/entities/room';
-import { setColor } from '@/entities/canvas/slice/canvasSlice';
-import { setTime } from '@/entities/room/slice/RoomSlice';
-import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from '@/shared';
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import styles from "./GamePage.module.scss";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { ChangeOfRound, Finish, Preparation } from "@/widgets";
+import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+import { setRoom, type IRoomUser } from "@/entities/room";
+import { setColor } from "@/entities/canvas/slice/canvasSlice";
+import { setTime } from "@/entities/room/slice/RoomSlice";
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
 import {
   Button,
   ColorsPanel,
@@ -16,7 +16,7 @@ import {
   useAppSelector,
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
-} from '@/shared';
+} from "@/shared";
 
 export const GamePage = () => {
   const { room, time } = useAppSelector((state) => state.room);
@@ -57,7 +57,7 @@ export const GamePage = () => {
       setLead(leader[0].id);
     });
 
-    socket.on('message', (message: string) => {
+    socket.on("message", (message: string) => {
       console.log(message);
     });
 
@@ -68,14 +68,14 @@ export const GamePage = () => {
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
-      socket.off('message');
+      socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
     };
   }, [dispatch, user, socket, roomId]);
 
   useEffect(() => {
-    socket.on('timer', ({ time }) => {
+    socket.on("timer", ({ time }) => {
       if (time === null && isLead) {
         if (room?.status === ROOM_STATUSES.ACTIVE) {
           socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
@@ -100,8 +100,9 @@ export const GamePage = () => {
     }
 
     return () => {
-      socket.off('timer');
+      socket.off("timer");
     };
+    //eslint-disable-next-line
   }, [dispatch, user, socket, roomId, navigate, room?.status]);
 
   const handleChangeGame = () => {
