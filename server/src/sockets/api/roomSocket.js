@@ -1,5 +1,6 @@
 const UserRoomService = require("../../services/userRoomService");
 const { sendRoom } = require("../helpers/sendRoom");
+const RoomService = require("../../services/roomService");
 
 module.exports.roomSocket = (io, socket) => {
   socket.on("joinRoom", async ({ user, roomId }) => {
@@ -7,9 +8,14 @@ module.exports.roomSocket = (io, socket) => {
       socket.leave(roomId);
       return;
     }
+
+    const room = await RoomService.findRoomById(roomId);
+    const isLead = room.owner_id === user.id;
+
     await UserRoomService.createUserRoom({
       userId: user.id,
       roomId,
+      is_lead: isLead,
     });
 
     socket.user = user;

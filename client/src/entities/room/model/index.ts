@@ -15,16 +15,21 @@ export interface IRoomUser {
 
 export interface IUserRoom {
   point: number;
+  is_lead: boolean
 }
+
+export type TypeGame = 'mono' | 'multi'
 
 export interface IRoom extends ICreateRoom {
   id: number;
   status: StatusRoomType;
   owner_id: number;
   roomUsers: IRoomUser[];
+  type: TypeGame
 }
 
 export interface ICreateRoom {
   pictures?: string;
   name: string;
+  type: TypeGame
 }

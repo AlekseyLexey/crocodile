@@ -1,3 +1,5 @@
+
+
 .game {
   position: relative;
   width: 100%;
@@ -45,6 +47,7 @@
   flex-direction: column;
   padding-top: 38px;
   padding-bottom: 39px;
+  box-shadow: $box;
 }
 
 .colorRow {
@@ -92,7 +95,6 @@
   height: 18px;
   justify-self: end;
   margin-right: 10px;
-  color: $color;
   @include text-style-bold;
   @include flex-center;
 }
@@ -102,11 +104,11 @@
   width: 661px;
   height: 83px;
   background-color: $background-mini;
-  color: $color;
   border-radius: $br;
   @include text-style-semibold;
   display: flex;
   gap: 8px;
+  box-shadow: $box;
   padding: 8px;
   align-items: center;
 }
@@ -155,6 +157,7 @@
   margin-right: 16px;
   @include text-style-bold;
   display: flex;
+  box-shadow: $box;
   flex-direction: column;
 }
 
@@ -163,6 +166,7 @@
   overflow-y: auto;
   padding: 12px;
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 8px;
   @include text-style-bold;

@@ -1,4 +1,4 @@
-const { UserRoom } = require('../../db/models');
+const { UserRoom, User } = require('../../db/models');
 
 class UserRoomService {
   static async findUserRoomByIds(userId, roomId) {
@@ -7,7 +7,12 @@ class UserRoomService {
         user_id: userId,
         room_id: roomId,
       },
-      attributes: ['user_id', 'room_id', 'point'],
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'username', 'point']
+      }],
+      attributes: ['user_id', 'room_id', 'point', 'is_lead', 'was_lead'],
     });
 
     if (!userRoom) {
@@ -17,11 +22,12 @@ class UserRoomService {
     return userRoom;
   }
 
-  static async createUserRoom({ userId, roomId, point }) {
+  static async createUserRoom({ userId, roomId, point = 0, is_lead = false }) {
     const newUserRoom = await UserRoom.create({
       user_id: userId,
       room_id: roomId,
       point,
+      is_lead
     });
 
     return await UserRoomService.findUserRoomByIds(
@@ -50,6 +56,51 @@ class UserRoomService {
       },
     });
   }
+  //или н и не нужен
+  static async findLeadOfRoom({ roomId }) {
+    const lead = await UserRoom.findOne({
+      where: {
+        room_id: roomId,
+        is_lead: true
+      },
+      include: [{
+        model: User,
+        as: 'user'
+      }]
+    })
+
+    return lead ? lead.get({ plain: true }) : null;
+  }
+
+  static async findNextLeadOfRoom({ roomId }) {
+    const lead = await UserRoom.findOne({
+      where: {
+        room_id: roomId,
+        is_lead: false,
+        was_lead: false
+      },
+      include: [{
+        model: User,
+        as: 'user'
+      }],
+      order: [['createdAt', 'ASC']],
+    })
+
+    return lead ? lead.get({ plain: true }) : null;
+  }
+
+  static async changeLeadStatus({ userId, roomId, leadStatus, wasLeadStatus = false }) {
+    const changedItem = await UserRoomService.findUserRoomByIds(userId, roomId);
+
+    if (!changedItem) {
+      throw new HttpError(404, 'UserRoom not found');
+    }
+
+    await changedItem.update({ is_lead:  leadStatus, was_lead: wasLeadStatus});
+
+    return await UserRoomService.findUserRoomByIds(userId, roomId);
+  }
 }
 
 module.exports = UserRoomService;
+

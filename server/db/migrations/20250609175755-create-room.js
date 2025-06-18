@@ -29,6 +29,11 @@ module.exports = {
           key: 'id',
         },
       },
+      type: {
+        type: Sequelize.TEXT,
+        defaultValue: 'mono',
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

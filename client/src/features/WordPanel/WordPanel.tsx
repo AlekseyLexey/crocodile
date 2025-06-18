@@ -4,8 +4,10 @@ import { SOCKET_WORD_ROUTES } from "@/shared";
 import { memo, useEffect, useMemo, useState } from "react";
 import { setRoom } from "@/entities/room";
 import { useParams } from "react-router-dom";
+import { useAlert } from "@/shared/hooks/useAlert";
 
 export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
+  const { showAlert } = useAlert();
   const { socket } = useSocket();
   const [word, setWord] = useState<string>();
   const [isCorrectWord, setIsCorrectWord] = useState<boolean>(false);
@@ -40,13 +42,14 @@ export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
     socket.on(SOCKET_WORD_ROUTES.CORRECT_WORD, ({ user, message, room }) => {
       setIsCorrectWord(true);
       setRoom(room);
-      alert(`${user} угадал слово: ${message}!`);
+      showAlert(`${user} угадал слово: ${message}!`);
     });
 
     return () => {
       socket.off(SOCKET_WORD_ROUTES.CORRECT_WORD);
       socket.off(SOCKET_WORD_ROUTES.GET_WORD);
     };
+    //eslint-disable-next-line
   }, [socket, roomId, isCorrectWord]);
 
   return (
