@@ -3,13 +3,10 @@
 .pageContainer {
   width: 100%;
   min-height: 100vh;
-  background: $background-main;
   padding: $spacing;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: $ff;
-  color: $color;
 }
 
 .contentWrapper {
@@ -20,8 +17,7 @@
 }
 
 .title {
-  font-size: $fs-title;
-  font-weight: $fw-bold;
+  @include text-style-bold;
   margin-bottom: $spacing;
   text-align: center;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
@@ -62,8 +58,6 @@
 }
 
 .lobbyName {
-  font-size: $fs;
-  font-weight: $fw-normal;
   @include text-style-bold;
 }
 
@@ -73,8 +67,7 @@
   color: $white;
   border: none;
   border-radius: $br;
-  font-size: $fs;
-  font-weight: $fw-bold;
+  @include text-style-bold;
   cursor: pointer;
   transition: $transition;
   @include text-style-bold;
@@ -99,8 +92,6 @@
   color: $white;
   border: none;
   border-radius: $br;
-  font-size: $fs;
-  font-weight: $fw-bold;
   cursor: pointer;
   transition: $transition;
   @include text-style-bold;

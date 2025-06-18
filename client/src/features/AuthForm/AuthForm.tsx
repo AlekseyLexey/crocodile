@@ -1,12 +1,10 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Input } from "@/shared";
-import { Button } from "@/shared";
+import { Input, Button } from "@/shared";
 import { CLIENT_ROUTES } from "@/shared/enums/clientRoutes";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
-import { useAppSelector } from "@/shared/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { signInThunk, signUpThunk } from "@/entities/user";
 import {
   registrationSchema,
@@ -15,17 +13,20 @@ import {
 import styles from "./AuthForm.module.scss";
 import { useAlert } from "@/shared/hooks/useAlert";
 
-export const AuthForm = () => {
+interface AuthFormProps {
+  isLogin: boolean;
+}
+
+export const AuthForm = ({ isLogin }: AuthFormProps) => {
   const { showAlert } = useAlert();
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  const location = window.location.pathname;
   const navigate = useNavigate();
 
- const {
+  const {
     register,
     handleSubmit,
-    formState: { errors},
+    formState: { errors },
     reset,
   } = useForm<RegistrationFormData>({
     resolver: yupResolver(registrationSchema),
@@ -37,29 +38,18 @@ export const AuthForm = () => {
 
   const onSubmit = async (formData: RegistrationFormData) => {
     try {
-      let result;
-      
-      if (location === CLIENT_ROUTES.SIGN_IN) {
-        result = await dispatch(signInThunk(formData));
-      } else if (location === CLIENT_ROUTES.SIGN_UP) {
-        result = await dispatch(signUpThunk(formData));
-      } else {
-        showAlert("Неизвестный маршрут", "error");
+      const action = isLogin ? signInThunk : signUpThunk;
+      const res = await dispatch(action(formData));
+      if (action.rejected.match(res)) {
+        showAlert(res.payload?.message || "Произошла ошибка");
         return;
       }
-
-      if (signInThunk.rejected.match(result) || signUpThunk.rejected.match(result)) {
-        const errorMessage = result.payload?.message || "Произошла ошибка";
-        showAlert(errorMessage, "error");
-        return;
-      }
-
-      showAlert(location === CLIENT_ROUTES.SIGN_IN ? "Вход выполнен!" : "Регистрация успешна!", "success");
+      showAlert("Успешно!");
       reset();
       navigate(CLIENT_ROUTES.MAIN);
     } catch (error) {
-      console.error("Auth error:", error);
-      showAlert("Неожиданная ошибка", "error");
+      console.error("Ошибка:", error);
+      showAlert("Произошла непредвиденная ошибка");
     }
   };
 
@@ -71,6 +61,7 @@ export const AuthForm = () => {
         labelText="Username"
         placeholder="Username"
       />
+
       <Input
         {...register("email")}
         type="email"
@@ -85,7 +76,10 @@ export const AuthForm = () => {
         labelText="Password"
         placeholder="Password"
       />
-      <Button type="submit" buttonText="Submit" />
+      <Button
+        type="submit"
+        buttonText={isLogin ? "Войти" : "Зарегистрироваться"}
+      />
     </form>
   );
 };
