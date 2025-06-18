@@ -1,4 +1,4 @@
-// src/shared/providers/AlertProvider.tsx
+
 import { useState } from "react";
 import { AlertContext } from "../context/AlertContext";
 import { CrocodileAlert } from "../components/ui/CrocodileAlert";
