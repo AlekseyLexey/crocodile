@@ -6,12 +6,13 @@ import { setRoom } from "@/entities/room";
 import { useParams } from "react-router-dom";
 import { useAlert } from "@/shared/hooks/useAlert";
 
+
 export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
+  const { showAlert } = useAlert();
   const { socket } = useSocket();
   const [word, setWord] = useState<string>();
   const [isCorrectWord, setIsCorrectWord] = useState<boolean>(false);
   const { id } = useParams();
-  const { showAlert } = useAlert();
 
   const roomId: number = useMemo(() => {
     return Number(id);
@@ -39,23 +40,23 @@ export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
   }, [socket]);
 
   useEffect(() => {
-    const correctWordHandler = ({ user, message, room }: { user: string; message: string; room: any }) => {
+    socket.on(SOCKET_WORD_ROUTES.CORRECT_WORD, ({ user, message, room }) => {
       setIsCorrectWord(true);
       setRoom(room);
-      showAlert(`${user} угадал слово: ${message}!`, "success");
-    };
-
-    socket.on(SOCKET_WORD_ROUTES.CORRECT_WORD, correctWordHandler);
+      showAlert(`${user} угадал слово: ${message}!`);
+    });
 
     return () => {
-      socket.off(SOCKET_WORD_ROUTES.CORRECT_WORD, correctWordHandler);
+      socket.off(SOCKET_WORD_ROUTES.CORRECT_WORD);
       socket.off(SOCKET_WORD_ROUTES.GET_WORD);
     };
-  }, [socket, roomId, isCorrectWord, showAlert]);
+  }, [socket, roomId, isCorrectWord]);
 
   return (
-    <div className={`${styles.gameArea} ${isOwner ? "" : styles.hidden}`}>
-      {word && <p className={styles.word}>{word}</p>}
-    </div>
+    <>
+      <div className={`${styles.gameArea} ${isOwner ? "" : styles.hidden}`}>
+        <p>{word}</p>
+      </div>
+    </>
   );
 });
