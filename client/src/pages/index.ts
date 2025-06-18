@@ -1,3 +1,3 @@
 export { MainPage } from "./MainPage/MainPage";
-export { SignInPage } from "./SignInPage/SignInPage";
-export { SignUpPage } from "./SignUpPage/SignUpPage";
+export { AuthPage } from "./AuthPage/AuthPage";
+

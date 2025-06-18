@@ -4,10 +4,7 @@
 
   label {
     display: block;
-    font-family: $ff;
-    font-size: $fs;
-    font-weight: $fw-normal;
-    color: $color;
+    @include text-style-bold;
     margin-bottom: 8px;
   }
 
@@ -19,15 +16,13 @@
     background-color: transparent;
     border: 3px solid rgba(0, 0, 0, 0.22);
     border-radius: $br;
-    font-family: $ff;
-    font-size: $fs;
-    color: $color;
+    @include text-style-bold;
     transition: $transition;
 
     &:-webkit-autofill,
     &:-webkit-autofill:hover, 
     &:-webkit-autofill:focus {
-      -webkit-text-fill-color: $color;
+      -webkit-text-fill-color: #2B640B;
       -webkit-box-shadow: 0 0 0 1000px transparent inset;
       transition: background-color 5000s ease-in-out 0s;
     }

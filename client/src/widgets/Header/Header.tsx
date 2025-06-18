@@ -1,4 +1,4 @@
-import { CLIENT_ROUTES } from "@/shared/enums/clientRoutes";
+import { CLIENT_ROUTES } from "@/shared";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
 import { useAppSelector } from "@/shared/hooks/useReduxHooks";
@@ -70,7 +70,7 @@ export const Header = () => {
               {isMenuOpen && (
                 <div className={styles.modalMenu}>
                   <Link
-                    to={CLIENT_ROUTES.LOBBY_LIST}
+                    to={CLIENT_ROUTES.SHOP}
                     className={styles.menuItem}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -84,7 +84,7 @@ export const Header = () => {
                     Список Лобби
                   </Link>
                   <Link
-                    to={CLIENT_ROUTES.LOBBY_LIST}
+                    to={CLIENT_ROUTES.PROFILE}
                     className={styles.menuItem}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -98,7 +98,7 @@ export const Header = () => {
             <div className={styles.desktopButtons}>
               <ButtonNavigate
                 buttonText="Магазин"
-                onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
+                onClick={() => navigate(CLIENT_ROUTES.SHOP)}
               />
               <ButtonNavigate
                 buttonText="Список Лобби"
@@ -106,7 +106,7 @@ export const Header = () => {
               />
               <ButtonNavigate
                 buttonText="Профиль"
-                onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
+                onClick={() => navigate(CLIENT_ROUTES.PROFILE)}
               />
               <ButtonNavigate buttonText="Выйти" onClick={handleLogout} />
             </div>

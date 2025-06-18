@@ -21,13 +21,10 @@ body[data-theme="dark"] {
 }
 
 body {
-  font-family: $ff;
-  font-size: $fs;
-  font-weight: $fw-normal;
   color: var(--text-color);
-  background: $background-main;
   background-attachment: fixed;
   transition: $transition;
+  background-color: $background-main;
 }
 
 .game-page-wrapper {
