@@ -52,14 +52,13 @@ export const AuthForm = ({ isLogin }: AuthFormProps) => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      {!isLogin && (
         <Input
           {...register("username")}
           error={errors.username?.message}
           labelText="Username"
           placeholder="Username"
         />
-      )}
+  
       <Input
         {...register("email")}
         type="email"
