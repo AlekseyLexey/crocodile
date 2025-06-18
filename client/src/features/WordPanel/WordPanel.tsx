@@ -6,7 +6,6 @@ import { setRoom } from "@/entities/room";
 import { useParams } from "react-router-dom";
 import { useAlert } from "@/shared/hooks/useAlert";
 
-
 export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
   const { showAlert } = useAlert();
   const { socket } = useSocket();
@@ -50,6 +49,7 @@ export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
       socket.off(SOCKET_WORD_ROUTES.CORRECT_WORD);
       socket.off(SOCKET_WORD_ROUTES.GET_WORD);
     };
+    //eslint-disable-next-line
   }, [socket, roomId, isCorrectWord]);
 
   return (
