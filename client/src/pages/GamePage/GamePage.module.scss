@@ -31,10 +31,11 @@
   position: absolute;
   top: 16px;
   left: calc(50% - 476px - 109px - 20px);
-  width: 109px;
-  height: 41px;
+  width: 129px;
+  height: 61px;
   transform: translateX(-100%);
   @include text-style-bold;
+  background-color: #fff5f5;
 }
 
 .colorsPanel {
@@ -87,6 +88,7 @@
   background-color: #fff5f5;
   border-radius: $br;
   top: 0px;
+  box-shadow: $box;
 }
 
 .timer {
