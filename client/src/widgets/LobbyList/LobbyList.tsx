@@ -1,19 +1,19 @@
-styles/27-update-stylesimport { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   CLIENT_ROUTES,
   ROOM_STATUSES,
   useAppDispatch,
   useAppSelector,
-} from '@/shared';
-import { CreateGameModal } from '@/shared/ui/Modal/CreateGameModal';
-import styles from './LobbyList.module.scss';
-import { getAllRoomThunk } from '@/entities/room/api/RoomApi';
-import type { IRoom } from '@/entities/room';
-import { useNavigate } from 'react-router-dom';
-import lionSvg from '@/assets/svg/animals/лев.svg';
-import crabSvg from '@/assets/svg/animals/краб.svg';
-import whaleSvg from '@/assets/svg/animals/кит.svg';
+} from "@/shared";
+import { CreateGameModal } from "@/shared/ui/Modal/CreateGameModal";
+import styles from "./LobbyList.module.scss";
+import { getAllRoomThunk } from "@/entities/room/api/RoomApi";
+import type { IRoom } from "@/entities/room";
+import { useNavigate } from "react-router-dom";
+import lionSvg from "@/assets/svg/animals/лев.svg";
+import crabSvg from "@/assets/svg/animals/краб.svg";
+import whaleSvg from "@/assets/svg/animals/кит.svg";
 
 export const LobbyList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,12 +37,11 @@ export const LobbyList = () => {
   return (
     <>
       <div className={styles.pageContainer}>
-
         {/* Десктопные животные */}
         <img src={lionSvg} alt="Лев" className={styles.lionDesktop} />
         <img src={crabSvg} alt="Краб" className={styles.crabDesktop} />
         <img src={whaleSvg} alt="Кит" className={styles.whaleDesktop} />
-        
+
         {/* Мобильное животное */}
         <img src={lionSvg} alt="Лев" className={styles.lionMobile} />
 
