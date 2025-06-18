@@ -18,16 +18,18 @@ export interface IUserRoom {
   is_lead: boolean
 }
 
+export type TypeGame = 'mono' | 'multi'
+
 export interface IRoom extends ICreateRoom {
   id: number;
   status: StatusRoomType;
   owner_id: number;
   roomUsers: IRoomUser[];
-  type: 'mono' | 'multi'
+  type: TypeGame
 }
 
 export interface ICreateRoom {
   pictures?: string;
   name: string;
-  
+  type: TypeGame
 }

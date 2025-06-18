@@ -69,7 +69,7 @@ class UserRoomService {
       }]
     })
 
-    return lead;
+    return lead ? lead.get({ plain: true }) : null;
   }
 
   static async findNextLeadOfRoom({ roomId }) {
@@ -86,7 +86,7 @@ class UserRoomService {
       order: [['createdAt', 'ASC']],
     })
 
-    return lead;
+    return lead ? lead.get({ plain: true }) : null;
   }
 
   static async changeLeadStatus({ userId, roomId, leadStatus, wasLeadStatus = false }) {

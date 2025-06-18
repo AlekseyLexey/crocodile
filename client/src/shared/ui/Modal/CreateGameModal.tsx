@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { $api, Button, CLIENT_ROUTES, useAppDispatch } from "@/shared";
-import { ThemesSelect } from "@/features";
-import { createRoomThunk, getAllRoomThunk } from "@/entities/room";
-import styles from "./CreateGameModal.module.scss";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { $api, Button, CLIENT_ROUTES, useAppDispatch } from '@/shared';
+import { ThemesSelect } from '@/features';
+import { createRoomThunk, getAllRoomThunk } from '@/entities/room';
+import styles from './CreateGameModal.module.scss';
+import type { TypeGame } from '@/entities/room/model';
 
 interface CreateGameModalProps {
   isOpen: boolean;
@@ -11,14 +12,21 @@ interface CreateGameModalProps {
 }
 
 export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
-  const [roomName, setRoomName] = useState<string>("");
-  const [theme, setTheme] = useState<string>("");
+  const [roomName, setRoomName] = useState<string>('');
+  const [theme, setTheme] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<TypeGame | ''>('');
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const createRoom = async () => {
-    const resCreate = await dispatch(createRoomThunk({ name: roomName }));
+    if (selectedType === '') {
+      return;
+    }
+
+    const resCreate = await dispatch(
+      createRoomThunk({ name: roomName, type: selectedType })
+    );
 
     if (createRoomThunk.rejected.match(resCreate)) {
       alert(resCreate.payload?.message);
@@ -27,11 +35,15 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
 
     const roomId = resCreate.payload?.data?.id;
 
-    const themeId = theme === "all" ? null : Number(theme);
+    const themeId = theme === 'all' ? null : Number(theme);
 
-    await $api.post("/theme-room", { themeId, roomId });
+    await $api.post('/theme-room', { themeId, roomId });
 
     return roomId;
+  };
+
+  const changeTypeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedType(e.target.value as TypeGame);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,7 +61,7 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
 
     navigate(`${CLIENT_ROUTES.GAME}/${roomId}`);
 
-    setRoomName("");
+    setRoomName('');
     onClose();
   };
 
@@ -72,7 +84,18 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
             required
           />
           <ThemesSelect setTheme={setTheme} />
-
+          <select
+            value={selectedType}
+            onChange={changeTypeHandler}
+            className={styles.roomInput}
+            required
+          >
+            <option value="" disabled>
+              Режим игры
+            </option>
+            <option value="mono">Моно</option>
+            <option value="multi">Мульти</option>
+          </select>
           <div className={styles.buttonsContainer}>
             <Button
               type="button"

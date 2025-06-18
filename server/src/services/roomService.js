@@ -11,7 +11,7 @@ class RoomService {
           as: 'roomUsers',
           attributes: ['id', 'username', 'point'],
           through: {
-            attributes: ['point'],
+            attributes: ['point', 'is_lead'],
           },
         },
       ],
@@ -46,7 +46,7 @@ class RoomService {
       status: 'prepare',
       name: roomData.name,
       owner_id: roomData.userId,
-      type: 'mono',
+      type: roomData.type,
     });
 
     if (newRoom) {
@@ -73,5 +73,3 @@ class RoomService {
 }
 
 module.exports = RoomService;
-
-

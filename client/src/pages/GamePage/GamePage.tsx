@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import styles from "./GamePage.module.scss";
-import { useSocket } from "@/app/store/hooks/useSocket";
-import { ChangeOfRound, Finish, Preparation } from "@/widgets";
-import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { setRoom, type IRoomUser } from "@/entities/room";
-import { setColor } from "@/entities/canvas/slice/canvasSlice";
-import { setTime } from "@/entities/room/slice/RoomSlice";
-import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import styles from './GamePage.module.scss';
+import { useSocket } from '@/app/store/hooks/useSocket';
+import { ChangeOfRound, Finish, Preparation } from '@/widgets';
+import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
+import { setRoom, type IRoomUser } from '@/entities/room';
+import { setColor } from '@/entities/canvas/slice/canvasSlice';
+import { setTime } from '@/entities/room/slice/RoomSlice';
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from '@/shared';
 import {
   Button,
   ColorsPanel,
@@ -16,13 +16,7 @@ import {
   useAppSelector,
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
-} from "@/shared";
-// import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-// import { Finish, Preparation } from "@/widgets";
-// import { useSocket } from "@/app/store/hooks/useSocket";
-// import { setRoom } from "@/entities/room";
-// import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
-// import { setColor } from "@/entities/canvas/slice/canvasSlice";
+} from '@/shared';
 
 export const GamePage = () => {
   const { room, time } = useAppSelector((state) => state.room);
@@ -55,17 +49,15 @@ export const GamePage = () => {
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
       dispatch(setRoom(room));
-      //тут по идее сетить лидера
 
-      const userLead = room.roomUsers.filter(
+      const leader = room.roomUsers.filter(
         (user: IRoomUser) => user.UserRoom.is_lead
       );
-      console.log('room ===>', room);
-      
-      setLead(userLead[0].id);
+
+      setLead(leader[0].id);
     });
 
-    socket.on("message", (message: string) => {
+    socket.on('message', (message: string) => {
       console.log(message);
     });
 
@@ -76,15 +68,15 @@ export const GamePage = () => {
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
-      socket.off("message");
+      socket.off('message');
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
     };
   }, [dispatch, user, socket, roomId]);
 
   useEffect(() => {
-    socket.on("timer", ({ time }) => {
-      if (time === null) {
+    socket.on('timer', ({ time }) => {
+      if (time === null && isLead) {
         if (room?.status === ROOM_STATUSES.ACTIVE) {
           socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
         }
@@ -108,7 +100,7 @@ export const GamePage = () => {
     }
 
     return () => {
-      socket.off("timer");
+      socket.off('timer');
     };
   }, [dispatch, user, socket, roomId, navigate, room?.status]);
 
@@ -134,11 +126,7 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-const isOwner = useMemo(
-    () => user?.id === room?.owner_id,
-    [user?.id, room?.owner_id]
-  );
-
+  const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   return (
     <div className={styles.game}>
@@ -149,22 +137,21 @@ const isOwner = useMemo(
           className={styles.exitButton}
         />
         {room?.status === ROOM_STATUSES.PREPARE && (
-          <Preparation isOwner={isOwner} />
+          <Preparation isOwner={isLead} />
         )}
         {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
-            {isOwner && <ColorsPanel />}
-            {room && <WordPanel isOwner={isOwner} />}
+            {isLead && <ColorsPanel />}
+            {room && <WordPanel isOwner={isLead} />}
             <div className={styles.canvas}>
-              <CanvasComponent isOwner={isOwner} />
+              <CanvasComponent isOwner={isLead} />
             </div>
             <div className={styles.timer}>{time} сек</div>
-            {isOwner && <Tools />}
-            {isOwner && (
-            
+            {isLead && <Tools />}
+            {isLead && (
               <Button buttonText="Завершить игру" onClick={handleEndGame} />
             )}
-            {isOwner && (
+            {isLead && (
               <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
             )}
           </>

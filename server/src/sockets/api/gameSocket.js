@@ -2,7 +2,8 @@ const RoomService = require('../../services/roomService');
 const updateRoomsWithUserProfilePoints = require('../helpers/updateRoomsWithUserProfilePoints');
 const { sendRoom } = require('../helpers/sendRoom');
 const nextLeadHandler = require('../helpers/nextLeadHandler');
-const { initTimerForRoom } = require("../helpers/timerStore");
+const { initTimerForRoom } = require('../helpers/timerStore');
+const { roomWords } = require('../helpers/wordStore');
 
 const GAME_ROUTES = {
   START: 'startGame',
@@ -34,25 +35,30 @@ module.exports.gameSocket = (io, socket) => {
       status: ROOM_STATUS.PAUSE,
     });
 
-     //мультирежим
-    if (room.type === 'multi') {
-      await nextLeadHandler(roomId);
+    const roomMap = roomWords.get(roomId);
+
+    const currentWord = roomMap.currentWord;
+    if (!roomMap.unUsedWords.includes(currentWord)) {
+      roomMap.unUsedWords.push(currentWord);
     }
-    
+
+    if (room.type === 'multi') {
+      const nextLead = await nextLeadHandler(roomId);
+
+      if (!nextLead) {
+        const room = await updateRoomsWithUserProfilePoints(roomId);
+        io.to(roomId).emit('endGame', { room });
+        return;
+      }
+    }
 
     initTimerForRoom(io, roomId, ROOM_STATUS.PAUSE);
 
-   
-
-    // sendRoom(io, roomId, room);
-    //не будем пробрасывать, обновим в любом случае
     sendRoom(io, roomId);
     io.to(roomId).emit('message', `Смена раунда`);
   });
 
   socket.on(GAME_ROUTES.END, async ({ roomId }) => {
-    // const room = await RoomService.updateRoomById(roomId, { status: 'end' });
-
     const room = await updateRoomsWithUserProfilePoints(roomId);
 
     sendRoom(io, roomId, room);

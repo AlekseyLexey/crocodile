@@ -1,7 +1,7 @@
 const UserRoomService = require('../../services/userRoomService');
 
 async function nextLeadHandler(roomId) {
-  const currentLead = await UserRoomService.findLeadOfRoom(roomId);
+  const currentLead = await UserRoomService.findLeadOfRoom({ roomId });
 
   if (currentLead) {
     await UserRoomService.changeLeadStatus({
@@ -12,7 +12,7 @@ async function nextLeadHandler(roomId) {
     });
   }
 
-  const nextLead = await UserRoomService.findNextLeadOfRoom(roomId);
+  const nextLead = await UserRoomService.findNextLeadOfRoom({ roomId });
 
   if (nextLead) {
     await UserRoomService.changeLeadStatus({
