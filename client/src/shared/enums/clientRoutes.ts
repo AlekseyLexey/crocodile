@@ -26,6 +26,7 @@ export enum SOCKET_ROOM_ROUTES {
 
 export enum SOCKET_STATUS_ROUTES {
   START = "startGame",
+  PAUSE = "pauseGame",
   END = "endGame",
 }
 
