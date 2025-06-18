@@ -1,5 +1,5 @@
-const { initWordsForRoom } = require('../helpers/wordStore');
-const newWordSendler = require('../helpers/newWordSendler');
+const { initWordsForRoom } = require("../helpers/wordStore");
+const newWordSendler = require("../helpers/newWordSendler");
 
 module.exports.wordSocket = (io, socket) => {
   // socket.on('chooseTheme', async ({ roomId, themeId }) => {
@@ -12,9 +12,7 @@ module.exports.wordSocket = (io, socket) => {
   // });
 
   //пробуем без темы, подтянем ее прямо при инициализации
-  socket.on('chooseTheme', async ({ roomId }) => {
-    // console.log('wordSocket themeId ===> ', themeId);
-
+  socket.on("chooseTheme", async ({ roomId }) => {
     await initWordsForRoom(roomId);
 
     await newWordSendler(io, roomId);

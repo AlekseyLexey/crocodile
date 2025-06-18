@@ -10,12 +10,14 @@ import {
 interface IRoomState {
   rooms: IRoom[];
   room: IRoom | null;
+  time: number | null;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: IRoomState = {
   rooms: [],
+  time: null,
   room: null,
   isLoading: false,
   error: null,
@@ -27,6 +29,9 @@ const roomSlice = createSlice({
   reducers: {
     setRoom: (state, action: PayloadAction<IRoom | null>) => {
       state.room = action.payload;
+    },
+    setTime: (state, action: PayloadAction<number | null>) => {
+      state.time = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -75,6 +80,6 @@ const roomSlice = createSlice({
   },
 });
 
-export const { setRoom } = roomSlice.actions;
+export const { setRoom, setTime } = roomSlice.actions;
 
 export const roomReducer = roomSlice.reducer;

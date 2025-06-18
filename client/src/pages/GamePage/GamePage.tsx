@@ -1,6 +1,13 @@
-import { useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styles from './GamePage.module.scss';
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import styles from "./GamePage.module.scss";
+import { useSocket } from "@/app/store/hooks/useSocket";
+import { ChangeOfRound, Finish, Preparation } from "@/widgets";
+import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
+import { setRoom } from "@/entities/room";
+import { setColor } from "@/entities/canvas/slice/canvasSlice";
+import { setTime } from "@/entities/room/slice/RoomSlice";
+import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
 import {
   Button,
   ColorsPanel,
@@ -10,16 +17,11 @@ import {
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
 } from "@/shared";
-import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { Finish, Preparation } from "@/widgets";
-import { useSocket } from "@/app/store/hooks/useSocket";
-import { setRoom } from "@/entities/room";
-import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
-import { setColor } from "@/entities/canvas/slice/canvasSlice";
 
 export const GamePage = () => {
-  const { room } = useAppSelector((state) => state.room);
+  const { room, time } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -30,10 +32,10 @@ export const GamePage = () => {
   if (!user) {
     navigate(CLIENT_ROUTES.SIGN_IN);
   }
-  const dispatch = useAppDispatch();
   const { socket } = useSocket();
 
   useEffect(() => {
+    if (!roomId) return;
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
       user,
       roomId,
@@ -47,7 +49,7 @@ export const GamePage = () => {
       dispatch(setRoom(room));
     });
 
-    socket.on('message', (message: string) => {
+    socket.on("message", (message: string) => {
       console.log(message);
     });
 
@@ -58,14 +60,29 @@ export const GamePage = () => {
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
-      socket.off('message');
+      socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, user, socket, roomId]);
 
   useEffect(() => {
+    socket.on("timer", ({ time }) => {
+      if (time === null) {
+        if (room?.status === ROOM_STATUSES.ACTIVE) {
+          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
+        }
+        if (room?.status === ROOM_STATUSES.PAUSE) {
+          socket.emit(SOCKET_STATUS_ROUTES.START, { roomId });
+        }
+        dispatch(setTime(null));
+        return;
+      }
+
+      const seconds = Math.round(time / 1000);
+      dispatch(setTime(seconds));
+    });
+
     if (room?.status === ROOM_STATUSES.END) {
       const timer = setTimeout(() => {
         navigate(CLIENT_ROUTES.LOBBY_LIST);
@@ -73,7 +90,17 @@ export const GamePage = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [navigate, room?.status]);
+
+    return () => {
+      socket.off("timer");
+    };
+  }, [dispatch, user, socket, roomId, navigate, room?.status]);
+
+  const handleChangeGame = () => {
+    socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
+      roomId,
+    });
+  };
 
   const handleEndGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.END, {
@@ -91,7 +118,10 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-  const isOwner = user?.id === room?.owner_id;
+  const isOwner = useMemo(
+    () => user?.id === room?.owner_id,
+    [user?.id, room?.owner_id]
+  );
 
   return (
     <div className={styles.game}>
@@ -111,13 +141,17 @@ export const GamePage = () => {
             <div className={styles.canvas}>
               <CanvasComponent isOwner={isOwner} />
             </div>
-            <div className={styles.timer}>00:30</div>
+            <div className={styles.timer}>{time} сек</div>
             {isOwner && <Tools />}
             {isOwner && (
               <Button buttonText="Завершить игру" onClick={handleEndGame} />
             )}
+            {isOwner && (
+              <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
+            )}
           </>
         )}
+        {room?.status === ROOM_STATUSES.PAUSE && <ChangeOfRound />}
         {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
