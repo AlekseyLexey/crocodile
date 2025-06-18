@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Button,
   CLIENT_ROUTES,
   ROOM_STATUSES,
   useAppDispatch,
   useAppSelector,
-} from '@/shared';
-import { CreateGameModal } from '@/shared/ui/Modal/CreateGameModal';
-import styles from './LobbyList.module.scss';
-import { getAllRoomThunk } from '@/entities/room/api/RoomApi';
-import type { IRoom } from '@/entities/room';
-import { useNavigate } from 'react-router-dom';
+} from "@/shared";
+import { CreateGameModal } from "@/shared/ui/Modal/CreateGameModal";
+import styles from "./LobbyList.module.scss";
+import { getAllRoomThunk } from "@/entities/room/api/RoomApi";
+import type { IRoom } from "@/entities/room";
+import { useNavigate } from "react-router-dom";
 
 export const LobbyList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,10 +26,6 @@ export const LobbyList = () => {
       return;
     }
   }, [dispatch]);
-
-  if (!rooms.length) {
-    return <h2>Лобби пока что нет...</h2>;
-  }
 
   const handleJoinGame = (id: number) => {
     navigate(`${CLIENT_ROUTES.GAME}/${id}`);
