@@ -32,11 +32,12 @@ class RoomController {
   static async createRoom(req, res, next) {
     try {
       const userId = res.locals.user.id;
-      const { pictures = "", name } = req.body;
+      const { pictures = "", name, type } = req.body;
       const newRoom = await RoomService.createNewRoom({
         pictures,
         name,
         userId,
+        type
       });
 
       if (!newRoom) {

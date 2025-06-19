@@ -99,6 +99,8 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
         y,
       },
     });
+    ctx.lineTo(x, y);
+    ctx.stroke();
   };
 
   const stopDrawing = () => {

@@ -8,24 +8,26 @@
   background-color: #fff5f5;
   border-radius: $br;
   top: 0px;
+  background-image:$win;
 }
 
 .title {
-  font-size: 32px;
   color: #1f1d1d;
   margin-bottom: 1rem;
+  @include text-style-bold;
+  font-size: 50px;
 }
 
 .description {
+  @include text-style-bold;
   font-size: 1.1rem;
-  color: #424040;
   margin-bottom: 2rem;
 }
 
 .startButton {
   background: $background-modal;
-  color: white;
-  border: none;
+  @include text-style-bold;
+  border: 5px solid #033d0696;
   padding: 12px 30px;
   font-size: 1.1rem;
   border-radius: 8px;

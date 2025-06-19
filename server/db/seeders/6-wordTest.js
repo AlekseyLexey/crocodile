@@ -1,45 +1,45 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      'Words',
+      "Words",
       [
         {
-          name: 'Драккар',
+          name: "Драккар",
           theme_id: 1,
         },
         {
-          name: 'Дракон',
+          name: "Дракон",
           theme_id: 1,
         },
         {
-          name: 'Динозавр',
+          name: "Динозавр",
           theme_id: 1,
         },
         {
-          name: 'Кот',
+          name: "Кот",
           theme_id: 1,
         },
         {
-          name: 'Он',
+          name: "Он",
           theme_id: 1,
         },
         {
-          name: 'Собака',
+          name: "Собака",
           theme_id: 1,
         },
         {
-          name: 'Ололо',
-          theme_id: 1,
-        },
-        {
-          name: 'Ступа',
+          name: "Ололо",
           theme_id: 2,
         },
         {
-          name: 'Миля',
+          name: "Ступа",
+          theme_id: 2,
+        },
+        {
+          name: "Миля",
           theme_id: 3,
         },
       ],
@@ -48,6 +48,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Words', null, {});
+    await queryInterface.bulkDelete("Words", null, {});
   },
 };
