@@ -8,6 +8,10 @@
   display: flex;
   flex-direction: column;
   padding: 82px 0 0 0;
+
+  @media (max-width: 768px) {
+    display: none ; 
+  }
 }
 
 .toolButton {

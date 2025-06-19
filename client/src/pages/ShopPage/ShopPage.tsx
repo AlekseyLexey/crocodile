@@ -1,7 +1,11 @@
 import { Button } from "@/shared";
+import { useBackground } from "@/app/store/BackgroundContext";
+import { useEffect } from "react";
 import styles from "./ShopPage.module.scss";
 
 export const ShopPage = () => {
+    const { setBackground } = useBackground();
+
     const shop = [
         {id: 1, name: 'Футболка', price: 300},
         {id: 2, name: 'Джинсы', price: 1200},
@@ -16,6 +20,12 @@ export const ShopPage = () => {
         {id: 11, name: 'Галстук', price: 600},
         {id: 12, name: 'Перчатки', price: 700},
     ]
+
+    useEffect(() => {
+        setBackground("beach");
+        
+        return () => setBackground("forest");
+    }, [setBackground]);
 
     return (
         <div className={styles.shopPage}>

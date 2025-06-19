@@ -17,6 +17,9 @@ import {
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
 } from "@/shared";
+import { useBackground } from "@/app/store/BackgroundContext";
+import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
+import raccoonSvg from "@/assets/svg/animals/енот.svg";
 
 export const GamePage = () => {
   const { room, time } = useAppSelector((state) => state.room);
@@ -24,6 +27,7 @@ export const GamePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { setBackground } = useBackground();
 
   const [lead, setLead] = useState<number | null>(null);
 
@@ -39,6 +43,8 @@ export const GamePage = () => {
   const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   useEffect(() => {
+    setBackground("river");
+
     if (!roomId) return;
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
       user,
@@ -78,42 +84,9 @@ export const GamePage = () => {
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
       socket.off("disconnect");
+      setBackground("forest");
     };
-  }, [dispatch, user, socket, roomId]);
-
-  useEffect(() => {
-    let endGameTimer: NodeJS.Timeout;
-
-    socket.on("alertDisconnect", ({ disconnetedUser }) => {
-      if (disconnetedUser.id === lead) {
-        if (room?.type === "mono") {
-          alert(
-            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Игра закончится через 30 сек`
-          );
-          endGameTimer = setTimeout(() => {
-            socket.emit(SOCKET_STATUS_ROUTES.END, {
-              roomId,
-            });
-          }, 10000);
-        }
-        if (room?.type === "multi") {
-          alert(
-            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Переходим к следующему раунду`
-          );
-          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
-            roomId,
-          });
-        }
-        return;
-      }
-      alert(`${disconnetedUser.username} отключился`);
-    });
-
-    return () => {
-      socket.off("alertDisconnect");
-      clearTimeout(endGameTimer);
-    };
-  }, [dispatch, user, socket, roomId, lead, room?.type]);
+  }, [dispatch, user, socket, roomId, setBackground]);
 
   useEffect(() => {
     socket.on("timer", ({ time }) => {
@@ -172,12 +145,13 @@ export const GamePage = () => {
 
   return (
     <div className={styles.game}>
+      <img
+        src={crocodileSvg}
+        alt="Крокодил"
+        className={styles.crocodileDesktop}
+      />
+      <img src={raccoonSvg} alt="Енот" className={styles.raccoonDesktop} />
       <div className={styles.container}>
-        <Button
-          onClick={handleExit}
-          buttonText="Выйти из игры"
-          className={styles.exitButton}
-        />
         {room?.status === ROOM_STATUSES.PREPARE && (
           <Preparation isOwner={isLead} />
         )}
@@ -190,12 +164,6 @@ export const GamePage = () => {
             </div>
             <div className={styles.timer}>{time} сек</div>
             {isLead && <Tools />}
-            {isLead && (
-              <Button buttonText="Завершить игру" onClick={handleEndGame} />
-            )}
-            {isLead && (
-              <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
-            )}
           </>
         )}
         {room?.status === ROOM_STATUSES.PAUSE && <ChangeOfRound />}
@@ -210,6 +178,27 @@ export const GamePage = () => {
           ))}
         </div>
         {room && <Chat />}
+      </div>
+      <div className={styles.controls}>
+        {isLead && room?.status === ROOM_STATUSES.ACTIVE && (
+          <>
+            <Button
+              buttonText="Завершить игру"
+              onClick={handleEndGame}
+              className={styles.gameButton}
+            />
+            <Button
+              buttonText="Завершить раунд"
+              onClick={handleChangeGame}
+              className={styles.gameButton}
+            />
+          </>
+        )}
+        <Button
+          onClick={handleExit}
+          buttonText="Выйти из игры"
+          className={styles.gameButton}
+        />
       </div>
     </div>
   );
