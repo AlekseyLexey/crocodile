@@ -15,6 +15,11 @@ function initSocket(io) {
     wordSocket(io, socket);
     canvasSocket(io, socket);
     colorSocket(io, socket);
+    socket.on("disconnect", () => {
+      io.to(socket.roomId).emit("alertDisconnect", {
+        disconnetedUser: socket.user,
+      });
+    });
   });
 }
 
