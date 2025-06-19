@@ -53,8 +53,8 @@ export const ShopPage = () => {
         productId
       });
 
-      if (response.data.statusCode === 201) { // Изменено с 200 на 201, так как в контроллере возвращается 201
-        // Обновляем список купленных товаров
+      if (response.data.statusCode === 201) { 
+       
         setPurchasedIds(prev => [...prev, productId]);
         showAlert('Товар успешно куплен!');
       } else {
@@ -67,7 +67,7 @@ export const ShopPage = () => {
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
-  if (products.length === 0) return <div className={styles.empty}>No products available</div>;
+  if (products.length === 0) return <div className={styles.empty}>Нет подходящих продуктов</div>;
 
   return (
     <div className={styles.shopPage}>
