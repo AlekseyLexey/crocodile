@@ -25,6 +25,7 @@
       -webkit-text-fill-color: #2B640B;
       -webkit-box-shadow: 0 0 0 1000px transparent inset;
       transition: background-color 5000s ease-in-out 0s;
+      border: 3px solid rgba(0, 0, 0, 0.22);
     }
 
     &::placeholder {
@@ -32,10 +33,11 @@
     }
 
     &:focus {
-      border-color: rgba(0, 0, 0, 0.4);
+      border-color: 3px solid rgba(0, 0, 0, 0.5);
       outline: none;
       box-shadow: none;
       background-color: transparent;
+      border: 3px solid rgba(0, 0, 0, 0.22);
     }
 
     &[type="password"],
