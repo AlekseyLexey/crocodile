@@ -6,14 +6,19 @@ import { CLIENT_ROUTES } from "@/shared/enums/clientRoutes";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
 import { signInThunk, signUpThunk } from "@/entities/user";
-import { registrationSchema, type RegistrationFormData } from "@/shared/validation/validationSchemas";
+import {
+  registrationSchema,
+  type RegistrationFormData,
+} from "@/shared/validation/validationSchemas";
 import styles from "./AuthForm.module.scss";
+import { useAlert } from "@/shared/hooks/useAlert";
 
 interface AuthFormProps {
   isLogin: boolean;
 }
 
 export const AuthForm = ({ isLogin }: AuthFormProps) => {
+  const { showAlert } = useAlert();
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -35,31 +40,28 @@ export const AuthForm = ({ isLogin }: AuthFormProps) => {
     try {
       const action = isLogin ? signInThunk : signUpThunk;
       const res = await dispatch(action(formData));
-
       if (action.rejected.match(res)) {
-        alert(res.payload?.message || "Произошла ошибка");
+        showAlert(res.payload?.message || "Произошла ошибка");
         return;
       }
-
-      alert("Успешно!");
+      showAlert("Успешно!");
       reset();
       navigate(CLIENT_ROUTES.MAIN);
     } catch (error) {
       console.error("Ошибка:", error);
-      alert("Произошла непредвиденная ошибка");
+      showAlert("Произошла непредвиденная ошибка");
     }
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      {!isLogin && (
-        <Input
-          {...register("username")}
-          error={errors.username?.message}
-          labelText="Username"
-          placeholder="Username"
-        />
-      )}
+      <Input
+        {...register("username")}
+        error={errors.username?.message}
+        labelText="Username"
+        placeholder="Username"
+      />
+
       <Input
         {...register("email")}
         type="email"
@@ -74,9 +76,9 @@ export const AuthForm = ({ isLogin }: AuthFormProps) => {
         labelText="Password"
         placeholder="Password"
       />
-      <Button 
-        type="submit" 
-        buttonText={isLogin ? "Войти" : "Зарегистрироваться"} 
+      <Button
+        type="submit"
+        buttonText={isLogin ? "Войти" : "Зарегистрироваться"}
       />
     </form>
   );

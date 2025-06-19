@@ -26,10 +26,11 @@
 
 //для маленьких кнопок
 @mixin button {
-  width: 109px;
-  height: 41px;
+  width: 160px;
+  height: 61px;
   background-color: #71A47350;
   stroke: #3B673D50;
+  cursor: pointer;
 }
 
 //для больших кнопок
@@ -38,4 +39,5 @@
   height: 50px;
   background-color: #71A47350;
   stroke: #3B673D50;
+  cursor: pointer;
 }

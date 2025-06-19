@@ -29,7 +29,6 @@ export const AuthPage = () => {
         <Button
           buttonText={isLogin ? "Регистрация" : "Войти в профиль"}
           onClick={() => setIsLogin(!isLogin)}
-          variant="text"
         />
       </div>
     </div>
