@@ -10,7 +10,7 @@ interface Product {
   name: string;
   price: number;
   category_id: number;
-  isPurchased?: boolean; // Добавляем поле для статуса покупки
+  isPurchased?: boolean;
 }
 
 export const ShopPage = () => {
@@ -23,7 +23,7 @@ export const ShopPage = () => {
   useEffect(() => {
     const GetData = async () => {
       try {
-        // Загружаем продукты
+        // Продукты
         const productsResponse = await $api.get<IApiResponse<Product[]>>("/products");
         if (productsResponse.data.statusCode === 200) {
           setProducts(productsResponse.data.data);
@@ -31,7 +31,7 @@ export const ShopPage = () => {
           setError(productsResponse.data.message || "Не удалось загрузить товары");
         }
 
-        // Загружаем купленные товары текущего пользователя
+        // пользователь
         const purchasedResponse = await $api.get<IApiResponse<{product_id: number}[]>>("/buies/user");
         if (purchasedResponse.data.statusCode === 200) {
           const purchasedIds = purchasedResponse.data.data.map(item => item.product_id);
@@ -53,7 +53,7 @@ export const ShopPage = () => {
         productId
       });
 
-      if (response.data.statusCode === 200) {
+      if (response.data.statusCode === 201) { // Изменено с 200 на 201, так как в контроллере возвращается 201
         // Обновляем список купленных товаров
         setPurchasedIds(prev => [...prev, productId]);
         showAlert('Товар успешно куплен!');
@@ -81,7 +81,7 @@ export const ShopPage = () => {
               <div className={styles.productImage}>
                 <h3 className={styles.productName}>{product.name}</h3>
                 <p className={styles.productPrice}>{product.price} руб.</p>
-                {isPurchased && <div className={styles.purchasedBadge}>Куплено</div>}
+                {isPurchased && <div className={styles.purchasedBadge}></div>}
               </div>
               <Button
                 buttonText={isPurchased ? "Уже куплено" : "Купить"}
