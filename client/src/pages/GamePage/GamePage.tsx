@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./GamePage.module.scss";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { ChangeOfRound, Finish, Preparation } from "@/widgets";
 import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { setRoom } from "@/entities/room";
+import { setRoom, type IRoomUser } from "@/entities/room";
 import { setColor } from "@/entities/canvas/slice/canvasSlice";
 import { setTime } from "@/entities/room/slice/RoomSlice";
 import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
@@ -24,6 +24,8 @@ export const GamePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const [lead, setLead] = useState<number | null>(null);
 
   const roomId: number = useMemo(() => {
     return Number(id);
@@ -47,6 +49,12 @@ export const GamePage = () => {
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
       dispatch(setRoom(room));
+
+      const leader = room.roomUsers.filter(
+        (user: IRoomUser) => user.UserRoom.is_lead
+      );
+
+      setLead(leader[0].id);
     });
 
     socket.on("message", (message: string) => {
@@ -68,7 +76,7 @@ export const GamePage = () => {
 
   useEffect(() => {
     socket.on("timer", ({ time }) => {
-      if (time === null) {
+      if (time === null && isLead) {
         if (room?.status === ROOM_STATUSES.ACTIVE) {
           socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
         }
@@ -94,6 +102,7 @@ export const GamePage = () => {
     return () => {
       socket.off("timer");
     };
+    //eslint-disable-next-line
   }, [dispatch, user, socket, roomId, navigate, room?.status]);
 
   const handleChangeGame = () => {
@@ -118,10 +127,7 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-  const isOwner = useMemo(
-    () => user?.id === room?.owner_id,
-    [user?.id, room?.owner_id]
-  );
+  const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   return (
     <div className={styles.game}>
@@ -132,21 +138,21 @@ export const GamePage = () => {
           className={styles.exitButton}
         />
         {room?.status === ROOM_STATUSES.PREPARE && (
-          <Preparation isOwner={isOwner} />
+          <Preparation isOwner={isLead} />
         )}
         {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
-            {isOwner && <ColorsPanel />}
-            {room && <WordPanel isOwner={isOwner} />}
+            {isLead && <ColorsPanel />}
+            {room && <WordPanel isOwner={isLead} />}
             <div className={styles.canvas}>
-              <CanvasComponent isOwner={isOwner} />
+              <CanvasComponent isOwner={isLead} />
             </div>
             <div className={styles.timer}>{time} сек</div>
-            {isOwner && <Tools />}
-            {isOwner && (
+            {isLead && <Tools />}
+            {isLead && (
               <Button buttonText="Завершить игру" onClick={handleEndGame} />
             )}
-            {isOwner && (
+            {isLead && (
               <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
             )}
           </>

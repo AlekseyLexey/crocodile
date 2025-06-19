@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       status: { type: DataTypes.TEXT, allowNull: false },
       name: { type: DataTypes.TEXT, allowNull: false },
       owner_id: { type: DataTypes.INTEGER, allowNull: false },
+      type: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: 'mono',
+      },
     },
     {
       sequelize,

@@ -14,10 +14,9 @@
 .modalContainer {
   width: 625px;
   min-height: 118px;
-  background: linear-gradient(180deg, #FF2C68 0%, #387EFF 100%);
+  background: $background-container;
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .modalHeader {
@@ -25,11 +24,8 @@
 }
 
 .modalTitle {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: white;
+  @include text-style-bold;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .modalForm {
@@ -63,16 +59,14 @@
   width: 250px;
   height: 50px;
   background: rgba(0, 0, 0, 0.2);
-  border: none;
   border-radius: 12px;
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 600;
+  @include text-style-bold;
+  @include big-button;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.3);
+    background: #71a47379;
     transform: translateY(-2px);
   }
 }
@@ -81,14 +75,11 @@
   width: 150px;
   height: 50px;
   background: rgba(255, 255, 255, 0.2);
-  border: none;
   border-radius: 12px;
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 600;
+  @include text-style-bold;
+  @include big-button;
   cursor: pointer;
   transition: all 0.3s ease;
-  @include text-style-bold;
 
   &:hover {
     background: rgba(255, 255, 255, 0.3);

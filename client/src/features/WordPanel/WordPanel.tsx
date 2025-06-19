@@ -6,7 +6,6 @@ import { setRoom } from "@/entities/room";
 import { useParams } from "react-router-dom";
 import { useAlert } from "@/shared/hooks/useAlert";
 
-
 export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
   const { showAlert } = useAlert();
   const { socket } = useSocket();
