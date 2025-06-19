@@ -36,6 +36,8 @@ export const GamePage = () => {
   }
   const { socket } = useSocket();
 
+  const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
+
   useEffect(() => {
     if (!roomId) return;
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
@@ -45,6 +47,10 @@ export const GamePage = () => {
 
     socket.on(SOCKET_DRAW_ROUTES.COLOR, ({ color }) => {
       dispatch(setColor(color));
+    });
+
+    socket.on("disconnect", () => {
+      alert("ВЫ ВЫЛЕТИ");
     });
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
@@ -71,17 +77,55 @@ export const GamePage = () => {
       socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
+      socket.off("disconnect");
     };
   }, [dispatch, user, socket, roomId]);
 
   useEffect(() => {
-    socket.on("timer", ({ time }) => {
-      if (time === null && isLead) {
-        if (room?.status === ROOM_STATUSES.ACTIVE) {
-          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
+    let endGameTimer: NodeJS.Timeout;
+
+    socket.on("alertDisconnect", ({ disconnetedUser }) => {
+      if (disconnetedUser.id === lead) {
+        if (room?.type === "mono") {
+          alert(
+            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Игра закончится через 30 сек`
+          );
+          endGameTimer = setTimeout(() => {
+            socket.emit(SOCKET_STATUS_ROUTES.END, {
+              roomId,
+            });
+          }, 10000);
         }
-        if (room?.status === ROOM_STATUSES.PAUSE) {
-          socket.emit(SOCKET_STATUS_ROUTES.START, { roomId });
+        if (room?.type === "multi") {
+          alert(
+            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Переходим к следующему раунду`
+          );
+          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
+            roomId,
+          });
+        }
+        return;
+      }
+      alert(`${disconnetedUser.username} отключился`);
+    });
+
+    return () => {
+      socket.off("alertDisconnect");
+      clearTimeout(endGameTimer);
+    };
+  }, [dispatch, user, socket, roomId, lead, room?.type]);
+
+  useEffect(() => {
+    socket.on("timer", ({ time }) => {
+      if (time === null) {
+        if (isLead && room?.status !== ROOM_STATUSES.PREPARE) {
+          if (room?.status === ROOM_STATUSES.ACTIVE) {
+            socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
+          }
+          if (room?.status === ROOM_STATUSES.PAUSE) {
+            socket.emit(SOCKET_STATUS_ROUTES.START, { roomId });
+          }
+          return;
         }
         dispatch(setTime(null));
         return;
@@ -102,8 +146,7 @@ export const GamePage = () => {
     return () => {
       socket.off("timer");
     };
-    //eslint-disable-next-line
-  }, [dispatch, user, socket, roomId, navigate, room?.status]);
+  }, [dispatch, user, socket, roomId, navigate, room?.status, isLead]);
 
   const handleChangeGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
@@ -126,8 +169,6 @@ export const GamePage = () => {
     dispatch(setRoom(null));
     navigate(CLIENT_ROUTES.MAIN);
   };
-
-  const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   return (
     <div className={styles.game}>
