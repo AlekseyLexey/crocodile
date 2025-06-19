@@ -37,20 +37,19 @@
   grid-template-rows: 27px 426px 83px;
   gap: 16px;
   grid-template-areas:
-    'colors word timer chat'
-    'colors canvas tools chat'
-    'sidebar sidebar sidebar chat';
+    "colors word timer chat"
+    "colors canvas tools chat"
+    "sidebar sidebar sidebar chat";
   box-sizing: border-box;
+  
 }
 
 .exitButton {
-  position: absolute;
-  top: 16px;
-  left: -180px;
+  position: relative;
   width: 129px;
   height: 61px;
+  margin-top: 20px;
   @include text-style-bold;
-  background-color: #fff5f5;
 }
 
 .colorsPanel {
@@ -77,11 +76,7 @@
 }
 
 .timer {
-  grid-area: timer;
-  width: 42px;
-  height: 18px;
-  justify-self: end;
-  margin-right: 10px;
+  margin: 0;
   @include text-style-bold;
   @include flex-center;
 }
@@ -112,7 +107,6 @@
   flex-direction: column;
 }
 
-/* Остальные стили остаются без изменений */
 .colorRow {
   display: flex;
   justify-content: center;
@@ -229,18 +223,21 @@
   flex-shrink: 0;
   box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .chatInput {
-  position: absolute;
-  right: 40px;
+  position: relative;
+  right: auto;
   height: 74px;
-  width: 204px;
+  width: calc(100% - 52px); // 40px padding + 12px margin
   padding: 8px 12px;
   box-sizing: border-box;
   @include text-style-semibold;
   background-color: $white;
   border-radius: 8px;
+  margin: 0 20px;
 
   &:focus {
     outline: none;
@@ -250,7 +247,7 @@
 
 .sendButton {
   position: absolute;
-  right: 12px;
+  right: 20px;
   top: 16px;
   width: 25px;
   height: 21px;
@@ -266,5 +263,219 @@
   .toolIcon {
     width: 100%;
     height: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .game {
+    width: calc(100% - 52px);
+    margin: 26px;
+    padding: 0;
+    min-height: calc(100vh - 52px);
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr auto; 
+    grid-template-rows: auto 1fr auto;
+    height: calc(100vh - 78px);
+    min-height: 0;
+    gap: 16px;
+    padding: 16px;
+    grid-template-areas:
+      "word timer"
+      "canvas canvas"
+      "chat chat";
+    margin-bottom: 0;
+    overflow: hidden;
+    background-color: $background-container;
+    border-radius: $br;
+    box-shadow: $box;
+  }
+
+  .wordPanel {
+    grid-area: word;
+    background: $background-mini;
+    border-radius: $br;
+    padding: 12px;
+    text-align: center;
+    @include text-style-bold;
+    box-shadow: $box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container:has(.preparation) {
+    .preparation {
+      grid-area: 1 / 1 / span 3;
+      height: 100%;
+      display: flex;
+      z-index: 2;
+    }
+
+    .wordPanel,
+    .chat {
+      display: none;
+    }
+  }
+
+  .canvas {
+    grid-area: canvas;
+    height: 100%;
+    min-height: 300px;
+    width: 100%;
+    background-color: #fff5f5;
+    border-radius: $br;
+  }
+
+  .chat {
+    grid-area: chat;
+    height: 30vh;
+    min-height: 200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: $background-mini;
+    border-radius: $br;
+    box-shadow: $box;
+    padding: 0;
+    overflow: hidden;
+
+    .roomName {
+      width: 100%;
+      border-radius: $br $br 0 0;
+      margin: 0;
+      box-shadow: none;
+    }
+
+    .messagesContainer {
+      width: 100%;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .inputContainer {
+      width: 100%;
+      border-radius: 0 0 $br $br;
+      margin: 0;
+
+      .chatInput {
+        width: calc(100% - 40px);
+        margin: 0 20px;
+      }
+    }
+  }
+
+  .colorsPanel,
+  .tools,
+  .sidebar {
+    display: none;
+  }
+}
+
+.gameButton {
+  width: 129px;
+  height: 61px;
+  @include text-style-bold;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.preparation,
+.changeOfRound,
+.finish {
+  box-shadow: $box; 
+  position: relative;
+  z-index: 1;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: $win;
+    background-size: cover;
+    background-position: center;
+    border-radius: $br;
+    z-index: -1;
+  }
+}
+
+.crocodileDesktop {
+  position: absolute;
+  left: 0;
+  bottom: 113px; 
+  width: 180px;
+  height: 180px;
+  z-index: 100;
+  transform: translateX(-50%);
+
+  @media (max-width: 1440px) {
+    width: 160px;
+    height: 160px;
+  }
+
+  @media (max-width: 1200px) {
+    width: 140px;
+    height: 140px;
+  }
+
+  @media (max-width: 992px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.raccoonDesktop {
+  position: absolute;
+  right: calc(244px + 16px);
+  bottom: 270px;
+  width: 150px;
+  height: 150px;
+  z-index: 100;
+
+  @media (max-width: 1440px) {
+    width: 140px;
+    height: 140px;
+  }
+
+  @media (max-width: 1200px) {
+    width: 130px;
+    height: 130px;
+  }
+
+  @media (max-width: 992px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
   }
 }

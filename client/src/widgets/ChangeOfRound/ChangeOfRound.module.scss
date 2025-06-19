@@ -1,4 +1,4 @@
-.finish {
+.changeOfRound {
   @include flex-center;
   flex-direction: column;
   width: 100%;
@@ -33,7 +33,14 @@
   text-align: center;
 }
 
-.resultsContainer {
+.subtitle {
+  @include text-style-bold;
+  font-size: clamp(18px, 3vw, 24px);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.resultsTable {
   width: 80%;
   max-width: 600px;
   margin-bottom: 2rem;
@@ -46,10 +53,6 @@
     width: 95%;
     padding: 0.5rem;
   }
-}
-
-.resultsTable {
-  width: 100%;
 }
 
 .tableHeader {
@@ -99,7 +102,7 @@
   font-weight: bold;
 }
 
-.returnButton {
+.actionButton {
   @include text-style-bold;
   border: 5px solid #033d0696;
   padding: 12px 30px;

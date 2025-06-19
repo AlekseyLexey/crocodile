@@ -17,6 +17,8 @@ import {
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
 } from "@/shared";
+import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
+import raccoonSvg from "@/assets/svg/animals/енот.svg";
 
 export const GamePage = () => {
   const { room, time } = useAppSelector((state) => state.room);
@@ -131,12 +133,9 @@ export const GamePage = () => {
 
   return (
     <div className={styles.game}>
+      <img src={crocodileSvg} alt="Крокодил" className={styles.crocodileDesktop} />
+      <img src={raccoonSvg} alt="Енот" className={styles.raccoonDesktop} />
       <div className={styles.container}>
-        <Button
-          onClick={handleExit}
-          buttonText="Выйти из игры"
-          className={styles.exitButton}
-        />
         {room?.status === ROOM_STATUSES.PREPARE && (
           <Preparation isOwner={isLead} />
         )}
@@ -149,12 +148,6 @@ export const GamePage = () => {
             </div>
             <div className={styles.timer}>{time} сек</div>
             {isLead && <Tools />}
-            {isLead && (
-              <Button buttonText="Завершить игру" onClick={handleEndGame} />
-            )}
-            {isLead && (
-              <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
-            )}
           </>
         )}
         {room?.status === ROOM_STATUSES.PAUSE && <ChangeOfRound />}
@@ -170,6 +163,27 @@ export const GamePage = () => {
         </div>
         {room && <Chat />}
       </div>
+      <div className={styles.controls}>
+      {isLead && room?.status === ROOM_STATUSES.ACTIVE && (
+        <>
+          <Button 
+            buttonText="Завершить игру" 
+            onClick={handleEndGame} 
+            className={styles.gameButton} 
+          />
+          <Button 
+            buttonText="Завершить раунд" 
+            onClick={handleChangeGame} 
+            className={styles.gameButton} 
+          />
+        </>
+      )}
+      <Button
+        onClick={handleExit}
+        buttonText="Выйти из игры"
+        className={styles.gameButton}
+      />
+    </div>
     </div>
   );
 };
