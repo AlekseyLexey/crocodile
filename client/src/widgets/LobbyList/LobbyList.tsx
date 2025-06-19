@@ -11,6 +11,7 @@ import styles from "./LobbyList.module.scss";
 import { getAllRoomThunk } from "@/entities/room/api/RoomApi";
 import type { IRoom } from "@/entities/room";
 import { useNavigate } from "react-router-dom";
+import { useBackground } from "@/app/store/BackgroundContext";
 import lionSvg from "@/assets/svg/animals/лев.svg";
 import crabSvg from "@/assets/svg/animals/краб.svg";
 import whaleSvg from "@/assets/svg/animals/кит.svg";
@@ -20,15 +21,19 @@ export const LobbyList = () => {
   const dispatch = useAppDispatch();
   const { rooms } = useAppSelector((state) => state.room);
   const navigate = useNavigate();
+  const { setBackground } = useBackground();
 
   useEffect(() => {
     const res = dispatch(getAllRoomThunk());
+    setBackground("river");
 
     if (getAllRoomThunk.rejected.match(res)) {
       alert(res.payload?.message);
       return;
     }
-  }, [dispatch]);
+    
+    return () => setBackground("forest");
+  }, [dispatch,setBackground]);
 
   const handleJoinGame = (id: number) => {
     navigate(`${CLIENT_ROUTES.GAME}/${id}`);

@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
 import { refreshThunk } from "@/entities/user";
 import { CLIENT_ROUTES } from "@/shared";
+import { BackgroundProvider } from "../store/BackgroundContext";
 
 export const Layout = () => {
   const [isRefreshLoading, setRefreshLoading] = useState(false);
@@ -35,10 +36,12 @@ export const Layout = () => {
   return (
     <>
       <Header />
-      <Wrapper>
-        <Outlet />
-        <Footer />
-      </Wrapper>
+      <BackgroundProvider>
+        <Wrapper>
+          <Outlet />
+          <Footer />
+        </Wrapper>
+      </BackgroundProvider>
     </>
   );
 };

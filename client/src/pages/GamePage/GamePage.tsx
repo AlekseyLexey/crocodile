@@ -17,6 +17,7 @@ import {
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
 } from "@/shared";
+import { useBackground } from "@/app/store/BackgroundContext";
 import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
 import raccoonSvg from "@/assets/svg/animals/енот.svg";
 
@@ -26,6 +27,7 @@ export const GamePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { setBackground } = useBackground();
 
   const [lead, setLead] = useState<number | null>(null);
 
@@ -39,6 +41,8 @@ export const GamePage = () => {
   const { socket } = useSocket();
 
   useEffect(() => {
+    setBackground("river");
+
     if (!roomId) return;
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
       user,
@@ -73,8 +77,9 @@ export const GamePage = () => {
       socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
+      setBackground("forest");
     };
-  }, [dispatch, user, socket, roomId]);
+  }, [dispatch, user, socket, roomId,setBackground]);
 
   useEffect(() => {
     socket.on("timer", ({ time }) => {
