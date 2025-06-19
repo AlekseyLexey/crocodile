@@ -9,29 +9,57 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 20px;
 }
 
 .modalContainer {
-  width: 625px;
+  width: 100%;
+  max-width: 625px;
   min-height: 118px;
   background: $background-container;
   border-radius: 12px;
   padding: 30px;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 15px;
+  }
 }
 
 .modalHeader {
   margin-bottom: 25px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 15px;
+  }
 }
 
 .modalTitle {
   @include text-style-bold;
   text-align: center;
+  font-size: 24px;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
 }
 
 .modalForm {
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @media (max-width: 480px) {
+    gap: 15px;
+  }
 }
 
 .roomInput {
@@ -47,12 +75,23 @@
     outline: none;
     border-color: rgba(0, 0, 0, 0.3);
   }
+
+  @media (max-width: 480px) {
+    height: 36px;
+    font-size: 0.9rem;
+  }
 }
 
 .buttonsContainer {
   display: flex;
   justify-content: center;
   gap: 20px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
 }
 
 .createButton {
@@ -69,6 +108,16 @@
     background: #71a47379;
     transform: translateY(-2px);
   }
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 45px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    height: 40px;
+  }
 }
 
 .cancelButton {
@@ -84,5 +133,15 @@
   &:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 45px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    height: 40px;
   }
 }
