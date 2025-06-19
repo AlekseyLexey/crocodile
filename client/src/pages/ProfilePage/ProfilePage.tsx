@@ -1,4 +1,4 @@
-import { Button, Input } from "@/shared";
+import { Button, Input, SOCKET_ROOM_ROUTES } from "@/shared";
 import styles from "./ProfilePage.module.scss";
 import { useEffect, useState } from "react";
 
@@ -7,23 +7,29 @@ export const ProfilePage = () => {
   // const [showSection2, setShowSection2] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [avatars, setAvatars] = useState<string[]>([]);
-
-
   const [showSection2, setShowSection2] = useState(false);
+  const [gamesToShow, setGamesToShow] = useState(5);
+
   const userData = {
     username: "NoHomo",
     avatar: " ",
     lastGames: [
-      { id: 1, score: 10},
-      { id: 2, score: 8},
-      { id: 3, score: 12},
-      { id: 3, score: 12},
-      { id: 3, score: 12},
-  { id: 3, score: 12},
-  { id: 3, score: 12},
-  { id: 3, score: 12},
+      { id: 1, score: 10, date: "2023-05-15" },
+      { id: 2, score: 8, date: "2023-05-14" },
+      { id: 3, score: 12, date: "2023-05-13" },
+      { id: 4, score: 15, date: "2023-05-12" },
+      { id: 5, score: 7, date: "2023-05-11" },
+      { id: 6, score: 9, date: "2023-05-10" },
+      { id: 7, score: 11, date: "2023-05-09" },
+      { id: 8, score: 13, date: "2023-05-08" },
     ],
   };
+
+
+
+  const sortedGames = [...userData.lastGames]
+    .sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, gamesToShow)
 
   const openAvatarModal = () => {
     setIsAvatarModalOpen(true);
@@ -119,10 +125,14 @@ export const ProfilePage = () => {
       <div className={`${styles.section2} ${showSection2 ? styles.showSection2 : ''}`}>
         <h2 className={styles.sectionTitle}>Результаты прошлых игр</h2>
         <div className={styles.scrollContainer}>
-            
-          {userData.lastGames.map((game) => (
+          {sortedGames.map((game) => (
             <div className={styles.gamesHistory} key={game.id}>
-              <div className={styles.results}> Очки: {game.score}</div>
+              <div className={styles.results}>
+                Очки: {game.score}
+                <span className={styles.gameDate}>
+                  {new Date(game.date).toLocaleDateString()}
+                </span>
+              </div>
             </div>
           ))}
         </div>
