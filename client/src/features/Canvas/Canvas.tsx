@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo,useLayoutEffect } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
 import { useParams } from "react-router-dom";
 import { getCursorPosition } from "./helpers/getCursorPosition";
+import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
+import { setDimensions } from "@/entities/canvas/slice/canvasSlice";
 
 interface CanvasProps {
   isOwner: boolean;
@@ -26,6 +28,27 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   }, [id]);
 
   const { floodFill } = useFloodFill();
+  const dispatch = useAppDispatch();
+
+  useLayoutEffect(() => {
+    const updateCanvasSize = () => {
+      if (!canvasRef.current?.parentElement) return;
+      
+      const { width, height } = canvasRef.current.parentElement.getBoundingClientRect();
+      dispatch(setDimensions({ 
+        width: Math.floor(width), 
+        height: Math.floor(height) 
+      }));
+    };
+
+    updateCanvasSize();
+    const resizeObserver = new ResizeObserver(updateCanvasSize);
+    if (canvasRef.current?.parentElement) {
+      resizeObserver.observe(canvasRef.current.parentElement);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [dispatch, canvasRef]);
 
   useEffect(() => {
     socket.on(SOCKET_DRAW_ROUTES.DRAW, ({ figure }) => {

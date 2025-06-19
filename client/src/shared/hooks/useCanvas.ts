@@ -23,10 +23,7 @@ export const useCanvas = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    if (
-      canvas.width !== dimensions.width ||
-      canvas.height !== dimensions.height
-    ) {
+     if (canvas.width !== dimensions.width || canvas.height !== dimensions.height) {
       canvas.width = dimensions.width;
       canvas.height = dimensions.height;
       ctx.fillStyle = "#FFFFFF";

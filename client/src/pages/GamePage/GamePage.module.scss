@@ -1,22 +1,39 @@
-
-
 .game {
   position: relative;
-  width: 100%;
+  width: calc(100% - 328px);
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  margin: 45px 164px 120px;
+  padding: 0;
+  min-height: calc(100vh - 165px);
+
+  @media (max-width: 1440px) {
+    width: calc(100% - 328px);
+    margin-left: 164px;
+    margin-right: 164px;
+  }
+
+  @media (max-width: 1200px) {
+    width: calc(100% - 328px);
+    margin-left: 164px;
+    margin-right: 164px;
+  }
+
+  @media (max-width: 992px) {
+    width: calc(100% - 200px);
+    margin-left: 100px;
+    margin-right: 100px;
+  }
 }
 
 .container {
   position: relative;
-  width: 952px;
+  width: 100%;
   height: 595px;
   background-color: $background-container;
   border-radius: $br;
   padding: 16px;
   display: grid;
-  grid-template-columns: 100px 464px 66px 244px;
+  grid-template-columns: 100px minmax(0, 1fr) 66px 244px;
   grid-template-rows: 27px 426px 83px;
   gap: 16px;
   grid-template-areas:
@@ -24,23 +41,21 @@
     'colors canvas tools chat'
     'sidebar sidebar sidebar chat';
   box-sizing: border-box;
-  margin: 0 auto;
 }
 
 .exitButton {
   position: absolute;
   top: 16px;
-  left: calc(50% - 476px - 109px - 20px);
+  left: -180px;
   width: 129px;
   height: 61px;
-  transform: translateX(-100%);
   @include text-style-bold;
   background-color: #fff5f5;
 }
 
 .colorsPanel {
   grid-area: colors;
-  width: 100px;
+  width: 100%;
   height: 470px;
   border-radius: $br;
   background-color: #ffefef28;
@@ -51,6 +66,53 @@
   box-shadow: $box;
 }
 
+.canvas {
+  grid-area: canvas;
+  width: 100%;
+  height: 426px;
+  background-color: #fff5f5;
+  border-radius: $br;
+  box-shadow: $box;
+  position: relative;
+}
+
+.timer {
+  grid-area: timer;
+  width: 42px;
+  height: 18px;
+  justify-self: end;
+  margin-right: 10px;
+  @include text-style-bold;
+  @include flex-center;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  width: 100%;
+  height: 83px;
+  background-color: $background-mini;
+  border-radius: $br;
+  @include text-style-semibold;
+  display: flex;
+  gap: 8px;
+  box-shadow: $box;
+  padding: 8px;
+  align-items: center;
+}
+
+.chat {
+  grid-area: chat;
+  width: 100%;
+  height: 566px;
+  background-color: $background-mini;
+  border-radius: $br;
+  @include text-style-bold;
+  display: flex;
+  box-shadow: $box;
+  flex-direction: column;
+}
+
+/* Остальные стили остаются без изменений */
 .colorRow {
   display: flex;
   justify-content: center;
@@ -79,40 +141,6 @@
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
   }
-}
-
-.canvas {
-  grid-area: canvas;
-  width: 464px;
-  height: 426px;
-  background-color: #fff5f5;
-  border-radius: $br;
-  top: 0px;
-  box-shadow: $box;
-}
-
-.timer {
-  grid-area: timer;
-  width: 42px;
-  height: 18px;
-  justify-self: end;
-  margin-right: 10px;
-  @include text-style-bold;
-  @include flex-center;
-}
-
-.sidebar {
-  grid-area: sidebar;
-  width: 661px;
-  height: 83px;
-  background-color: $background-mini;
-  border-radius: $br;
-  @include text-style-semibold;
-  display: flex;
-  gap: 8px;
-  box-shadow: $box;
-  padding: 8px;
-  align-items: center;
 }
 
 .userCard {
@@ -148,19 +176,6 @@
     font-size: 12px;
     margin-top: 2px;
   }
-}
-
-.chat {
-  grid-area: chat;
-  width: 244px;
-  height: 566px;
-  background-color: $background-mini;
-  border-radius: $br;
-  margin-right: 16px;
-  @include text-style-bold;
-  display: flex;
-  box-shadow: $box;
-  flex-direction: column;
 }
 
 .messagesContainer {
