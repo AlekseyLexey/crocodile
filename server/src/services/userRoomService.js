@@ -1,5 +1,6 @@
-const { UserRoom, User } = require("../../db/models");
-const HttpError = require("../exceptions/HttpError");
+const { UserRoom, User, Room } = require('../../db/models');
+const HttpError = require('../exceptions/HttpError');
+const { Op } = require('sequelize');
 
 class UserRoomService {
   static async findUserRoomByIds(userId, roomId) {
@@ -11,11 +12,11 @@ class UserRoomService {
       include: [
         {
           model: User,
-          as: "user",
-          attributes: ["id", "username", "point"],
+          as: 'user',
+          attributes: ['id', 'username', 'point'],
         },
       ],
-      attributes: ["user_id", "room_id", "point", "is_lead", "was_lead"],
+      attributes: ['user_id', 'room_id', 'point', 'is_lead', 'was_lead'],
     });
 
     return userRoom;
@@ -39,7 +40,7 @@ class UserRoomService {
     const userRoom = await UserRoomService.findUserRoomByIds(userId, roomId);
 
     if (!userRoom) {
-      throw new HttpError(404, "UserRoom not found");
+      throw new HttpError(404, 'UserRoom not found');
     }
 
     await userRoom.update({ point });
@@ -55,7 +56,7 @@ class UserRoomService {
       },
     });
   }
-  //или н и не нужен
+
   static async findLeadOfRoom({ roomId }) {
     const lead = await UserRoom.findOne({
       where: {
@@ -65,7 +66,7 @@ class UserRoomService {
       include: [
         {
           model: User,
-          as: "user",
+          as: 'user',
         },
       ],
     });
@@ -83,10 +84,10 @@ class UserRoomService {
       include: [
         {
           model: User,
-          as: "user",
+          as: 'user',
         },
       ],
-      order: [["createdAt", "ASC"]],
+      order: [['createdAt', 'ASC']],
     });
 
     return lead ? lead.get({ plain: true }) : null;
@@ -101,13 +102,105 @@ class UserRoomService {
     const changedItem = await UserRoomService.findUserRoomByIds(userId, roomId);
 
     if (!changedItem) {
-      throw new HttpError(404, "UserRoom not found");
+      throw new HttpError(404, 'UserRoom not found');
     }
 
     await changedItem.update({ is_lead: leadStatus, was_lead: wasLeadStatus });
 
     return await UserRoomService.findUserRoomByIds(userId, roomId);
   }
+
+  static async findUserFinishedRooms(userId) {
+    const userRooms = await UserRoom.findAll({
+      where: {
+        user_id: userId,
+      },
+      include: [
+        {
+          model: Room,
+          as: 'room',
+          where: {
+            status: 'end',
+          },
+          attributes: [
+            'id',
+            'pictures',
+            'status',
+            'name',
+            'owner_id',
+            'type',
+            'createdAt',
+          ],
+          required: true,
+        },
+      ],
+      order: [
+        [
+          {
+            model: Room,
+            as: 'room',
+          },
+          'createdAt',
+          'ASC',
+        ],
+      ],
+      attributes: ['point'],
+    });
+
+    if (userRooms.length === 0) {
+      return null
+    }
+
+    return userRooms.map((room) => room.get({ plain: true }));
+  }
+
+  static async findUserActiveRooms(userId) {
+    const userRooms = await UserRoom.findAll({
+      where: {
+        user_id: userId,
+      },
+      include: [
+        {
+          model: Room,
+          as: 'room',
+          where: {
+            status: {
+              [Op.in]: ['active', 'pause'],
+            },
+          },
+          attributes: [
+            'id',
+            'pictures',
+            'status',
+            'name',
+            'owner_id',
+            'type',
+            'createdAt',
+          ],
+          required: true,
+        },
+      ],
+      order: [
+        [
+          {
+            model: Room,
+            as: 'room',
+          },
+          'createdAt',
+          'ASC',
+        ],
+      ],
+      attributes: ['point'],
+    });
+
+    if (userRooms.length === 0) {
+      return null
+    }
+
+    return userRooms.map((room) => room.get({ plain: true }));
+  }
 }
 
 module.exports = UserRoomService;
+
+UserRoomService.findUserActiveRooms(2).then((data) => console.log(data));

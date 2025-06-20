@@ -4,6 +4,9 @@ const HttpError = require('../exceptions/HttpError');
 class RoomService {
   static async findAllRooms() {
     return await Room.findAll({
+      where: {
+        status: 'prepare',
+      },
       attributes: ['id', 'pictures', 'status', 'name', 'owner_id', 'type'],
       include: [
         {
