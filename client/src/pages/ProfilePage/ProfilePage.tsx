@@ -1,4 +1,4 @@
-import { $api, Button, Input, SOCKET_ROOM_ROUTES } from '@/shared';
+import { $api, Button, Input } from '@/shared';
 import styles from './ProfilePage.module.scss';
 import { useCallback, useEffect, useState } from 'react';
 import type { IActiveUserRoom } from '@/entities/room/model';
@@ -6,7 +6,7 @@ import type { IActiveUserRoom } from '@/entities/room/model';
 export const ProfilePage = () => {
   // const [showSection2, setShowSection2] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [avatars, setAvatars] = useState<string[]>([]);
+  const [avatars] = useState<string[]>([]); ///???
   const [showSection2, setShowSection2] = useState(false);
   // const [gamesToShow, setGamesToShow] = useState(5);
 
@@ -38,7 +38,7 @@ export const ProfilePage = () => {
     setIsAvatarModalOpen(false);
   };
 
-  const selectAvatar = (avatarUrl: string) => {
+  const selectAvatar = () => {
     // Здесь можно добавить логику сохранения выбранной аватарки
     closeAvatarModal();
   };
@@ -115,7 +115,7 @@ export const ProfilePage = () => {
                 <div
                   key={index}
                   className={styles.avatarOption}
-                  onClick={() => selectAvatar(avatar)}
+                  onClick={() => selectAvatar()}
                 >
                   <img src={avatar} alt={`Avatar ${index}`} />
                 </div>
