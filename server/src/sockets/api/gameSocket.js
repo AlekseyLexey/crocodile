@@ -31,37 +31,42 @@ module.exports.gameSocket = (io, socket) => {
   });
 
   socket.on(GAME_ROUTES.PAUSE, async ({ roomId }) => {
-    const room = await RoomService.updateRoomById(roomId, {
-      status: ROOM_STATUS.PAUSE,
-    });
+    const actulaleRoom = await RoomService.findRoomById(roomId);
 
-    if (room.type === "multi") {
-      const roomMap = roomWords.get(roomId);
+    if (actulaleRoom.status === "active") {
+      const room = await RoomService.updateRoomById(roomId, {
+        status: ROOM_STATUS.PAUSE,
+      });
 
-      const currentWord = roomMap.currentWord;
-      if (!roomMap.unUsedWords.includes(currentWord)) {
-        roomMap.unUsedWords.push(currentWord);
+      if (room.type === "multi") {
+        const roomMap = roomWords.get(roomId);
+
+        const currentWord = roomMap.currentWord;
+        if (!roomMap.unUsedWords.includes(currentWord)) {
+          roomMap.unUsedWords.push(currentWord);
+        }
+
+        const nextLead = await nextLeadHandler(roomId);
+
+        if (!nextLead) {
+          const room = await updateRoomsWithUserProfilePoints(roomId);
+          io.to(roomId).emit("endGame", { room });
+          return;
+        }
       }
 
-      const nextLead = await nextLeadHandler(roomId);
+      initTimerForRoom(io, roomId, ROOM_STATUS.PAUSE);
 
-      if (!nextLead) {
-        const room = await updateRoomsWithUserProfilePoints(roomId);
-        io.to(roomId).emit("endGame", { room });
-        return;
-      }
+      io.to(roomId).emit("message", `Смена раунда`);
+      await sendRoom(io, roomId);
     }
-
-    initTimerForRoom(io, roomId, ROOM_STATUS.PAUSE);
-
-    sendRoom(io, roomId);
-    io.to(roomId).emit("message", `Смена раунда`);
   });
 
   socket.on(GAME_ROUTES.END, async ({ roomId }) => {
     const room = await updateRoomsWithUserProfilePoints(roomId);
 
     sendRoom(io, roomId, room);
+    socket.leave(roomId);
     io.to(roomId).emit("message", `Игра законченна`);
   });
 };

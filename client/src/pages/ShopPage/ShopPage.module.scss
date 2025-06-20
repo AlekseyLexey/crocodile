@@ -1,6 +1,5 @@
 .shopPage {
     padding-top: 40px;
-    background-color: $background-main;
     width: 100%;
 }
 
@@ -15,21 +14,21 @@
 .productsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 80px 62px; /* Вертикальный отступ 80px, горизонтальный 62px */
+    gap: 80px 62px; 
     padding: 0 20px;
-    justify-items: center; /* Центрируем карточки внутри ячеек сетки */
+    justify-items: center; 
     width: 100%;
-    max-width: 1200px; /* Опционально: ограничение макс. ширины */
-    margin: 0 auto; /* Центрируем сетку на странице */
+    max-width: 1200px; 
+    margin: 0 auto; 
 }
 
 .productCard {
     position: relative;
     width: 140px;
-    height: 169px;
+    height: 209px;
     border-radius: $br;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: $box; 
 }
 
 .productImage {
@@ -47,10 +46,8 @@
     top: 8px;
     left: 0;
     right: 0;
-    font-size: 14px;
-    color: white;
+    @include text-style-bold;
     text-align: center;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     padding: 4px 8px;
     z-index: 2;
 }
@@ -58,13 +55,10 @@
 .productPrice {
     @include text-style-bold;
     position: absolute;
-    bottom: 30px;
+    bottom: 60px;
     left: 0;
     right: 0;
-    font-size: 16px;
-    color: white;
     text-align: center;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     padding: 4px 8px;
     z-index: 2;
 }
@@ -77,4 +71,6 @@
     width: calc(100% - 16px);
     height: 24px;
     z-index: 3;
+    width: 90px;
+    height: 50px;
 }

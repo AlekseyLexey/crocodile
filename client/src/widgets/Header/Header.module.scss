@@ -54,12 +54,11 @@
   border-radius: 8px;
   z-index: 1000;
   overflow: hidden;
-  background: linear-gradient(90deg, #ff2c68, #387eff);
+  background:$background-modal;
 }
 
 .menuItem {
-  color: white;
-  font-size: 15px;
+  @include text-style-bold;
   width: 132px;
   top: 18px;
   left: 18px;

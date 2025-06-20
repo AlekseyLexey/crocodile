@@ -1,7 +1,8 @@
 import { Button } from "@/shared";
+import { useBackground } from "@/app/store/BackgroundContext";
 import styles from "./ShopPage.module.scss";
 import { useEffect, useState } from "react";
-import { $api } from '../../shared/lib/axiosConfig';
+import { $api } from "../../shared/lib/axiosConfig";
 import type { IApiResponse } from "@/shared";
 import { useAlert } from "@/shared/hooks/useAlert";
 
@@ -14,27 +15,37 @@ interface Product {
 }
 
 export const ShopPage = () => {
-  const {showAlert} = useAlert()
+  const { setBackground } = useBackground();
+  const { showAlert } = useAlert();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [purchasedIds, setPurchasedIds] = useState<number[]>([]);
 
   useEffect(() => {
+    setBackground("beach");
     const GetData = async () => {
       try {
         // Продукты
-        const productsResponse = await $api.get<IApiResponse<Product[]>>("/products");
+        const productsResponse = await $api.get<IApiResponse<Product[]>>(
+          "/products"
+        );
         if (productsResponse.data.statusCode === 200) {
           setProducts(productsResponse.data.data);
         } else {
-          setError(productsResponse.data.message || "Не удалось загрузить товары");
+          setError(
+            productsResponse.data.message || "Не удалось загрузить товары"
+          );
         }
 
         // пользователь
-        const purchasedResponse = await $api.get<IApiResponse<{product_id: number}[]>>("/buies/user");
+        const purchasedResponse = await $api.get<
+          IApiResponse<{ product_id: number }[]>
+        >("/buies/user");
         if (purchasedResponse.data.statusCode === 200) {
-          const purchasedIds = purchasedResponse.data.data.map(item => item.product_id);
+          const purchasedIds = purchasedResponse.data.data.map(
+            (item) => item.product_id
+          );
           setPurchasedIds(purchasedIds);
         }
       } catch (err) {
@@ -45,18 +56,21 @@ export const ShopPage = () => {
     };
 
     GetData();
-  }, []);
+    return () => setBackground("forest");
+  }, [setBackground]);
 
   const handleBuy = async (productId: number) => {
     try {
-      const response = await $api.post<IApiResponse<{product_id: number}>>("/buies", {
-        productId
-      });
+      const response = await $api.post<IApiResponse<{ product_id: number }>>(
+        "/buies",
+        {
+          productId,
+        }
+      );
 
-      if (response.data.statusCode === 201) { 
-       
-        setPurchasedIds(prev => [...prev, productId]);
-        showAlert('Товар успешно куплен!');
+      if (response.data.statusCode === 201) {
+        setPurchasedIds((prev) => [...prev, productId]);
+        showAlert("Товар успешно куплен!");
       } else {
         showAlert(response.data.message || "Ошибка при покупке");
       }
@@ -67,7 +81,8 @@ export const ShopPage = () => {
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
-  if (products.length === 0) return <div className={styles.empty}>Нет подходящих продуктов</div>;
+  if (products.length === 0)
+    return <div className={styles.empty}>Нет подходящих продуктов</div>;
 
   return (
     <div className={styles.shopPage}>
@@ -75,9 +90,14 @@ export const ShopPage = () => {
       <div className={styles.productsGrid}>
         {products.map((product) => {
           const isPurchased = purchasedIds.includes(product.id);
-          
+
           return (
-            <div key={product.id} className={`${styles.productCard} ${isPurchased ? styles.purchased : ''}`}>
+            <div
+              key={product.id}
+              className={`${styles.productCard} ${
+                isPurchased ? styles.purchased : ""
+              }`}
+            >
               <div className={styles.productImage}>
                 <h3 className={styles.productName}>{product.name}</h3>
                 <p className={styles.productPrice}>{product.price} руб.</p>

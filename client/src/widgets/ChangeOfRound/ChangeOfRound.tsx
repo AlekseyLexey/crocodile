@@ -1,5 +1,5 @@
 import { Button, SOCKET_STATUS_ROUTES, useAppSelector } from "@/shared";
-import styles from "../Finish/Finish.module.scss";
+import styles from "./ChangeOfRound.module.scss";
 import { useMemo } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useParams } from "react-router-dom";
@@ -20,13 +20,14 @@ export const ChangeOfRound = () => {
   };
 
   return (
-    <div>
-      <h2>Раунд завершенн</h2>
+    <div className={styles.changeOfRound}>
+      <h2 className={styles.title}>Раунд завершён</h2>
+      
       <div className={styles.resultsTable}>
         <div className={styles.tableHeader}>
-          <span>Место </span>
-          <span>Игрок </span>
-          <span>Очки </span>
+          <span>Место</span>
+          <span>Игрок</span>
+          <span>Очки</span>
         </div>
 
         {room?.roomUsers
@@ -39,8 +40,14 @@ export const ChangeOfRound = () => {
             </div>
           ))}
       </div>
-      <h3>До нового раунда: {time} сек</h3>
-      <Button buttonText="Завершить раунд" onClick={handleChangeGame} />
+      
+      <h3 className={styles.subtitle}>До нового раунда: {time} сек</h3>
+      
+      <Button 
+        buttonText="Начать следующий раунд" 
+        onClick={handleChangeGame} 
+        className={styles.actionButton}
+      />
     </div>
   );
 };

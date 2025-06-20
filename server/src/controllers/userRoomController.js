@@ -77,6 +77,28 @@ class UserRoomController {
       next(err);
     }
   }
+
+  static async getEndedUserRooms(req, res, next) {
+    try {
+      const userId = res.locals.user.id;
+      const userRooms = await UserRoomService.findUserFinishedRooms(userId);
+
+      return res.status(200).json(formatResponse(200, 'Success', userRooms));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getActiveUserRooms(req, res, next) {
+    try {
+      const userId = res.locals.user.id;
+      const userRooms = await UserRoomService.findUserActiveRooms(userId);
+
+      return res.status(200).json(formatResponse(200, 'Success', userRooms));
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = UserRoomController;

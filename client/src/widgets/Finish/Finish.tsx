@@ -4,7 +4,6 @@ import styles from "./Finish.module.scss";
 
 export const Finish = () => {
   const navigate = useNavigate();
-
   const { room } = useAppSelector((state) => state.room);
 
   const handleReturnToLobby = () => {
@@ -12,27 +11,30 @@ export const Finish = () => {
   };
 
   return (
-    <div className={styles.preparation}>
-      <h2 className={styles.gameOverTitle}>Игра завершена!</h2>
+    <div className={styles.finish}>
+      <h2 className={styles.title}>Игра завершена!</h2>
+      
+      <div className={styles.resultsContainer}>
+        <div className={styles.resultsTable}>
+          <div className={styles.tableHeader}>
+            <span>Место</span>
+            <span>Игрок</span>
+            <span>Очки</span>
+          </div>
 
-      <div className={styles.resultsTable}>
-        <div className={styles.tableHeader}>
-          <span>Место </span>
-          <span>Игрок </span>
-          <span>Очки </span>
+          {room?.roomUsers
+            .toSorted((a, b) => b.UserRoom.point - a.UserRoom.point)
+            .map((player, index) => (
+              <div key={player.id} className={styles.playerRow}>
+                <span className={styles.position}>{index + 1}</span>
+                <span className={styles.username}>{player.username}</span>
+                <span className={styles.score}>{player.UserRoom.point}</span>
+              </div>
+            ))}
         </div>
-
-        {room?.roomUsers
-          .toSorted((a, b) => b.UserRoom.point - a.UserRoom.point)
-          .map((player, index) => (
-            <div key={player.id} className={styles.playerRow}>
-              <span className={styles.position}>{index + 1}</span>
-              <span className={styles.username}>{player.username}</span>
-              <span className={styles.score}>{player.UserRoom.point}</span>
-            </div>
-          ))}
       </div>
-      <Button
+      
+      <Button 
         onClick={handleReturnToLobby}
         buttonText="Вернуться в лобби"
         className={styles.returnButton}
