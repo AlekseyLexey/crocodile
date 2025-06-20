@@ -74,7 +74,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
 
     const ctx = canvasRef.current.getContext("2d");
@@ -101,7 +101,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     }
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (
       !isDrawing.current ||
       !canvasRef.current ||
@@ -151,11 +151,15 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
       onMouseUp={stopDrawing}
       onMouseMove={draw}
       onMouseLeave={stopDrawing}
+      onTouchStart={startDrawing}
+      onTouchMove={draw}
+      onTouchEnd={stopDrawing}
       style={{
         borderRadius: "12px",
         cursor: activeTool === SOCKET_DRAW_ROUTES.FILL ? "pointer" : "default",
         ...(isOwner ? {} : { pointerEvents: "none" }),
         backgroundColor: "#FFF5F5",
+        touchAction: "none",
       }}
     />
   );
