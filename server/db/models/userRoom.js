@@ -1,15 +1,15 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class UserRoom extends Model {
     static associate(models) {
       UserRoom.belongsTo(models.User, {
-        foreignKey: 'user_id',
-        as: 'user',
+        foreignKey: "user_id",
+        as: "user",
       });
       UserRoom.belongsTo(models.Room, {
-        foreignKey: 'room_id',
-        as: 'room',
+        foreignKey: "room_id",
+        as: "room",
       });
     }
   }
@@ -32,10 +32,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: false,
       },
+      is_online: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
     },
     {
       sequelize,
-      modelName: 'UserRoom',
+      modelName: "UserRoom",
     }
   );
   return UserRoom;

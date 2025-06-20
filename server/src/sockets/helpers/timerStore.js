@@ -1,12 +1,16 @@
+const RoomService = require("../../services/roomService");
+const GameController = require("./gameController");
+
 const timerStore = new Map();
 
-const initTimerForRoom = (io, roomId, status) => {
+const initTimerForRoom = (io, socket, roomId, status) => {
   clearTimer(roomId);
+  GameController.initTimer(initTimerForRoom);
 
   let time;
   switch (status) {
     case "active":
-      time = 20000;
+      time = 30000;
       break;
     case "pause":
       time = 5000;
@@ -17,7 +21,7 @@ const initTimerForRoom = (io, roomId, status) => {
 
   io.to(roomId).emit("timer", { time });
 
-  const timer = setInterval(() => {
+  const timer = setInterval(async () => {
     const currentData = timerStore.get(roomId);
     if (!currentData) return;
 
@@ -26,9 +30,25 @@ const initTimerForRoom = (io, roomId, status) => {
     io.to(roomId).emit("timer", { time: currentData.time });
 
     if (currentData.time <= 0) {
-      clearTimer(roomId);
-      io.to(roomId).emit("timer", { time: null });
-      return;
+      const actulaleRoom = await RoomService.findRoomById(roomId);
+      if (actulaleRoom.status === "end") {
+        io.to(roomId).emit("timer", { time: 0 });
+        clearTimer(roomId);
+        return;
+      }
+
+      switch (status) {
+        case "active":
+          await GameController.pause(io, socket, roomId, status);
+          break;
+        case "pause":
+          await GameController.active(io, socket, roomId, status);
+          break;
+        default:
+          io.to(roomId).emit("timer", { time: 0 });
+          clearTimer(roomId);
+          return;
+      }
     }
   }, 1000);
 

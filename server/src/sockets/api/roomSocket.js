@@ -2,6 +2,7 @@ const UserRoomService = require("../../services/userRoomService");
 const { sendRoom } = require("../helpers/sendRoom");
 const RoomService = require("../../services/roomService");
 const { getCurrentTime } = require("../helpers/timerStore");
+const { handleLeaveRoom } = require("../helpers/handleLeaveRoom");
 
 module.exports.roomSocket = (io, socket) => {
   socket.on("joinRoom", async ({ user, roomId }) => {
@@ -26,6 +27,12 @@ module.exports.roomSocket = (io, socket) => {
       });
     }
 
+    await UserRoomService.updateUserOnlineStatus({
+      userId: user.id,
+      roomId,
+      status: true,
+    });
+
     socket.user = user;
     socket.roomId = roomId;
     socket.join(roomId);
@@ -36,6 +43,7 @@ module.exports.roomSocket = (io, socket) => {
   });
 
   socket.on("exitRoom", async ({ user, roomId }) => {
+    await handleLeaveRoom(io, socket);
     await UserRoomService.deleteUserRoom({
       userId: user.id,
       roomId,
@@ -44,5 +52,9 @@ module.exports.roomSocket = (io, socket) => {
     sendRoom(io, roomId);
     socket.leave(roomId);
     socket.to(roomId).emit("message", `Игрок ${user.username} покинул игру`);
+  });
+
+  socket.on("leaveRoom", async () => {
+    await handleLeaveRoom(io, socket);
   });
 };

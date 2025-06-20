@@ -20,8 +20,10 @@ import {
 import { useBackground } from "@/app/store/BackgroundContext";
 import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
 import raccoonSvg from "@/assets/svg/animals/енот.svg";
+import { useAlert } from "@/shared/hooks/useAlert";
 
 export const GamePage = () => {
+  const { showAlert } = useAlert();
   const { room, time } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -43,6 +45,13 @@ export const GamePage = () => {
   const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   useEffect(() => {
+    return () => {
+      socket.emit("leaveRoom");
+    };
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     setBackground("river");
 
     if (!roomId) return;
@@ -56,7 +65,7 @@ export const GamePage = () => {
     });
 
     socket.on("disconnect", () => {
-      alert("ВЫ ВЫЛЕТИ");
+      showAlert("Призошел disconnect");
     });
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
@@ -66,7 +75,7 @@ export const GamePage = () => {
         (user: IRoomUser) => user.UserRoom.is_lead
       );
 
-      setLead(leader[0].id);
+      setLead(leader[0] ? leader[0].id : null);
     });
 
     socket.on("message", (message: string) => {
@@ -77,66 +86,24 @@ export const GamePage = () => {
       dispatch(setRoom(room));
     });
 
+    socket.on("messageDisconnect", ({ message }) => {
+      showAlert(message);
+    });
+
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
       socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
+      socket.off("alertDisconnect");
       socket.off("disconnect");
       setBackground("forest");
     };
-  }, [dispatch, user, socket, roomId, setBackground]);
-
-  useEffect(() => {
-    let endGameTimer: NodeJS.Timeout;
-
-    socket.on("alertDisconnect", ({ disconnetedUser }) => {
-      if (disconnetedUser.id === lead) {
-        if (room?.type === "mono") {
-          alert(
-            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Игра закончится через 30 сек`
-          );
-          endGameTimer = setTimeout(() => {
-            socket.emit(SOCKET_STATUS_ROUTES.END, {
-              roomId,
-            });
-          }, 10000);
-        }
-        if (room?.type === "multi") {
-          alert(
-            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Переходим к следующему раунду`
-          );
-          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
-            roomId,
-          });
-        }
-        return;
-      }
-      alert(`${disconnetedUser.username} отключился`);
-    });
-
-    return () => {
-      socket.off("alertDisconnect");
-      clearTimeout(endGameTimer);
-    };
-  }, [dispatch, user, socket, roomId, lead, room?.type]);
+  }, [dispatch, user, socket, roomId, showAlert, setBackground]);
 
   useEffect(() => {
     socket.on("timer", ({ time }) => {
-      if (time === null) {
-        if (isLead && room?.status !== ROOM_STATUSES.PREPARE) {
-          if (room?.status === ROOM_STATUSES.ACTIVE) {
-            socket.emit(SOCKET_STATUS_ROUTES.PAUSE, { roomId });
-          }
-          if (room?.status === ROOM_STATUSES.PAUSE) {
-            socket.emit(SOCKET_STATUS_ROUTES.START, { roomId });
-          }
-        }
-        dispatch(setTime(null));
-        return;
-      }
-
       const seconds = Math.round(time / 1000);
       dispatch(setTime(seconds));
     });
@@ -153,12 +120,6 @@ export const GamePage = () => {
       socket.off("timer");
     };
   }, [dispatch, user, socket, roomId, navigate, room?.status, isLead]);
-
-  const handleChangeGame = () => {
-    socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
-      roomId,
-    });
-  };
 
   const handleEndGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.END, {
@@ -218,11 +179,6 @@ export const GamePage = () => {
             <Button
               buttonText="Завершить игру"
               onClick={handleEndGame}
-              className={styles.gameButton}
-            />
-            <Button
-              buttonText="Завершить раунд"
-              onClick={handleChangeGame}
               className={styles.gameButton}
             />
           </>
