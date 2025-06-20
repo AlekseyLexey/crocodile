@@ -8,7 +8,7 @@ export const ProfilePage = () => {
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [avatars, setAvatars] = useState<string[]>([]);
   const [showSection2, setShowSection2] = useState(false);
-  const [gamesToShow, setGamesToShow] = useState(5);
+  // const [gamesToShow, setGamesToShow] = useState(5);
 
   const [finishedGames, setFinishedGames] = useState<IActiveUserRoom[]>([]);
 
@@ -30,9 +30,6 @@ export const ProfilePage = () => {
     getFinishedUserGames();
   }, []);
 
-  const sortedGames = [...userData.lastGames]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, gamesToShow);
 
   const openAvatarModal = () => {
     setIsAvatarModalOpen(true);
@@ -75,7 +72,7 @@ export const ProfilePage = () => {
 
   return (
     <div className={styles.profile}>
-      {/* Форма аватара имени и паролей */}
+      {/* Форма аватара и имени*/}
       <div
         className={`${styles.section1} ${
           showSection2 ? styles.hideSection1 : ''
@@ -94,7 +91,7 @@ export const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Пароли */}
+        {/* имя */}
         <div className={styles.nickname}>{userData.username}</div>
         <div className={styles.password}>
           <Input type="text" className={styles.input} labelText="Новое имя" />

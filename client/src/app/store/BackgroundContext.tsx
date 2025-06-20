@@ -12,7 +12,7 @@ const BackgroundContext = createContext<{
 
 export const useBackground = () => useContext(BackgroundContext);
 
-export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
+export const BackgroundProvider = ({ children }: { children: React.ReactNode }) => {
   const [background, setBackground] = useState<BackgroundType>("forest");
   
   return (
