@@ -20,6 +20,9 @@ import {
 import { useBackground } from "@/app/store/BackgroundContext";
 import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
 import raccoonSvg from "@/assets/svg/animals/енот.svg";
+import { io } from "socket.io-client";
+
+const socket = io("ws://localhost:3000");
 
 export const GamePage = () => {
   const { room, time } = useAppSelector((state) => state.room);
@@ -38,14 +41,26 @@ export const GamePage = () => {
   if (!user) {
     navigate(CLIENT_ROUTES.SIGN_IN);
   }
-  const { socket } = useSocket();
+  // const { socket, setSocket } = useSocket();
 
   const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   useEffect(() => {
+    // setSocket(io("ws://localhost:3000"));
+
+    return () => {
+      socket.emit(SOCKET_ROOM_ROUTES.EXIT_ROOM, {
+        user,
+        roomId,
+      });
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!socket || !roomId) return;
     setBackground("river");
 
-    if (!roomId) return;
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
       user,
       roomId,
@@ -89,6 +104,41 @@ export const GamePage = () => {
   }, [dispatch, user, socket, roomId, setBackground]);
 
   useEffect(() => {
+    let endGameTimer: NodeJS.Timeout;
+
+    socket.on("alertDisconnect", ({ disconnetedUser }) => {
+      if (disconnetedUser.id === lead) {
+        if (room?.type === "mono") {
+          alert(
+            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Игра закончится через 30 сек`
+          );
+          endGameTimer = setTimeout(() => {
+            socket.emit(SOCKET_STATUS_ROUTES.END, {
+              roomId,
+            });
+          }, 10000);
+        }
+        if (room?.type === "multi") {
+          alert(
+            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Переходим к следующему раунду`
+          );
+          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
+            roomId,
+          });
+        }
+        return;
+      }
+      alert(`${disconnetedUser.username} отключился`);
+    });
+
+    return () => {
+      socket.off("alertDisconnect");
+      clearTimeout(endGameTimer);
+    };
+  }, [dispatch, user, socket, roomId, lead, room?.type]);
+
+  useEffect(() => {
+    if (!socket || !roomId) return;
     socket.on("timer", ({ time }) => {
       if (time === null) {
         if (isLead && room?.status !== ROOM_STATUSES.PREPARE) {
@@ -120,6 +170,10 @@ export const GamePage = () => {
       socket.off("timer");
     };
   }, [dispatch, user, socket, roomId, navigate, room?.status, isLead]);
+
+  if (!socket) {
+    return <h1>ЗАГРУЗКА</h1>;
+  }
 
   const handleChangeGame = () => {
     socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
@@ -153,20 +207,22 @@ export const GamePage = () => {
       <img src={raccoonSvg} alt="Енот" className={styles.raccoonDesktop} />
       <div className={styles.container}>
         {room?.status === ROOM_STATUSES.PREPARE && (
-          <Preparation isOwner={isLead} />
+          <Preparation isOwner={isLead} socket={socket} />
         )}
         {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
-            {isLead && <ColorsPanel />}
-            {room && <WordPanel isOwner={isLead} />}
+            {isLead && <ColorsPanel socket={socket} />}
+            {room && <WordPanel isOwner={isLead} socket={socket} />}
             <div className={styles.canvas}>
-              <CanvasComponent isOwner={isLead} />
+              <CanvasComponent isOwner={isLead} socket={socket} />
             </div>
             <div className={styles.timer}>{time} сек</div>
-            {isLead && <Tools />}
+            {isLead && <Tools socket={socket} />}
           </>
         )}
-        {room?.status === ROOM_STATUSES.PAUSE && <ChangeOfRound />}
+        {room?.status === ROOM_STATUSES.PAUSE && (
+          <ChangeOfRound socket={socket} />
+        )}
         {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
@@ -177,7 +233,7 @@ export const GamePage = () => {
             </div>
           ))}
         </div>
-        {room && <Chat />}
+        {room && <Chat socket={socket} />}
       </div>
       <div className={styles.controls}>
         {isLead && room?.status === ROOM_STATUSES.ACTIVE && (

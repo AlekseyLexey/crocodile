@@ -5,10 +5,10 @@ import { useSocket } from "@/app/store/hooks/useSocket";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
-export const ColorsPanel = () => {
+export const ColorsPanel = ({ socket }) => {
   const dispatch = useAppDispatch();
   const { currentColor } = useAppSelector(selectCanvas);
-  const { socket } = useSocket();
+  // const { socket } = useSocket();
   const { id } = useParams();
 
   const roomId: number = useMemo(() => {

@@ -12,10 +12,10 @@ export interface IMessage {
   sender: IUser;
 }
 
-export const Chat = () => {
+export const Chat = ({ socket }) => {
   const { room } = useAppSelector((state) => state.room);
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const { socket } = useSocket();
+  // const { socket } = useSocket();
   const { user } = useAppSelector((state) => state.user);
   const [inputMessage, setInputMessage] = useState<string>("");
   const { id } = useParams();

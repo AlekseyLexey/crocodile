@@ -9,8 +9,11 @@ interface IPreparationProps {
   isOwner: boolean;
 }
 
-export const Preparation: React.FC<IPreparationProps> = ({ isOwner }) => {
-  const { socket } = useSocket();
+export const Preparation: React.FC<IPreparationProps> = ({
+  isOwner,
+  socket,
+}) => {
+  // const { socket } = useSocket();
   const { id } = useParams();
 
   const roomId: number = useMemo(() => {

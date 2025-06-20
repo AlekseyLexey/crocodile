@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo,useLayoutEffect } from "react";
+import React, { useEffect, useMemo, useLayoutEffect } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
@@ -11,8 +11,8 @@ interface CanvasProps {
   isOwner: boolean;
 }
 
-export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
-  const { socket } = useSocket();
+export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner, socket }) => {
+  // const { socket } = useSocket();
   const { canvasRef } = useCanvasContext();
   const {
     currentColor,
@@ -33,12 +33,15 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   useLayoutEffect(() => {
     const updateCanvasSize = () => {
       if (!canvasRef.current?.parentElement) return;
-      
-      const { width, height } = canvasRef.current.parentElement.getBoundingClientRect();
-      dispatch(setDimensions({ 
-        width: Math.floor(width), 
-        height: Math.floor(height) 
-      }));
+
+      const { width, height } =
+        canvasRef.current.parentElement.getBoundingClientRect();
+      dispatch(
+        setDimensions({
+          width: Math.floor(width),
+          height: Math.floor(height),
+        })
+      );
     };
 
     updateCanvasSize();

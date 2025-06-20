@@ -8,9 +8,9 @@ import { SOCKET_DRAW_ROUTES } from "@/shared";
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
 
-export const Tools = () => {
+export const Tools = ({ socket }) => {
   const { activeTool, changeTool, handleClearCanvas } = useCanvas();
-  const { socket } = useSocket();
+  // const { socket } = useSocket();
   const { id } = useParams();
 
   const roomId: number = useMemo(() => {
