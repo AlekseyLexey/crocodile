@@ -16,14 +16,7 @@ export const ProfilePage = () => {
     username: 'NoHomo',
     avatar: ' ',
     lastGames: [
-      { id: 1, score: 10, date: '2023-05-15' },
-      { id: 2, score: 8, date: '2023-05-14' },
-      { id: 3, score: 12, date: '2023-05-13' },
-      { id: 4, score: 15, date: '2023-05-12' },
-      { id: 5, score: 7, date: '2023-05-11' },
-      { id: 6, score: 9, date: '2023-05-10' },
-      { id: 7, score: 11, date: '2023-05-09' },
-      { id: 8, score: 13, date: '2023-05-08' },
+      
     ],
   };
 
@@ -155,19 +148,6 @@ export const ProfilePage = () => {
         }`}
       >
         <h2 className={styles.sectionTitle}>Результаты прошлых игр</h2>
-        <div className={styles.scrollContainer}>
-          {sortedGames.map((game) => (
-            <div className={styles.gamesHistory} key={game.id}>
-              <div className={styles.results}>
-                Очки: {game.score}
-                <span className={styles.gameDate}>
-                  {new Date(game.date).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-        <h2 className={styles.sectionTitle}>Реальные результаты прошлых игр</h2>
         <div className={styles.scrollContainer}>
           {finishedGames &&
             finishedGames.map((game) => (

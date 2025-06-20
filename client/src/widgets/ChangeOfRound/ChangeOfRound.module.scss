@@ -13,6 +13,11 @@
   
   grid-column: colors-start / tools-end;
   grid-row: word-start / tools-end;
+
+  @media (max-width: 1000px) {
+    grid-column: word-start / canvas-end;
+    grid-row: word-start / canvas-end;
+  }
   
   @media (max-width: 768px) {
     grid-column: 1 / -1;

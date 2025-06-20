@@ -7,21 +7,21 @@
   min-height: calc(100vh - 165px);
 
   @media (max-width: 1440px) {
-    width: calc(100% - 328px);
-    margin-left: 164px;
-    margin-right: 164px;
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   @media (max-width: 1200px) {
-    width: calc(100% - 328px);
-    margin-left: 164px;
-    margin-right: 164px;
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   @media (max-width: 992px) {
-    width: calc(100% - 200px);
-    margin-left: 100px;
-    margin-right: 100px;
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 
@@ -231,7 +231,7 @@
   position: relative;
   right: auto;
   height: 74px;
-  width: calc(100% - 52px); // 40px padding + 12px margin
+  width: calc(100% - 52px);
   padding: 8px 12px;
   box-sizing: border-box;
   @include text-style-semibold;
@@ -263,6 +263,41 @@
   .toolIcon {
     width: 100%;
     height: 100%;
+  }
+}
+
+.preparation,
+.changeOfRound,
+.finish {
+  box-shadow: $box; 
+  position: relative;
+  z-index: 1;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: $win;
+    background-size: cover;
+    background-position: center;
+    border-radius: $br;
+    z-index: -1;
+  }
+}
+
+@media (max-width: 1000px) {
+  .container{
+    grid-template-areas:
+    "word word timer chat"
+    "canvas canvas canvas chat"
+    "sidebar sidebar sidebar chat";
+  }
+
+  .colorsPanel,{
+    display: none;
   }
 }
 
@@ -402,50 +437,39 @@
   }
 }
 
-.preparation,
-.changeOfRound,
-.finish {
-  box-shadow: $box; 
-  position: relative;
-  z-index: 1;
-  
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: $win;
-    background-size: cover;
-    background-position: center;
-    border-radius: $br;
-    z-index: -1;
-  }
-}
-
 .crocodileDesktop {
   position: absolute;
-  left: 0;
-  bottom: 113px; 
+  left: 20px;
+  bottom: -10px;
   width: 180px;
   height: 180px;
-  z-index: 100;
-  transform: translateX(-50%);
+  z-index: 10;
 
   @media (max-width: 1440px) {
     width: 160px;
     height: 160px;
+    left: 15px;
+    bottom: -8px;
   }
 
   @media (max-width: 1200px) {
+    width: 150px;
+    height: 150px;
+    left: 10px;
+    bottom: -5px;
+  }
+
+   @media (max-height: 860px) {
+    bottom: -60px; 
     width: 140px;
     height: 140px;
   }
 
   @media (max-width: 992px) {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
+    left: 5px;
+    bottom: -5px;
   }
 
   @media (max-width: 768px) {
@@ -455,25 +479,38 @@
 
 .raccoonDesktop {
   position: absolute;
-  right: calc(244px + 16px);
-  bottom: 270px;
-  width: 150px;
-  height: 150px;
-  z-index: 100;
+  right: 20px;
+  bottom: -10px;
+  width: 180px;
+  height: 180px;
+  z-index: 10;
 
   @media (max-width: 1440px) {
+    width: 160px;
+    height: 160px;
+    right: 15px;
+    bottom: -8px;
+  }
+
+  @media (max-width: 1200px) {
+    width: 150px;
+    height: 150px;
+    right: 10px;
+    bottom: -5px;
+  }
+
+
+  @media (max-height: 860px) {
+    bottom: -50px; 
     width: 140px;
     height: 140px;
   }
 
-  @media (max-width: 1200px) {
-    width: 130px;
-    height: 130px;
-  }
-
   @media (max-width: 992px) {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
+    right: 5px;
+    bottom: -5px;
   }
 
   @media (max-width: 768px) {
