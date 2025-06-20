@@ -1,73 +1,124 @@
 import { Button } from "@/shared";
 import { useBackground } from "@/app/store/BackgroundContext";
-import { useEffect } from "react";
 import styles from "./ShopPage.module.scss";
 import foxSvg from "@/assets/svg/animals/лиса.svg";
 import penguinSvg from "@/assets/svg/animals/пингвин.svg";
+import { useEffect, useState } from "react";
+import { $api } from "@/shared/lib/axiosConfig";
+import type { IApiResponse } from "@/shared";
+import { useAlert } from "@/shared/hooks/useAlert";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category_id: number;
+  isPurchased?: boolean;
+}
+
+interface Purchase {
+  product_id: number;
+}
 
 export const ShopPage = () => {
-    const { setBackground } = useBackground();
+  const { setBackground } = useBackground();
+  const { showAlert } = useAlert();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [purchasedIds, setPurchasedIds] = useState<number[]>([]);
 
-    const shop = [
-        {id: 1, name: 'Футболка', price: 300},
-        {id: 2, name: 'Джинсы', price: 1200},
-        {id: 3, name: 'Кроссовки', price: 2500},
-        {id: 4, name: 'Куртка', price: 3500},
-        {id: 5, name: 'Шапка', price: 500},
-        {id: 6, name: 'Рюкзак', price: 1800},
-        {id: 7, name: 'Часы', price: 4200},
-        {id: 8, name: 'Очки', price: 1500},
-        {id: 9, name: 'Ремень', price: 800},
-        {id: 10, name: 'Носки', price: 200},
-        {id: 11, name: 'Галстук', price: 600},
-        {id: 12, name: 'Перчатки', price: 700},
-        {id: 1, name: 'Футболка', price: 300},
-        {id: 2, name: 'Джинсы', price: 1200},
-        {id: 3, name: 'Кроссовки', price: 2500},
-        {id: 4, name: 'Куртка', price: 3500},
-        {id: 5, name: 'Шапка', price: 500},
-        {id: 6, name: 'Рюкзак', price: 1800},
-        {id: 7, name: 'Часы', price: 4200},
-        {id: 8, name: 'Очки', price: 1500},
-        {id: 9, name: 'Ремень', price: 800},
-        {id: 10, name: 'Носки', price: 200},
-        {id: 11, name: 'Галстук', price: 600},
-        {id: 12, name: 'Перчатки', price: 700},
-    ]
+  useEffect(() => {
+    setBackground("beach");
+    const fetchData = async () => {
+      try {
+        // Продукты
+        const productsResponse = await $api.get<IApiResponse<Product[]>>(
+          "/products"
+        );
+        if (productsResponse.data.statusCode === 200) {
+          setProducts(productsResponse.data.data);
+        } else {
+          setError(
+            productsResponse.data.message || "Не удалось загрузить товары"
+          );
+        }
 
-    useEffect(() => {
-        setBackground("beach");
-        
-        return () => setBackground("forest");
-    }, [setBackground]);
+        // Купленные товары пользователя
+        const purchasedResponse = await $api.get<IApiResponse<Purchase[]>>(
+          "/buies/user"
+        );
+        if (purchasedResponse.data.statusCode === 200) {
+          const ids = purchasedResponse.data.data.map(
+            (item) => item.product_id
+          );
+          setPurchasedIds(ids);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Неизвестная ошибка");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-        <div className={styles.shopPage}>
-            <img
-                src={foxSvg}
-                alt="Лиса"
-                className={styles.foxDesktop}
-            />
-            <img
-                src={penguinSvg}
-                alt="Пингвин"
-                className={styles.penguinDesktop}
-            />
-            <h1 className={styles.title}>Магазин</h1>
-            <div className={styles.productsGrid}>
-                {shop.map((product) => (
-                    <div key={product.id} className={styles.productCard}>
-                        <div className={styles.productImage}>
-                            <h3 className={styles.productName}>{product.name}</h3>
-                            <p className={styles.productPrice}>{product.price} </p>
-                        </div>
-                        <Button
-                            buttonText="Купить"
-                            className={styles.buyButton}
-                        />
-                    </div>
-                ))}
+    fetchData();
+    return () => setBackground("forest");
+  }, [setBackground]);
+
+  const handleBuy = async (productId: number) => {
+    try {
+      const response = await $api.post<IApiResponse<Purchase>>("/buies", {
+        productId,
+      });
+
+      if (response.data.statusCode === 201) {
+        setPurchasedIds((prev) => [...prev, productId]);
+        showAlert("Товар успешно куплен!");
+      } else {
+        showAlert(response.data.message || "Ошибка при покупке");
+      }
+    } catch (err) {
+      showAlert(err instanceof Error ? err.message : "Неизвестная ошибка");
+    }
+  };
+
+  if (loading) return <div className={styles.loading}>Загрузка...</div>;
+  if (error) return <div className={styles.error}>Ошибка: {error}</div>;
+  if (products.length === 0) {
+    return <div className={styles.empty}>Нет доступных товаров</div>;
+  }
+
+  return (
+    <div className={styles.shopPage}>
+      <img src={foxSvg} alt="Лиса" className={styles.foxDesktop} />
+      <img src={penguinSvg} alt="Пингвин" className={styles.penguinDesktop} />
+      <h1 className={styles.title}>Магазин</h1>
+      <div className={styles.productsGrid}>
+        {products.map((product) => {
+          const isPurchased = purchasedIds.includes(product.id);
+
+          return (
+            <div
+              key={product.id}
+              className={`${styles.productCard} ${
+                isPurchased ? styles.purchased : ""
+              }`}
+            >
+              <div className={styles.productImage}>
+                <h3 className={styles.productName}>{product.name}</h3>
+                <p className={styles.productPrice}>{product.price} руб.</p>
+                {isPurchased && <div className={styles.purchasedBadge}></div>}
+              </div>
+              <Button
+                buttonText={isPurchased ? "Уже куплено" : "Купить"}
+                className={styles.buyButton}
+                onClick={() => !isPurchased && handleBuy(product.id)}
+                disabled={isPurchased}
+              />
             </div>
-        </div>
-    );
+          );
+        })}
+      </div>
+    </div>
+  );
 };

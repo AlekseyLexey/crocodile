@@ -1,54 +1,122 @@
-import { $api, Button, Input } from '@/shared';
-import styles from './ProfilePage.module.scss';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Input } from "@/shared";
+import styles from "./ProfilePage.module.scss";
+import { useEffect, useState } from "react";
+import { $api } from "@/shared/lib/axiosConfig";
+import { useAlert } from "@/shared/hooks/useAlert";
 import { useBackground } from "@/app/store/BackgroundContext";
-import type { IActiveUserRoom } from '@/entities/room/model';
 import hareSvg from "@/assets/svg/animals/заяц.svg";
 import hedgehogSvg from "@/assets/svg/animals/ёж.svg";
 import polarBearSvg from "@/assets/svg/animals/медведьбелый.svg";
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category_id: number;
+}
+
+interface Game {
+  id: number;
+  score: number;
+}
+
+interface Room {
+  id: number;
+  name: string;
+  createdAt: string;
+}
+
+interface FinishedGame {
+  room: Room;
+  point: number;
+}
+
+interface UserData {
+  username: string;
+  avatar: string;
+  lastGames: Game[];
+}
+
 export const ProfilePage = () => {
-  // const [showSection2, setShowSection2] = useState(false);
+  const { showAlert } = useAlert();
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [avatars] = useState<string[]>([]); ///???
+  const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState({
+    products: false,
+    games: false
+  });
   const [showSection2, setShowSection2] = useState(false);
-  // const [gamesToShow, setGamesToShow] = useState(5);
+  const [finishedGames, setFinishedGames] = useState<FinishedGame[]>([]);
   const { setBackground } = useBackground();
 
-  const [finishedGames, setFinishedGames] = useState<IActiveUserRoom[]>([]);
+  const [userData, setUserData] = useState<UserData>({
+    username: "NoHomo",
+    avatar: "",
+    lastGames: [],
+  });
 
-  const userData = {
-    username: 'NoHomo',
-    avatar: ' ',
-    lastGames: [
+  const fetchPurchasedProducts = async () => {
+    try {
+      setLoading(prev => ({...prev, products: true}));
+      const response = await $api.get<{ 
+        statusCode: number;
+        data: { Product: Product }[] 
+      }>("/buies/user");
       
-    ],
+      if (response.data.statusCode === 200) {
+        const products = response.data.data.map(item => item.Product);
+        setPurchasedProducts(products);
+      }
+    } catch (err) {
+      showAlert(err instanceof Error ? err.message : "Ошибка загрузки купленных товаров");
+    } finally {
+      setLoading(prev => ({...prev, products: false}));
+    }
+  };
+
+  const formaterData = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return dateString;
+    }
   };
 
   useEffect(() => {
     setBackground("forest");
+    
     const getFinishedUserGames = async () => {
-      const finishedGames = await $api.get('user-room/finished');
-
-      setFinishedGames(finishedGames.data.data);
+      try {
+        setLoading(prev => ({...prev, games: true}));
+        const response = await $api.get<{ data: FinishedGame[] }>('user-room/finished');
+        setFinishedGames(response.data?.data || []);
+      } catch (error) {
+        console.error('Error loading finished games:', error);
+        setFinishedGames([]);
+      } finally {
+        setLoading(prev => ({...prev, games: false}));
+      }
     };
 
     getFinishedUserGames();
   }, [setBackground]);
 
-
   const openAvatarModal = () => {
+    fetchPurchasedProducts();
     setIsAvatarModalOpen(true);
-    // Здесь можно загрузить доступные аватарки, если они подгружаются с сервера
   };
 
   const closeAvatarModal = () => {
     setIsAvatarModalOpen(false);
   };
 
-  const selectAvatar = () => {
-    // Здесь можно добавить логику сохранения выбранной аватарки
+  const selectAvatar = (product: Product) => {
+    setUserData(prev => ({
+      ...prev,
+      avatar: product.name
+    }));
     closeAvatarModal();
+    showAlert("Аватар успешно изменен!");
   };
 
   useEffect(() => {
@@ -67,77 +135,61 @@ export const ProfilePage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const formaterData = useCallback((stringData: string): string => {
-    const date = new Date(stringData);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = String(date.getFullYear());
-
-    return `${day}-${month}-${year}`;
-  }, []);
-
   return (
     <div className={styles.profile}>
       <img src={hareSvg} alt="Заяц" className={styles.hareDesktop} />
-            <img src={hedgehogSvg} alt="Ёж" className={styles.hedgehogDesktop} />
-            <img src={polarBearSvg} alt="Белый медведь" className={styles.polarBearDesktop} />
-      {/* Форма аватара и имени*/}
-      <div
-        className={`${styles.section1} ${
-          showSection2 ? styles.hideSection1 : ''
-        }`}
-      >
+      <img src={hedgehogSvg} alt="Ёж" className={styles.hedgehogDesktop} />
+      <img src={polarBearSvg} alt="Белый медведь" className={styles.polarBearDesktop} />
+      
+      <div className={`${styles.section1} ${showSection2 ? styles.hideSection1 : ''}`}>
         <div className={styles.avatarWrapper}>
           <div className={styles.avatarContainer}>
-            <img src={userData.avatar} className={styles.avatarImage} />
-            <button
+            {userData.avatar ? (
+              <div className={styles.avatarImage}>{userData.avatar}</div>
+            ) : (
+              <div className={styles.avatarPlaceholder}>Аватарка</div>
+            )}
+            <button 
               onClick={openAvatarModal}
               className={styles.avatarChangeButton}
               aria-label="Change avatar"
             >
-              +
-            </button>
+              +  
+            </button>  
           </div>
         </div>
-
-        {/* имя */}
+          
         <div className={styles.nickname}>{userData.username}</div>
-        <div className={styles.password}>
+        <div className={styles.password}> 
           <Input type="text" className={styles.input} labelText="Новое имя" />
-          <Button
-            type="submit"
-            buttonText="Сохранить"
-            className={styles.submitButton}
-          />
+          <Button type="submit" buttonText="Сохранить" className={styles.submitButton} /> 
         </div>
       </div>
 
-      {/* Модальное окно выбора аватарки */}
       {isAvatarModalOpen && (
         <div className={styles.modalOverlay} onClick={closeAvatarModal}>
-          <div
-            className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className={styles.modalTitle}>Выберите аватарку</h2>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h2 className={styles.modalTitle}>Выберите купленный продукт в качестве аватарки</h2>
             <div className={styles.avatarsGrid}>
-              {/* Здесь будут отображаться доступные аватарки */}
-              {avatars.map((avatar, index) => (
-                <div
-                  key={index}
-                  className={styles.avatarOption}
-                  onClick={() => selectAvatar()}
-                >
-                  <img src={avatar} alt={`Avatar ${index}`} />
-                </div>
-              ))}
-
-              {/* Пример добавления новой аватарки */}
-              <div className={styles.avatarOption}>
-                <div className={styles.addAvatar}>+</div>
-              </div>
+              {loading.products ? (
+                <div>Загрузка товаров...</div>
+              ) : purchasedProducts.length === 0 ? (
+                <div>Вы пока ничего не купили</div>
+              ) : (
+                purchasedProducts.map((product: Product) => (
+                  <div
+                    key={product.id}
+                    className={styles.avatarOption}
+                    onClick={() => selectAvatar(product)}
+                  >
+                    <div className={styles.productAvatar}>
+                      {product.name} - {product.price} руб.
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <button
+            <button 
               onClick={closeAvatarModal}
               className={styles.modalCloseButton}
             >
@@ -147,15 +199,14 @@ export const ProfilePage = () => {
         </div>
       )}
 
-      {/* Форма последних игр */}
-      <div
-        className={`${styles.section2} ${
-          showSection2 ? styles.showSection2 : ''
-        }`}
-      >
+      <div className={`${styles.section2} ${showSection2 ? styles.showSection2 : ''}`}>
         <h2 className={styles.sectionTitle}>Результаты прошлых игр</h2>
         <div className={styles.scrollContainer}>
-          {finishedGames &&
+          {loading.games ? (
+            <div>Загрузка истории игр...</div>
+          ) : finishedGames.length === 0 ? (
+            <div>Нет данных о завершенных играх</div>
+          ) : (
             finishedGames.map((game) => (
               <div className={styles.gamesHistory} key={game.room.id}>
                 <div className={styles.results}>
@@ -166,7 +217,8 @@ export const ProfilePage = () => {
                   </span>
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
       </div>
     </div>
