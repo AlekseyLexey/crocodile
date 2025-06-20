@@ -89,6 +89,40 @@ export const GamePage = () => {
   }, [dispatch, user, socket, roomId, setBackground]);
 
   useEffect(() => {
+    let endGameTimer: NodeJS.Timeout;
+
+    socket.on("alertDisconnect", ({ disconnetedUser }) => {
+      if (disconnetedUser.id === lead) {
+        if (room?.type === "mono") {
+          alert(
+            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Игра закончится через 30 сек`
+          );
+          endGameTimer = setTimeout(() => {
+            socket.emit(SOCKET_STATUS_ROUTES.END, {
+              roomId,
+            });
+          }, 10000);
+        }
+        if (room?.type === "multi") {
+          alert(
+            `${disconnetedUser.username} вылетел ВЕДУЩИЙ! Переходим к следующему раунду`
+          );
+          socket.emit(SOCKET_STATUS_ROUTES.PAUSE, {
+            roomId,
+          });
+        }
+        return;
+      }
+      alert(`${disconnetedUser.username} отключился`);
+    });
+
+    return () => {
+      socket.off("alertDisconnect");
+      clearTimeout(endGameTimer);
+    };
+  }, [dispatch, user, socket, roomId, lead, room?.type]);
+
+  useEffect(() => {
     socket.on("timer", ({ time }) => {
       if (time === null) {
         if (isLead && room?.status !== ROOM_STATUSES.PREPARE) {
@@ -98,7 +132,6 @@ export const GamePage = () => {
           if (room?.status === ROOM_STATUSES.PAUSE) {
             socket.emit(SOCKET_STATUS_ROUTES.START, { roomId });
           }
-          return;
         }
         dispatch(setTime(null));
         return;
