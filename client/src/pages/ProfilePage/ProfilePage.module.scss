@@ -1,30 +1,47 @@
 .profile {
-  margin: 42px 164px 130px 164px;
+  position: relative;
   width: calc(100% - 328px);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  max-width: 1200px;
+  margin: 45px auto 120px;
+  padding: 2rem;
+  min-height: calc(100vh - 165px);
+  max-height: calc(100vh - 350px);
   background-color: $background-container;
   border-radius: $br;
-  position: relative;
   box-shadow: $box;
-  transition: all 0.3s ease;
-  max-height: calc(100vh - 160px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: visible;
+
+  @media (max-width: 1440px) {
+    width: calc(100% - 328px);
+    margin-left: 164px;
+    margin-right: 164px;
+  }
 
   @media (max-width: 1200px) {
-    margin: 42px 5%;
+    width: calc(100% - 328px);
+    margin-left: 164px;
+    margin-right: 164px;
   }
 
   @media (max-width: 992px) {
-    margin: 30px 3%;
+    width: calc(100% - 200px);
+    margin-left: 100px;
+    margin-right: 100px;
   }
 
   @media (max-width: 768px) {
+    width: calc(100% - 52px);
+    margin: 45px 26px 120px;
+    padding: 1.5rem;
     grid-template-columns: 1fr;
-    margin: 10px 2%;
   }
 
   @media (max-width: 480px) {
-    margin: 20px 10px 80px 10px;
+    width: calc(100% - 52px);
+    margin: 45px 26px 120px;
+    padding: 1rem;
   }
 }
 
@@ -74,7 +91,7 @@
 .scrollContainer {
   overflow-y: auto;
   flex-grow: 1;
-  max-height: calc(100% - 100px);
+  max-height: calc(100% - 200px);
   padding-right: 5px;
   scrollbar-width: thin;
   scrollbar-color: #2b640b #f0f0f0;
@@ -426,5 +443,86 @@
     font-size: 16px;
     bottom: 5px;
     right: 1px;
+  }
+}
+
+.hareDesktop {
+  position: absolute;
+  left: -80px;
+  bottom: -80px;
+  width: 180px;
+  height: 180px;
+  z-index: 10;
+
+  @media (max-width: 1440px) {
+    width: 160px;
+    height: 160px;
+    left: -70px;
+    bottom: -70px;
+  }
+
+  @media (max-width: 1200px) {
+    width: 150px;
+    height: 150px;
+    left: -60px;
+    bottom: -60px;
+  }
+
+ @media (max-width: 1000px) {
+    display: none;
+  }
+}
+
+.hedgehogDesktop {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 180px;
+  z-index: 10;
+
+  @media (max-width: 1440px) {
+    width: 160px;
+    height: 160px;
+    bottom: -45px;
+  }
+
+  @media (max-width: 1200px) {
+    width: 150px;
+    height: 150px;
+    bottom: -40px;
+  }
+
+  @media (max-width: 1000px) {
+    display: none;
+  }
+
+}
+
+.polarBearDesktop {
+  position: absolute;
+  right: -80px;
+  bottom: -80px;
+  width: 180px;
+  height: 180px;
+  z-index: 10;
+
+  @media (max-width: 1440px) {
+    width: 160px;
+    height: 160px;
+    right: -70px;
+    bottom: -70px;
+  }
+
+  @media (max-width: 1200px) {
+    width: 150px;
+    height: 150px;
+    right: -60px;
+    bottom: -60px;
+  }
+
+  @media (max-width: 1000px) {
+    display: none;
   }
 }

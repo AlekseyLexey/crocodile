@@ -1,7 +1,11 @@
 import { $api, Button, Input } from '@/shared';
 import styles from './ProfilePage.module.scss';
 import { useCallback, useEffect, useState } from 'react';
+import { useBackground } from "@/app/store/BackgroundContext";
 import type { IActiveUserRoom } from '@/entities/room/model';
+import hareSvg from "@/assets/svg/animals/заяц.svg";
+import hedgehogSvg from "@/assets/svg/animals/ёж.svg";
+import polarBearSvg from "@/assets/svg/animals/медведьбелый.svg";
 
 export const ProfilePage = () => {
   // const [showSection2, setShowSection2] = useState(false);
@@ -9,6 +13,7 @@ export const ProfilePage = () => {
   const [avatars] = useState<string[]>([]); ///???
   const [showSection2, setShowSection2] = useState(false);
   // const [gamesToShow, setGamesToShow] = useState(5);
+  const { setBackground } = useBackground();
 
   const [finishedGames, setFinishedGames] = useState<IActiveUserRoom[]>([]);
 
@@ -21,6 +26,7 @@ export const ProfilePage = () => {
   };
 
   useEffect(() => {
+    setBackground("forest");
     const getFinishedUserGames = async () => {
       const finishedGames = await $api.get('user-room/finished');
 
@@ -28,7 +34,7 @@ export const ProfilePage = () => {
     };
 
     getFinishedUserGames();
-  }, []);
+  }, [setBackground]);
 
 
   const openAvatarModal = () => {
@@ -72,6 +78,9 @@ export const ProfilePage = () => {
 
   return (
     <div className={styles.profile}>
+      <img src={hareSvg} alt="Заяц" className={styles.hareDesktop} />
+            <img src={hedgehogSvg} alt="Ёж" className={styles.hedgehogDesktop} />
+            <img src={polarBearSvg} alt="Белый медведь" className={styles.polarBearDesktop} />
       {/* Форма аватара и имени*/}
       <div
         className={`${styles.section1} ${

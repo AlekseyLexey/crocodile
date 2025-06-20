@@ -6,18 +6,19 @@
   position: relative;
   gap: 20px;
   width: 100%;
-  min-height: calc(100vh - 73px);
+  min-height: calc(100% - 73px); 
   margin-top: 73px;
+  background-color: rgba(51, 90, 0, 0.541);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  background-attachment: scroll;
-  background-image: $forest;
+  background-attachment: fixed; 
+  overflow-y: auto; 
   
   &::before {
     content: '';
-    position: absolute;
-    top: -73px;
+    position: fixed; 
+    top: -73px; 
     left: 0;
     right: 0;
     bottom: 0;
