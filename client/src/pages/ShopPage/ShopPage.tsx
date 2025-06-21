@@ -106,7 +106,7 @@ export const ShopPage = () => {
             >
               <div className={styles.productImage}>
                 <h3 className={styles.productName}>{product.name}</h3>
-                <p className={styles.productPrice}>{product.price} руб.</p>
+                <p className={styles.productPrice}>{product.price} поинтов.</p>
                 {isPurchased && <div className={styles.purchasedBadge}></div>}
               </div>
               <Button
