@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("UserRooms", {
+    await queryInterface.createTable('UserRooms', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,19 +12,19 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Users",
-          key: "id",
+          model: 'Users',
+          key: 'id',
         },
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
         allowNull: false,
       },
       room_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Rooms",
-          key: "id",
+          model: 'Rooms',
+          key: 'id',
         },
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
         allowNull: false,
       },
       point: {
@@ -50,16 +50,16 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
+        defaultValue: Sequelize.fn('now'),
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("UserRooms");
+    await queryInterface.dropTable('UserRooms');
   },
 };

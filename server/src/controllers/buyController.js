@@ -15,10 +15,55 @@ class BuyController {
     }
   }
 
+  // static async updateBuy(req, res, next) {
+  //   try {
+  //     const userId = res.locals.user.id;
+  //     const { buyStatus } = req.body;
+  //     const productId = req.validateId;
+
+  //     const updatedBuy = await BuyService.updateBuyByIds({
+  //       productId,
+  //       userId,
+  //       buyStatus,
+  //     });
+
+  //     return res.status(200).json(formatResponse(200, 'Success', updatedBuy));
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
+
+  static async activateBuy(req, res, next) {
+    try {
+      // const userId = res.locals.user.id;
+      const userId = 1;
+      const buyId = req.validateId;
+
+      const result = await BuyService.activateBuy({ userId, buyId });
+
+      return res.status(200).json(formatResponse(200, 'Success', result));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async deactivateBuy(req, res, next) {
+    try {
+      const userId = res.locals.user.id;
+      const buyId = req.validateId;
+
+      const result = await BuyService.deactivateBuyById(userId, buyId);
+
+      return res.status(200).json(formatResponse(200, 'Success', result));
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async deleteBuy(req, res, next) {
     try {
       const userId = res.locals.user.id;
-      const { productId } = req.body;
+      const productId = req.validateId;
 
       const deletedCount = await BuyService.deleteBuyById({
         productId,
@@ -35,13 +80,40 @@ class BuyController {
     }
   }
 
-  static async getProductsByUserId(_, res, next) {
+  static async getProductsByUserId(req, res, next) {
     try {
       const userId = res.locals.user.id;
 
       const buys = await BuyService.findProductsByUserId(userId);
 
       return res.status(200).json(formatResponse(200, 'Success', buys));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getActiveBuyInCategory(req, res, next) {
+    try {
+      const userId = res.locals.user.id;
+      const { categoryName } = req.params;
+
+      const buy = await BuyService.findActiveBuyInCategory(
+        userId,
+        categoryName
+      );
+
+      return res.status(200).json(formatResponse(200, 'Success', buy));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getActiveAvatar(req, res, next) {
+    try {
+      const userId = res.locals.user.id;
+      const activeAvatar = await BuyService.findActiveAvatar(userId);
+
+      return res.status(200).json(formatResponse(200, 'Success', activeAvatar));
     } catch (err) {
       next(err);
     }

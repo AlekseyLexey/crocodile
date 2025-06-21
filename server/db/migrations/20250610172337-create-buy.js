@@ -7,7 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       product_id: {
         type: Sequelize.INTEGER,
@@ -16,7 +16,7 @@ module.exports = {
           key: 'id',
         },
         onDelete: 'CASCADE',
-        allowNull: false
+        allowNull: false,
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -25,19 +25,24 @@ module.exports = {
           key: 'id',
         },
         onDelete: 'CASCADE',
-        allowNull: false
+        allowNull: false,
+      },
+      is_active: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
       },
       createdAt: {
-        defaultValue: Sequelize.fn("now"),
-        type: Sequelize.DATE
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
       },
       updatedAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("now"),
-      }
+        defaultValue: Sequelize.fn('now'),
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Buys');
-  }
+  },
 };

@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       product_id: { type: DataTypes.INTEGER, allowNull: false },
       user_id: { type: DataTypes.INTEGER, allowNull: false },
+      is_active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
     },
     {
       sequelize,

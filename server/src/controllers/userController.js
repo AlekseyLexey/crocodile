@@ -78,9 +78,7 @@ const updateUser = async (req, res, next) => {
 
     return res
       .status(200)
-      .json(
-        formatResponse(200, 'Пользовательские данные изменены', updatedUser)
-      );
+      .json(formatResponse(200, 'Данные пользователя изменены', updatedUser));
   } catch (e) {
     next(e);
   }

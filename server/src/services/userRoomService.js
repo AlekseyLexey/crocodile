@@ -222,4 +222,3 @@ class UserRoomService {
 
 module.exports = UserRoomService;
 
-UserRoomService.findUserActiveRooms(2).then((data) => console.log(data));

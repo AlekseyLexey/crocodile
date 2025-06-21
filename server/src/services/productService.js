@@ -12,6 +12,19 @@ class ProductService {
       attributes: ['id', 'name', 'price', 'category_id'],
     });
   }
+
+  static async findAllByCategory(categoryId) {
+    const allProducts =  await Product.findAll({
+      where: {
+        category_id: categoryId
+      },
+      attributes: ['id', 'name', 'price', 'category_id'],
+    });
+
+    return allProducts? allProducts.map(product => product.get({plain:true})) : null
+  }
+
+  
 }
 
 module.exports = ProductService;
