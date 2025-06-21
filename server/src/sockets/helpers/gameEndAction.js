@@ -2,7 +2,7 @@ const { leaveTimerStore } = require("./handleLeaveRoom");
 const { sendRoom } = require("./sendRoom");
 const { clearTimer } = require("./timerStore");
 const updateRoomsWithUserProfilePoints = require("./updateRoomsWithUserProfilePoints");
-const { clearRoomWords, roomWords } = require("./wordStore");
+const { clearRoomWords } = require("./wordStore");
 
 module.exports.gameEndAction = async (io, socket, roomId) => {
   const room = await updateRoomsWithUserProfilePoints(roomId);

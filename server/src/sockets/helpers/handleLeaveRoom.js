@@ -3,10 +3,15 @@ const UserRoomService = require("../../services/userRoomService");
 const GameController = require("./gameController");
 const { gameEndAction } = require("./gameEndAction");
 const { sendRoom } = require("./sendRoom");
+const {
+  clearTimer,
+  getCurrentTime,
+  getCurrentStatus,
+} = require("./timerStore");
 
 const leaveTimerStore = new Map();
 const MAX_DISCONNECT_ATTEMPTS = 3;
-const RECONNECT_TIMEOUT = 5000;
+const RECONNECT_TIMEOUT = 10000;
 
 const handleLeaveRoom = async (io, socket) => {
   if (!socket.roomId) return;
@@ -49,10 +54,44 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
 
   const data = leaveTimerStore.get(roomId);
   const disconnectCount = (data?.disconnectCount || 0) + 1;
+  let time = RECONNECT_TIMEOUT;
+
+  const pauseStatus = getCurrentStatus(roomId);
+  const pauseTime = getCurrentTime(roomId);
 
   if (data?.timer) {
-    clearTimeout(data.timer);
+    clearInterval(data.timer);
   }
+
+  const timer = setInterval(async () => {
+    const currentData = leaveTimerStore.get(roomId);
+    if (!currentData) return;
+
+    currentData.time -= 1000;
+
+    io.to(roomId).emit("timer", { time: currentData.time });
+
+    if (currentData.time <= 0) {
+      io.to(roomId).emit("timer", { time: 0 });
+      const actulaleRoom = await RoomService.findRoomById(roomId);
+      if (!["prepare", "end"].includes(actulaleRoom.status)) {
+        executeDisconnectAction(io, socket, room);
+        leaveTimerStore.delete(roomId);
+        clearInterval(currentData.timer);
+        return;
+      }
+    }
+  }, 1000);
+
+  leaveTimerStore.set(roomId, {
+    timer,
+    time,
+    disconnectCount,
+    pauseStatus,
+    pauseTime,
+  });
+
+  clearTimer(roomId);
 
   const messageType =
     room.type === "mono" || ["prepare", "end"].includes(room.status)
@@ -72,13 +111,6 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
     });
     return;
   }
-
-  const timer = setTimeout(() => {
-    executeDisconnectAction(io, socket, room);
-    leaveTimerStore.delete(roomId);
-  }, RECONNECT_TIMEOUT);
-
-  leaveTimerStore.set(roomId, { timer, disconnectCount });
 
   socket.to(roomId).emit("messageDisconnect", {
     message: `Ведущий ${socket.user.username} отключился (${disconnectCount}/${MAX_DISCONNECT_ATTEMPTS}). ${messageType}`,

@@ -3,20 +3,24 @@ const GameController = require("./gameController");
 
 const timerStore = new Map();
 
-const initTimerForRoom = (io, socket, roomId, status) => {
+const initTimerForRoom = (io, socket, roomId, status, inintTime) => {
   clearTimer(roomId);
   GameController.initTimer(initTimerForRoom);
 
   let time;
   switch (status) {
     case "active":
-      time = 30000;
+      time = 15000;
       break;
     case "pause":
-      time = 5000;
+      time = 8000;
       break;
     default:
       return;
+  }
+
+  if (inintTime) {
+    time = inintTime;
   }
 
   io.to(roomId).emit("timer", { time });
@@ -64,6 +68,11 @@ const getCurrentTime = (roomId) => {
   return data?.time || null;
 };
 
+const getCurrentStatus = (roomId) => {
+  const data = timerStore.get(roomId);
+  return data?.status || null;
+};
+
 const clearTimer = (roomId) => {
   const data = timerStore.get(roomId);
   if (data?.timer) {
@@ -75,5 +84,6 @@ const clearTimer = (roomId) => {
 module.exports = {
   initTimerForRoom,
   getCurrentTime,
+  getCurrentStatus,
   clearTimer,
 };

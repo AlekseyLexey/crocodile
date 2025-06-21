@@ -1,7 +1,7 @@
 const UserRoomService = require("../../services/userRoomService");
 const { sendRoom } = require("../helpers/sendRoom");
 const RoomService = require("../../services/roomService");
-const { getCurrentTime } = require("../helpers/timerStore");
+const { getCurrentTime, initTimerForRoom } = require("../helpers/timerStore");
 const {
   handleLeaveRoom,
   checkLeadOfRoom,
@@ -44,7 +44,15 @@ module.exports.roomSocket = (io, socket) => {
           socket.to(roomId).emit("messageReconnect", {
             message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
           });
-          clearTimeout(data.timer);
+          clearInterval(data.timer);
+
+          initTimerForRoom(
+            io,
+            socket,
+            roomId,
+            data.pauseStatus,
+            data.pauseTime
+          );
         }
       }
     }
