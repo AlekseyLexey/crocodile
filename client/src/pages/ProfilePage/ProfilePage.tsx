@@ -205,7 +205,7 @@ export const ProfilePage = () => {
           {loading.games ? (
             <div>Загрузка истории игр...</div>
           ) : finishedGames.length === 0 ? (
-            <div>Нет данных о завершенных играх</div>
+            <div className={styles.noInfo}>Нет данных о завершенных играх</div>
           ) : (
             finishedGames.map((game) => (
               <div className={styles.gamesHistory} key={game.room.id}>
