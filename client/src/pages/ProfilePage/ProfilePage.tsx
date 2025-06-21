@@ -21,6 +21,8 @@ interface UserData {
   avatar: string;
 }
 
+const USER_DATA_KEY = 'user_avatar_data';
+
 export const ProfilePage = () => {
   const { showAlert } = useAlert();
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
@@ -32,10 +34,27 @@ export const ProfilePage = () => {
 
   const { setBackground } = useBackground();
 
-  const [userData, setUserData] = useState<UserData>({
-    username: "NoHomo",
-    avatar: "",
+  // Инициализация данных пользователя
+  const [userData, setUserData] = useState<UserData>(() => {
+    try {
+      const savedData = localStorage.getItem(USER_DATA_KEY);
+      return savedData 
+        ? JSON.parse(savedData) 
+        : { username: "NoHomo", avatar: "" };
+    } catch (error) {
+      console.error("Ошибка чтения из localStorage:", error);
+      return { username: "NoHomo", avatar: "" };
+    }
   });
+
+  // Автосохранение при изменении userData
+  useEffect(() => {
+    try {
+      localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+    } catch (error) {
+      console.error("Ошибка сохранения в localStorage:", error);
+    }
+  }, [userData]);
 
   const fetchPurchasedProducts = async () => {
     try {
@@ -67,13 +86,14 @@ export const ProfilePage = () => {
     setIsAvatarModalOpen(false);
   };
 
-  const selectAvatar = (product: Product) => {
-    setUserData((prev) => ({
+  const handleAvatarSelect = (product: Product) => {
+    const newAvatar = product.name;
+    setUserData(prev => ({
       ...prev,
-      avatar: product.name,
+      avatar: newAvatar
     }));
+    showAlert(`Аватар "${newAvatar}" сохранён!`);
     closeAvatarModal();
-    showAlert("Аватар успешно изменен!");
   };
 
   useEffect(() => {
@@ -128,8 +148,10 @@ export const ProfilePage = () => {
                 purchasedProducts.map((product: Product) => (
                   <div
                     key={product.id}
-                    className={styles.avatarOption}
-                    onClick={() => selectAvatar(product)}
+                    className={`${styles.avatarOption} ${
+                      userData.avatar === product.name ? styles.selected : ""
+                    }`}
+                    onClick={() => handleAvatarSelect(product)}
                   >
                     <div className={styles.productAvatar}>
                       {product.name} - {product.price} руб.
