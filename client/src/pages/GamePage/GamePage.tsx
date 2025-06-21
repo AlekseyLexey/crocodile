@@ -64,10 +64,6 @@ export const GamePage = () => {
       dispatch(setColor(color));
     });
 
-    socket.on("disconnect", () => {
-      showAlert("Призошел disconnect");
-    });
-
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
       dispatch(setRoom(room));
 
@@ -86,8 +82,16 @@ export const GamePage = () => {
       dispatch(setRoom(room));
     });
 
-    socket.on("messageDisconnect", ({ message }) => {
+    socket.on("messageReconnect", ({ message }) => {
       showAlert(message);
+    });
+
+    socket.on("messageDisconnect", ({ message }) => {
+      showAlert(message, "error");
+    });
+
+    socket.on("disconnect", () => {
+      showAlert("Призошел disconnect", "error");
     });
 
     return () => {
@@ -96,11 +100,13 @@ export const GamePage = () => {
       socket.off("message");
       socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
-      socket.off("alertDisconnect");
+      socket.off("messageReconnect");
+      socket.off("messageDisconnect");
       socket.off("disconnect");
       setBackground("forest");
     };
-  }, [dispatch, user, socket, roomId, showAlert, setBackground]);
+    //eslint-disable-next-line
+  }, [dispatch, user, socket, roomId, setBackground]);
 
   useEffect(() => {
     socket.on("timer", ({ time }) => {

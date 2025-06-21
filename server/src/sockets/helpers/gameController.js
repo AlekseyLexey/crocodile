@@ -20,7 +20,7 @@ class GameController {
 
     this.initTimerForRoom(io, socket, roomId, ROOM_STATUS.ACTIVE);
 
-    sendRoom(io, roomId, room);
+    await sendRoom(io, roomId, room);
     io.to(roomId).emit("message", `Раунд начался!`);
   }
 
