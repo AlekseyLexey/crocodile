@@ -1,6 +1,6 @@
-const { UserRoom, User, Room } = require('../../db/models');
-const HttpError = require('../exceptions/HttpError');
-const { Op } = require('sequelize');
+const { UserRoom, User, Room } = require("../../db/models");
+const HttpError = require("../exceptions/HttpError");
+const { Op } = require("sequelize");
 
 class UserRoomService {
   static async findUserRoomByIds(userId, roomId) {
@@ -12,11 +12,18 @@ class UserRoomService {
       include: [
         {
           model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'point'],
+          as: "user",
+          attributes: ["id", "username", "point"],
         },
       ],
-      attributes: ['user_id', 'room_id', 'point', 'is_lead', 'was_lead'],
+      attributes: [
+        "user_id",
+        "room_id",
+        "point",
+        "is_lead",
+        "was_lead",
+        "is_online",
+      ],
     });
 
     return userRoom;
@@ -40,7 +47,7 @@ class UserRoomService {
     const userRoom = await UserRoomService.findUserRoomByIds(userId, roomId);
 
     if (!userRoom) {
-      throw new HttpError(404, 'UserRoom not found');
+      throw new HttpError(404, "UserRoom not found");
     }
 
     await userRoom.update({ point });
@@ -66,7 +73,7 @@ class UserRoomService {
       include: [
         {
           model: User,
-          as: 'user',
+          as: "user",
         },
       ],
     });
@@ -84,10 +91,10 @@ class UserRoomService {
       include: [
         {
           model: User,
-          as: 'user',
+          as: "user",
         },
       ],
-      order: [['createdAt', 'ASC']],
+      order: [["createdAt", "ASC"]],
     });
 
     return lead ? lead.get({ plain: true }) : null;
@@ -102,10 +109,22 @@ class UserRoomService {
     const changedItem = await UserRoomService.findUserRoomByIds(userId, roomId);
 
     if (!changedItem) {
-      throw new HttpError(404, 'UserRoom not found');
+      throw new HttpError(404, "UserRoom not found");
     }
 
     await changedItem.update({ is_lead: leadStatus, was_lead: wasLeadStatus });
+
+    return await UserRoomService.findUserRoomByIds(userId, roomId);
+  }
+
+  static async updateUserOnlineStatus({ userId, roomId, status }) {
+    const changedItem = await UserRoomService.findUserRoomByIds(userId, roomId);
+
+    if (!changedItem) {
+      return null;
+    }
+
+    await changedItem.update({ is_online: status });
 
     return await UserRoomService.findUserRoomByIds(userId, roomId);
   }
@@ -118,18 +137,18 @@ class UserRoomService {
       include: [
         {
           model: Room,
-          as: 'room',
+          as: "room",
           where: {
-            status: 'end',
+            status: "end",
           },
           attributes: [
-            'id',
-            'pictures',
-            'status',
-            'name',
-            'owner_id',
-            'type',
-            'createdAt',
+            "id",
+            "pictures",
+            "status",
+            "name",
+            "owner_id",
+            "type",
+            "createdAt",
           ],
           required: true,
         },
@@ -138,17 +157,17 @@ class UserRoomService {
         [
           {
             model: Room,
-            as: 'room',
+            as: "room",
           },
-          'createdAt',
-          'ASC',
+          "createdAt",
+          "ASC",
         ],
       ],
-      attributes: ['point'],
+      attributes: ["point"],
     });
 
     if (userRooms.length === 0) {
-      return null
+      return null;
     }
 
     return userRooms.map((room) => room.get({ plain: true }));
@@ -162,20 +181,20 @@ class UserRoomService {
       include: [
         {
           model: Room,
-          as: 'room',
+          as: "room",
           where: {
             status: {
-              [Op.in]: ['active', 'pause'],
+              [Op.in]: ["active", "pause"],
             },
           },
           attributes: [
-            'id',
-            'pictures',
-            'status',
-            'name',
-            'owner_id',
-            'type',
-            'createdAt',
+            "id",
+            "pictures",
+            "status",
+            "name",
+            "owner_id",
+            "type",
+            "createdAt",
           ],
           required: true,
         },
@@ -184,17 +203,17 @@ class UserRoomService {
         [
           {
             model: Room,
-            as: 'room',
+            as: "room",
           },
-          'createdAt',
-          'ASC',
+          "createdAt",
+          "ASC",
         ],
       ],
-      attributes: ['point'],
+      attributes: ["point"],
     });
 
     if (userRooms.length === 0) {
-      return null
+      return null;
     }
 
     return userRooms.map((room) => room.get({ plain: true }));

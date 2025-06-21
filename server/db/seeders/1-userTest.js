@@ -14,7 +14,7 @@ module.exports = {
         {
           username: "Cooper",
           email: "Cooper@gmail.com",
-          password: await hashPassword("  "),
+          password: await hashPassword("123qwe"),
           point: 0,
         },
         {

@@ -4,6 +4,7 @@ const { chatSocket } = require("./api/chatSocket");
 const { wordSocket } = require("./api/wordSocket");
 const { canvasSocket } = require("./api/canvasSocket");
 const { colorSocket } = require("./api/colorSocket");
+const { handleLeaveRoom } = require("./helpers/handleLeaveRoom");
 
 function initSocket(io) {
   io.on("connection", (socket) => {
@@ -15,10 +16,8 @@ function initSocket(io) {
     wordSocket(io, socket);
     canvasSocket(io, socket);
     colorSocket(io, socket);
-    socket.on("disconnect", () => {
-      io.to(socket.roomId).emit("alertDisconnect", {
-        disconnetedUser: socket.user,
-      });
+    socket.on("disconnect", async () => {
+      await handleLeaveRoom(io, socket);
     });
   });
 }
