@@ -82,25 +82,6 @@ export const ProfilePage = () => {
     }
   };
 
-  useEffect(() => {
-    setBackground("forest");
-    
-    const getFinishedUserGames = async () => {
-      try {
-        setLoading(prev => ({...prev, games: true}));
-        const response = await $api.get<{ data: FinishedGame[] }>('user-room/finished');
-        setFinishedGames(response.data?.data || []);
-      } catch (error) {
-        console.error('Error loading finished games:', error);
-        setFinishedGames([]);
-      } finally {
-        setLoading(prev => ({...prev, games: false}));
-      }
-    };
-
-    getFinishedUserGames();
-  }, [setBackground]);
-
   const openAvatarModal = () => {
     fetchPurchasedProducts();
     setIsAvatarModalOpen(true);
@@ -120,6 +101,8 @@ export const ProfilePage = () => {
   };
 
   useEffect(() => {
+    setBackground("forest");
+
     const handleScroll = () => {
       if (window.innerWidth <= 768) {
         const scrollPosition = window.scrollY;
@@ -130,10 +113,24 @@ export const ProfilePage = () => {
         }
       }
     };
+    
+    const getFinishedUserGames = async () => {
+      try {
+        setLoading(prev => ({...prev, games: true}));
+        const response = await $api.get<{ data: FinishedGame[] }>('user-room/finished');
+        setFinishedGames(response.data?.data || []);
+      } catch (error) {
+        console.error('Error loading finished games:', error);
+        setFinishedGames([]);
+      } finally {
+        setLoading(prev => ({...prev, games: false}));
+      }
+    };
 
+    getFinishedUserGames();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [setBackground]);
 
   return (
     <div className={styles.profile}>
