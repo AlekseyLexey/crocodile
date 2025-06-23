@@ -5,7 +5,7 @@ const {
   handleLeaveRoom,
   checkLeadOfRoom,
 } = require("../helpers/handleLeaveRoom");
-const TimerStore = require("../helpers/TimerStore");
+const TimerStore = require("../helpers/timerStore");
 const { getCurrentWord } = require("../helpers/wordStore");
 
 module.exports.roomSocket = (io, socket) => {
@@ -59,7 +59,7 @@ module.exports.roomSocket = (io, socket) => {
     await UserRoomService.updateUserOnlineStatus({
       userId: user.id,
       roomId,
-      status: true,
+      is_online: true,
     });
 
     await sendRoom(io, roomId);

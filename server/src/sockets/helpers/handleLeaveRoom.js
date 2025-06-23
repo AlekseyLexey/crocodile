@@ -2,10 +2,10 @@ const RoomService = require("../../services/roomService");
 const UserRoomService = require("../../services/userRoomService");
 const { setGamePause, gameEndAction } = require("./gameController");
 const { sendRoom } = require("./sendRoom");
-const TimerStore = require("./TimerStore");
+const TimerStore = require("./timerStore");
 
 const leaveUserAttemptsStore = new Map();
-const MAX_DISCONNECT_ATTEMPTS = 999;
+const MAX_DISCONNECT_ATTEMPTS = 3;
 const RECONNECT_TIMEOUT = 10000;
 
 const handleLeaveRoom = async (io, socket) => {
@@ -16,7 +16,7 @@ const handleLeaveRoom = async (io, socket) => {
   await UserRoomService.updateUserOnlineStatus({
     userId,
     roomId,
-    status: false,
+    is_online: false,
   });
 
   await changeLeadRoom(io, socket, userId, roomId);

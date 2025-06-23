@@ -1,27 +1,29 @@
-
 .alert {
   position: fixed;
-  top: 20px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 15px 25px;
+  padding: 18px 30px; /* Увеличил padding */
   border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   display: flex;
   align-items: center;
   font-family: "Comic Sans MS", cursive, sans-serif;
-  font-size: 18px;
+  font-size: 22px; /* Увеличил размер шрифта */
   animation: slideIn 0.3s ease-out;
-  border: 2px dashed white;
+  border: 2px solid white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 
   &.success {
-    background-color: #4caf50;
+    background-color: #0f6511;
+    background-image: linear-gradient(to bottom, #286a2a, #266929);
     color: white;
   }
 
   &.error {
     background-color: #ff6b6b;
+    background-image: linear-gradient(to bottom, #ff6b6b, #e05555);
     color: white;
   }
 }
@@ -29,11 +31,12 @@
 .content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px; /* Увеличил gap между иконкой и текстом */
 }
 
 .icon {
-  font-size: 24px;
+  font-size: 28px; /* Увеличил размер иконки */
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
 }
 
 .text {
@@ -48,5 +51,21 @@
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+}
+
+.alert {
+  animation: flipIn 0.5s ease-out;
+  transform-origin: top center;
+}
+
+@keyframes flipIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) perspective(400px) rotateX(90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) perspective(400px) rotateX(0);
   }
 }

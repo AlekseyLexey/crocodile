@@ -1,10 +1,17 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { $api, Button, CLIENT_ROUTES, useAppDispatch } from '@/shared';
-import { ThemesSelect } from '@/features';
-import { createRoomThunk, getAllRoomThunk } from '@/entities/room';
-import styles from './CreateGameModal.module.scss';
-import type { TypeGame } from '@/entities/room/model';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  $api,
+  Button,
+  CLIENT_ROUTES,
+  SOCKET_LOBBIES,
+  useAppDispatch,
+} from "@/shared";
+import { ThemesSelect } from "@/features";
+import { createRoomThunk, getAllRoomThunk } from "@/entities/room";
+import styles from "./CreateGameModal.module.scss";
+import type { TypeGame } from "@/entities/room/model";
+import { useSocket } from "@/app/store/hooks/useSocket";
 
 interface CreateGameModalProps {
   isOpen: boolean;
@@ -12,15 +19,16 @@ interface CreateGameModalProps {
 }
 
 export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
-  const [roomName, setRoomName] = useState<string>('');
-  const [theme, setTheme] = useState<string>('');
-  const [selectedType, setSelectedType] = useState<TypeGame | ''>('');
+  const { socket } = useSocket();
+  const [roomName, setRoomName] = useState<string>("");
+  const [theme, setTheme] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<TypeGame | "">("");
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const createRoom = async () => {
-    if (selectedType === '') {
+    if (selectedType === "") {
       return;
     }
 
@@ -35,9 +43,11 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
 
     const roomId = resCreate.payload?.data?.id;
 
-    const themeId = theme === 'all' ? null : Number(theme);
+    const themeId = theme === "all" ? null : Number(theme);
 
-    await $api.post('/theme-room', { themeId, roomId });
+    await $api.post("/theme-room", { themeId, roomId });
+
+    socket.emit(SOCKET_LOBBIES.CREATE, { id: resCreate.payload.data.id });
 
     return roomId;
   };
@@ -61,7 +71,7 @@ export const CreateGameModal = ({ isOpen, onClose }: CreateGameModalProps) => {
 
     navigate(`${CLIENT_ROUTES.GAME}/${roomId}`);
 
-    setRoomName('');
+    setRoomName("");
     onClose();
   };
 

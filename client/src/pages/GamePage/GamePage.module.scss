@@ -40,6 +40,9 @@
     'colors word timer chat'
     'colors canvas tools chat'
     'sidebar sidebar sidebar chat';
+    'colors word timer chat'
+    'colors canvas tools chat'
+    'sidebar sidebar sidebar chat';
   box-sizing: border-box;
 }
 
@@ -212,6 +215,15 @@
   z-index: 1;
 }
 
+.hidenRoomName {
+  padding-left: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
+}
+
 .inputContainer {
   position: relative;
   width: 100%;
@@ -269,8 +281,10 @@
 .changeOfRound,
 .finish {
   box-shadow: $box;
+  box-shadow: $box;
   position: relative;
   z-index: 1;
+
 
   &:before {
     content: '';
@@ -289,12 +303,17 @@
 
 @media (max-width: 1000px) {
   .container {
+  .container {
     grid-template-areas:
+      'word word timer chat'
+      'canvas canvas canvas chat'
+      'sidebar sidebar sidebar chat';
       'word word timer chat'
       'canvas canvas canvas chat'
       'sidebar sidebar sidebar chat';
   }
 
+  .colorsPanel {
   .colorsPanel {
     display: none;
   }
@@ -311,12 +330,16 @@
   .container {
     display: grid;
     grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto;
     grid-template-rows: auto 1fr auto;
     height: calc(100vh - 78px);
     min-height: 0;
     gap: 16px;
     padding: 16px;
     grid-template-areas:
+      'word timer'
+      'canvas canvas'
+      'chat chat';
       'word timer'
       'canvas canvas'
       'chat chat';
@@ -460,6 +483,8 @@
 
   @media (max-height: 860px) {
     bottom: -60px;
+  @media (max-height: 860px) {
+    bottom: -60px;
     width: 140px;
     height: 140px;
   }
@@ -499,6 +524,7 @@
   }
 
   @media (max-height: 860px) {
+    bottom: -50px;
     bottom: -50px;
     width: 140px;
     height: 140px;

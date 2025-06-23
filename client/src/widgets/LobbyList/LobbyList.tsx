@@ -3,21 +3,24 @@ import {
   $api,
   Button,
   CLIENT_ROUTES,
+  SOCKET_LOBBIES,
   useAppDispatch,
   useAppSelector,
 } from "@/shared";
 import { CreateGameModal } from "@/shared/ui/Modal/CreateGameModal";
 import styles from "./LobbyList.module.scss";
 import { getAllRoomThunk } from "@/entities/room/api/RoomApi";
-import type { IRoom } from "@/entities/room";
+import { createRoom, updateRoom, type IRoom } from "@/entities/room";
 import { useNavigate } from "react-router-dom";
 import { useBackground } from "@/app/store/BackgroundContext";
 import lionSvg from "@/assets/svg/animals/лев.svg";
 import crabSvg from "@/assets/svg/animals/краб.svg";
 import whaleSvg from "@/assets/svg/animals/кит.svg";
 import type { IActiveUserRoom } from "@/entities/room/model";
+import { useSocket } from "@/app/store/hooks/useSocket";
 
 export const LobbyList = () => {
+  const { socket } = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { rooms } = useAppSelector((state) => state.room);
@@ -40,17 +43,33 @@ export const LobbyList = () => {
 
   useEffect(() => {
     const getUserActiveRooms = async () => {
-      const userActiveRooms = await $api.get("/user-room/active");
-
-      if (!userActiveRooms) {
+      try {
+        const { data } = await $api.get("/user-room/active");
+        setActiveUserRooms(data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch active rooms:", error);
         setActiveUserRooms([]);
       }
-
-      setActiveUserRooms(userActiveRooms?.data?.data);
     };
 
     getUserActiveRooms();
-  }, []);
+
+    const handleCreateRoom = (room: IRoom) => {
+      dispatch(createRoom(room));
+    };
+
+    const handleUpdateRoom = (room: IRoom) => {
+      dispatch(updateRoom(room));
+    };
+
+    socket.on(SOCKET_LOBBIES.CREATE, handleCreateRoom);
+    socket.on(SOCKET_LOBBIES.UPDATE, handleUpdateRoom);
+
+    return () => {
+      socket.off(SOCKET_LOBBIES.CREATE, handleCreateRoom);
+      socket.off(SOCKET_LOBBIES.UPDATE, handleUpdateRoom);
+    };
+  }, [dispatch, socket]);
 
   const handleJoinGame = (id: number) => {
     navigate(`${CLIENT_ROUTES.GAME}/${id}`);
