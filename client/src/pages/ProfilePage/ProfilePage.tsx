@@ -1,6 +1,5 @@
-import styles from "./ProfilePage.module.scss";
 import { useEffect, useState } from "react";
-import { $api } from "@/shared/lib/axiosConfig";
+import styles from "./ProfilePage.module.scss";
 import { useAlert } from "@/shared/hooks/useAlert";
 import { useBackground } from "@/app/store/BackgroundContext";
 import hareSvg from "@/assets/svg/animals/заяц.svg";
@@ -8,6 +7,18 @@ import hedgehogSvg from "@/assets/svg/animals/ёж.svg";
 import polarBearSvg from "@/assets/svg/animals/медведьбелый.svg";
 import { FinishedGames } from "@/shared/ui/FinishedGames/FinishedGames";
 import { ChangeName } from "@/shared/ui/ChangeName/ChangeName";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
+import { $api, Button } from "@/shared";
+import { updateUserThunk } from "@/entities/user/api/UserApi";
+import defaultAvatarSvg from "@/assets/svg/заливка.svg";
+
+interface Purchase {
+  id: number;
+  product_id: number;
+  user_id: number;
+  is_active: boolean;
+  Product: Product;
+}
 
 interface Product {
   id: number;
@@ -16,57 +27,32 @@ interface Product {
   category_id: number;
 }
 
-interface UserData {
-  username: string;
-  avatar: string;
-}
-
-const USER_DATA_KEY = 'user_avatar_data';
-
 export const ProfilePage = () => {
   const { showAlert } = useAlert();
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
+  const [purchasedProducts, setPurchasedProducts] = useState<Purchase[]>([]);
+  const [activeAvatar, setActiveAvatar] = useState<Purchase | null>(null);
+  const [selectedAvatar, setSelectedAvatar] = useState<Purchase | null>(null);
   const [loading, setLoading] = useState({
     products: false,
     games: false,
+    avatar: false,
   });
 
+  const dispatch = useAppDispatch();
+  const { user, isLoading } = useAppSelector((state) => state.user);
   const { setBackground } = useBackground();
-
-  // Инициализация данных пользователя
-  const [userData, setUserData] = useState<UserData>(() => {
-    try {
-      const savedData = localStorage.getItem(USER_DATA_KEY);
-      return savedData 
-        ? JSON.parse(savedData) 
-        : { username: "NoHomo", avatar: "" };
-    } catch (error) {
-      console.error("Ошибка чтения из localStorage:", error);
-      return { username: "NoHomo", avatar: "" };
-    }
-  });
-
-  // Автосохранение при изменении userData
-  useEffect(() => {
-    try {
-      localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
-    } catch (error) {
-      console.error("Ошибка сохранения в localStorage:", error);
-    }
-  }, [userData]);
 
   const fetchPurchasedProducts = async () => {
     try {
       setLoading((prev) => ({ ...prev, products: true }));
       const response = await $api.get<{
         statusCode: number;
-        data: { Product: Product }[];
+        data: Purchase[];
       }>("/buies/user");
 
       if (response.data.statusCode === 200) {
-        const products = response.data.data.map((item) => item.Product);
-        setPurchasedProducts(products);
+        setPurchasedProducts(response.data.data);
       }
     } catch (err) {
       showAlert(
@@ -77,27 +63,111 @@ export const ProfilePage = () => {
     }
   };
 
-  const openAvatarModal = () => {
-    fetchPurchasedProducts();
-    setIsAvatarModalOpen(true);
+  const fetchActiveAvatar = async () => {
+    try {
+      const response = await $api.get<{
+        statusCode: number;
+        data: Purchase;
+      }>("/active/avatar");
+
+      if (response.data.statusCode === 200) {
+        setActiveAvatar(response.data.data);
+      }
+    } catch (err) {
+      showAlert("Ошибка загрузки активного аватара");
+    }
+  };
+
+  const openAvatarModal = async () => {
+    try {
+      await fetchPurchasedProducts();
+      await fetchActiveAvatar();
+      setIsAvatarModalOpen(true);
+    } catch (err) {
+      showAlert("Ошибка при загрузке данных аватара");
+    }
   };
 
   const closeAvatarModal = () => {
     setIsAvatarModalOpen(false);
+    setSelectedAvatar(null);
   };
 
-  const handleAvatarSelect = (product: Product) => {
-    const newAvatar = product.name;
-    setUserData(prev => ({
-      ...prev,
-      avatar: newAvatar
-    }));
-    showAlert(`Аватар "${newAvatar}" сохранён!`);
-    closeAvatarModal();
+  const handleAvatarSelect = (purchase: Purchase) => {
+    setSelectedAvatar(purchase);
+  };
+
+  const handleSaveAvatar = async () => {
+    if (!selectedAvatar) return;
+
+    try {
+      setLoading((prev) => ({ ...prev, avatar: true }));
+
+      // Deactivate current avatar if exists
+      if (activeAvatar) {
+        await $api.patch(`/buies/deactivate/${activeAvatar.id}`);
+      }
+
+      // Activate new avatar
+      await $api.patch(`/buies/activate/${selectedAvatar.id}`);
+
+      setActiveAvatar(selectedAvatar);
+      showAlert(`Аватар "${selectedAvatar.Product.name}" сохранён!`);
+      closeAvatarModal();
+    } catch (err) {
+      showAlert(
+        err instanceof Error ? err.message : "Ошибка при сохранении аватара"
+      );
+    } finally {
+      setLoading((prev) => ({ ...prev, avatar: false }));
+    }
+  };
+
+  const handleDeactivateAvatar = async () => {
+    if (!activeAvatar) return;
+
+    try {
+      setLoading((prev) => ({ ...prev, avatar: true }));
+      await $api.patch(`/buies/deactivate/${activeAvatar.id}`);
+      setActiveAvatar(null);
+      showAlert("Аватар деактивирован!");
+      closeAvatarModal();
+    } catch (err) {
+      showAlert(
+        err instanceof Error ? err.message : "Ошибка при деактивации аватара"
+      );
+    } finally {
+      setLoading((prev) => ({ ...prev, avatar: false }));
+    }
+  };
+
+  const handleUpdateUsername = async (newUsername: string) => {
+    try {
+      await dispatch(updateUserThunk({ username: newUsername })).unwrap();
+      showAlert("Имя успешно изменено!");
+    } catch (err) {
+      showAlert(err.message || "Ошибка при изменении имени");
+    }
+  };
+
+  const getAvatarImage = () => {
+    if (activeAvatar) {
+      return (
+        <div className={styles.avatarImage}>{activeAvatar.Product.name}</div>
+      );
+    }
+    return (
+      <img
+        src={defaultAvatarSvg}
+        alt="Дефолтный аватар"
+        className={styles.defaultAvatar}
+      />
+    );
   };
 
   useEffect(() => {
     setBackground("forest");
+    fetchActiveAvatar();
   }, [setBackground]);
 
   return (
@@ -113,11 +183,7 @@ export const ProfilePage = () => {
       <div className={styles.section1}>
         <div className={styles.avatarWrapper}>
           <div className={styles.avatarContainer}>
-            {userData.avatar ? (
-              <div className={styles.avatarImage}>{userData.avatar}</div>
-            ) : (
-              <div className={styles.avatarPlaceholder}>Аватарка</div>
-            )}
+            {getAvatarImage()}
             <button
               onClick={openAvatarModal}
               className={styles.avatarChangeButton}
@@ -127,7 +193,11 @@ export const ProfilePage = () => {
             </button>
           </div>
         </div>
-        <ChangeName />
+        <ChangeName
+          currentUsername={user?.username || ""}
+          onUpdate={handleUpdateUsername}
+          isLoading={isLoading}
+        />
       </div>
 
       {isAvatarModalOpen && (
@@ -145,30 +215,52 @@ export const ProfilePage = () => {
               ) : purchasedProducts.length === 0 ? (
                 <div>Вы пока ничего не купили</div>
               ) : (
-                purchasedProducts.map((product: Product) => (
+                purchasedProducts.map((purchase) => (
                   <div
-                    key={product.id}
+                    key={purchase.id}
                     className={`${styles.avatarOption} ${
-                      userData.avatar === product.name ? styles.selected : ""
+                      selectedAvatar?.id === purchase.id ||
+                      (activeAvatar?.id === purchase.id && !selectedAvatar)
+                        ? styles.selected
+                        : ""
                     }`}
-                    onClick={() => handleAvatarSelect(product)}
+                    onClick={() => handleAvatarSelect(purchase)}
                   >
                     <div className={styles.productAvatar}>
-                      {product.name} - {product.price} руб.
+                      {purchase.Product.name} - {purchase.Product.price} руб.
+                      {purchase.is_active && <span> (Активен)</span>}
                     </div>
                   </div>
                 ))
               )}
             </div>
-            <button
-              onClick={closeAvatarModal}
-              className={styles.modalCloseButton}
-            >
-              Закрыть
-            </button>
+            <div className={styles.modalButtons}>
+              {activeAvatar && (
+                <Button
+                  buttonText={
+                    loading.avatar ? "Обработка..." : "Деактивировать"
+                  }
+                  onClick={handleDeactivateAvatar}
+                  className={styles.modalDeactivateButton}
+                  disabled={loading.avatar}
+                />
+              )}
+              <Button
+                buttonText="Закрыть"
+                onClick={closeAvatarModal}
+                className={styles.modalCloseButton}
+              />
+              <Button
+                buttonText={loading.avatar ? "Сохранение..." : "Сохранить"}
+                onClick={handleSaveAvatar}
+                className={styles.modalSaveButton}
+                disabled={!selectedAvatar || loading.avatar}
+              />
+            </div>
           </div>
         </div>
       )}
+
       <FinishedGames />
     </div>
   );

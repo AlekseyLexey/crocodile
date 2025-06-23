@@ -5,6 +5,7 @@ import {
   refreshThunk,
   signInThunk,
   signUpThunk,
+  updateUserThunk,
 } from "../api/UserApi";
 
 type UserType = {
@@ -25,8 +26,6 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-
-      // ***signUpThunk
       .addCase(signUpThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -40,7 +39,6 @@ const userSlice = createSlice({
         state.error = action.payload!.message ?? "Unknow error";
       })
 
-      // ***signInThunk
       .addCase(signInThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -54,7 +52,6 @@ const userSlice = createSlice({
         state.error = action.payload!.message ?? "Unknow error";
       })
 
-      // ***logoutThunk
       .addCase(logoutThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -68,7 +65,6 @@ const userSlice = createSlice({
         state.error = action.payload?.message ?? "Unknow error";
       })
 
-      // ***refreshThunk
       .addCase(refreshThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -80,6 +76,19 @@ const userSlice = createSlice({
       .addCase(refreshThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload?.message ?? "Unknow error";
+      })
+
+      .addCase(updateUserThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUserThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.data;
+      })
+      .addCase(updateUserThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload?.message ?? "Ошибка при изменении имени";
       });
   },
 });

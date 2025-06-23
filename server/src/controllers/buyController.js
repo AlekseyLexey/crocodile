@@ -35,8 +35,7 @@ class BuyController {
 
   static async activateBuy(req, res, next) {
     try {
-      // const userId = res.locals.user.id;
-      const userId = 1;
+      const userId = res.locals.user.id;
       const buyId = req.validateId;
 
       const result = await BuyService.activateBuy({ userId, buyId });
@@ -112,6 +111,7 @@ class BuyController {
     try {
       const userId = res.locals.user.id;
       const activeAvatar = await BuyService.findActiveAvatar(userId);
+    
 
       return res.status(200).json(formatResponse(200, 'Success', activeAvatar));
     } catch (err) {
