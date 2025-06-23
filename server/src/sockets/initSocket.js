@@ -4,11 +4,13 @@ const { chatSocket } = require("./api/chatSocket");
 const { canvasSocket } = require("./api/canvasSocket");
 const { colorSocket } = require("./api/colorSocket");
 const { handleLeaveRoom } = require("./helpers/handleLeaveRoom");
+const { lobbiesSocket } = require("./api/lobbiesSocket");
 
 function initSocket(io) {
   io.on("connection", (socket) => {
     console.log(`User ${socket.id} connected`);
 
+    lobbiesSocket(io, socket);
     gameSocket(io, socket);
     roomSocket(io, socket);
     chatSocket(io, socket);
