@@ -68,7 +68,7 @@ export const ProfilePage = () => {
       const response = await $api.get<{
         statusCode: number;
         data: Purchase;
-      }>("/active/avatar");
+      }>("/buies/active/avatar");
 
       if (response.data.statusCode === 200) {
         setActiveAvatar(response.data.data);
