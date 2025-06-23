@@ -23,9 +23,15 @@ const setGameActive = async (io, socket, roomId) => {
   await initWordsForRoom(roomId);
   await newWordSendler(io, roomId, socket);
 
+  const checkRoomStatus = await RoomService.findRoomById(roomId);
+  if (checkRoomStatus.status === ROOM_STATUS.END) {
+    sendRoom(io, roomId, checkRoomStatus);
+    return;
+  }
+
   TimerStore.initTimerForRoom(io, socket, roomId, ROOM_STATUS.ACTIVE);
 
-  await sendRoom(io, roomId, room);
+  sendRoom(io, roomId, room);
   io.to(roomId).emit("message", `Раунд начался!`);
 };
 
@@ -66,11 +72,12 @@ const gameEndAction = async (io, socket, roomId) => {
 
   clearRoomWords(room.id);
 
-  await sendRoom(io, roomId, room);
+  sendRoom(io, roomId, room);
 
   io.to(roomId).emit("message", `Игра законченна`);
   socket.leave(roomId);
   socket.roomId = null;
+  return;
 };
 
 module.exports = { setGameActive, setGamePause, gameEndAction };
