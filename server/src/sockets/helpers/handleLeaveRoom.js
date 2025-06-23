@@ -2,7 +2,7 @@ const RoomService = require("../../services/roomService");
 const UserRoomService = require("../../services/userRoomService");
 const { setGamePause, gameEndAction } = require("./gameController");
 const { sendRoom } = require("./sendRoom");
-const TimerStore = require("./TimerStore");
+const TimerStore = require("./timerStore");
 
 const leaveUserAttemptsStore = new Map();
 const MAX_DISCONNECT_ATTEMPTS = 3;

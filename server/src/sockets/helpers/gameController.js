@@ -2,7 +2,7 @@ const RoomService = require("../../services/roomService");
 const newWordSendler = require("./newWordSendler");
 const nextLeadHandler = require("./nextLeadHandler");
 const { sendRoom } = require("./sendRoom");
-const TimerStore = require("./TimerStore");
+const TimerStore = require("./timerStore");
 const updateRoomsWithUserProfilePoints = require("./updateRoomsWithUserProfilePoints");
 const { roomWords, clearRoomWords, initWordsForRoom } = require("./wordStore");
 
