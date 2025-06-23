@@ -59,7 +59,7 @@ module.exports.roomSocket = (io, socket) => {
     await UserRoomService.updateUserOnlineStatus({
       userId: user.id,
       roomId,
-      status: true,
+      is_online: true,
     });
 
     await sendRoom(io, roomId);

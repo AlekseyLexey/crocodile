@@ -16,7 +16,7 @@ const handleLeaveRoom = async (io, socket) => {
   await UserRoomService.updateUserOnlineStatus({
     userId,
     roomId,
-    status: false,
+    is_online: false,
   });
 
   await changeLeadRoom(io, socket, userId, roomId);
