@@ -1,30 +1,36 @@
-
 import { useState } from "react";
 import { AlertContext } from "../context/AlertContext";
 import { CrocodileAlert } from "../components/ui/CrocodileAlert";
-import {type  AlertState,  type AlertType } from "../types/alertTypes";
+import type { AlertState, AlertType } from "../types/alertTypes";
 
 interface AlertProviderProps {
   children: React.ReactNode;
 }
 
 export const AlertProvider = ({ children }: AlertProviderProps) => {
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const [alerts, setAlerts] = useState<AlertState[]>([]);
 
   const showAlert = (message: string, type: AlertType = "success") => {
-    setAlert({ message, type });
+    const id = Date.now().toString();
+    setAlerts(prev => [...prev, { id, message, type }]);
+    
+    setTimeout(() => {
+      setAlerts(prev => prev.filter(alert => alert.id !== id));
+    }, 3000);
   };
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-      {alert && (
-        <CrocodileAlert
-          message={alert.message}
-          type={alert.type}
-          duration={3000}
-        />
-      )}
+      <div className="alerts-container">
+        {alerts.map((alert) => (
+          <CrocodileAlert
+            key={alert.id}
+            message={alert.message}
+            type={alert.type}
+          />
+        ))}
+      </div>
     </AlertContext.Provider>
   );
 };

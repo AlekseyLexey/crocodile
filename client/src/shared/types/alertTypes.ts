@@ -7,5 +7,6 @@ export interface AlertContextType {
 
 export interface AlertState {
   message: string;
+  id: string;
   type: AlertType;
 }
