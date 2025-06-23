@@ -1,10 +1,10 @@
-const { gameEndAction } = require("./gameController");
 const { getRandomWordForRoom } = require("./wordStore");
 
 async function newWordSendler(io, roomId, socket) {
   const word = getRandomWordForRoom(roomId);
 
   if (!word) {
+    const { gameEndAction } = require("./gameController");
     await gameEndAction(io, socket, roomId);
     return;
   }

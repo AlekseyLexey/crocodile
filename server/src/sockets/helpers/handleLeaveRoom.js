@@ -37,6 +37,8 @@ const checkLeadOfRoom = async (userId, roomId) => {
 };
 
 const changeLeadRoom = async (io, socket, userId, roomId) => {
+  const room = await RoomService.findRoomById(roomId);
+  if (room.status === "end") return;
   const isLead = await checkLeadOfRoom(userId, roomId);
   if (!isLead) {
     socket.to(roomId).emit("messageDisconnect", {
@@ -44,10 +46,6 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
     });
     return;
   }
-
-  const room = await RoomService.findRoomById(roomId);
-
-  if (room.status === "end") return;
 
   const data = leaveUserAttemptsStore.get(roomId + userId);
   const disconnectCount = (data?.disconnectCount || 0) + 1;

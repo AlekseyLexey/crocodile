@@ -7,7 +7,11 @@ import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
 import { setRoom, type IRoomUser } from "@/entities/room";
 import { setColor } from "@/entities/canvas/slice/canvasSlice";
 import { setTime } from "@/entities/room/slice/RoomSlice";
-import { SOCKET_ROOM_ROUTES, SOCKET_STATUS_ROUTES } from "@/shared";
+import {
+  SOCKET_ROOM_ROUTES,
+  SOCKET_STATUS_ROUTES,
+  SOCKET_WORD_ROUTES,
+} from "@/shared";
 import {
   Button,
   ColorsPanel,
@@ -23,6 +27,7 @@ import raccoonSvg from "@/assets/svg/animals/енот.svg";
 import { useAlert } from "@/shared/hooks/useAlert";
 
 export const GamePage = () => {
+  const [word, setWord] = useState<string>("");
   const { showAlert } = useAlert();
   const { room, time } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
@@ -45,7 +50,16 @@ export const GamePage = () => {
   const isLead = useMemo(() => user?.id === lead, [user?.id, lead]);
 
   useEffect(() => {
+    const newWordHandler = ({ word }: { word: string }) => {
+      setWord(word);
+    };
+
+    socket.on(SOCKET_WORD_ROUTES.NEW_WORD, newWordHandler);
+    socket.on(SOCKET_WORD_ROUTES.GET_WORD, newWordHandler);
+
     return () => {
+      socket.off(SOCKET_WORD_ROUTES.NEW_WORD);
+      socket.off(SOCKET_WORD_ROUTES.GET_WORD);
       socket.emit("leaveRoom");
     };
     //eslint-disable-next-line
@@ -153,7 +167,7 @@ export const GamePage = () => {
         {room?.status === ROOM_STATUSES.ACTIVE && (
           <>
             {isLead && <ColorsPanel />}
-            {room && <WordPanel isOwner={isLead} />}
+            {room && <WordPanel isOwner={isLead} word={word} />}
             <div className={styles.canvas}>
               <CanvasComponent isOwner={isLead} />
             </div>

@@ -14,18 +14,18 @@ interface CanvasProps {
 export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   const { socket } = useSocket();
   const { canvasRef } = useCanvasContext();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
   const {
     currentColor,
     activeTool,
     isDrawing,
     saveCanvasState,
     handleClearCanvas,
-  } = useCanvas();
-  const { id } = useParams();
-
-  const roomId: number = useMemo(() => {
-    return Number(id);
-  }, [id]);
+  } = useCanvas(roomId);
 
   const { floodFill } = useFloodFill();
   const dispatch = useAppDispatch();
@@ -151,7 +151,6 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
       figure: {},
     });
 
-    $api.put(`/picture/${roomId}`, { pictures: canvasRef.current.toDataURL() });
     saveCanvasState();
   };
 

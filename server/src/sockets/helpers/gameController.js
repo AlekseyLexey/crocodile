@@ -1,9 +1,10 @@
 const RoomService = require("../../services/roomService");
+const newWordSendler = require("./newWordSendler");
 const nextLeadHandler = require("./nextLeadHandler");
 const { sendRoom } = require("./sendRoom");
 const TimerStore = require("./TimerStore");
 const updateRoomsWithUserProfilePoints = require("./updateRoomsWithUserProfilePoints");
-const { roomWords, clearRoomWords } = require("./wordStore");
+const { roomWords, clearRoomWords, initWordsForRoom } = require("./wordStore");
 
 const ROOM_STATUS = {
   PREPARE: "prepare",
@@ -17,6 +18,9 @@ const setGameActive = async (io, socket, roomId) => {
     status: ROOM_STATUS.ACTIVE,
   });
 
+  await initWordsForRoom(roomId);
+  await newWordSendler(io, roomId, socket);
+
   TimerStore.initTimerForRoom(io, socket, roomId, ROOM_STATUS.ACTIVE);
 
   await sendRoom(io, roomId, room);
@@ -27,6 +31,7 @@ const setGamePause = async (io, socket, roomId) => {
   const room = await RoomService.updateRoomById(roomId, {
     status: ROOM_STATUS.PAUSE,
   });
+  await RoomService.updateRoomById(roomId, { pictures: "" });
   if (room.type === "multi") {
     const roomMap = roomWords.get(roomId);
 
@@ -52,7 +57,6 @@ const gameEndAction = async (io, socket, roomId) => {
   const room = await updateRoomsWithUserProfilePoints(roomId);
 
   TimerStore.clearTimer(room.id);
-  // console.log("TimerStore ====================>", TimerStore);
 
   clearRoomWords(room.id);
 

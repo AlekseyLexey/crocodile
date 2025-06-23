@@ -6,6 +6,7 @@ const {
   checkLeadOfRoom,
 } = require("../helpers/handleLeaveRoom");
 const TimerStore = require("../helpers/TimerStore");
+const { getCurrentWord } = require("../helpers/wordStore");
 
 module.exports.roomSocket = (io, socket) => {
   socket.on("joinRoom", async ({ user, roomId }) => {
@@ -37,6 +38,8 @@ module.exports.roomSocket = (io, socket) => {
       const isLead = await checkLeadOfRoom(user.id, roomId);
 
       if (isLead) {
+        const currentWord = getCurrentWord(roomId);
+        socket.emit("getWord", { word: currentWord ? currentWord : "" });
         const data = TimerStore.getTimerStore(roomId);
 
         socket.to(roomId).emit("messageReconnect", {
