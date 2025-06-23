@@ -30,6 +30,18 @@ const roomSlice = createSlice({
     setRoom: (state, action: PayloadAction<IRoom | null>) => {
       state.room = action.payload;
     },
+    createRoom: (state, action: PayloadAction<IRoom>) => {
+      const roomExists = state.rooms.some(
+        (room) => room.id === action.payload.id
+      );
+      if (!roomExists) {
+        state.rooms.push(action.payload);
+      }
+    },
+
+    updateRoom: (state, action: PayloadAction<IRoom>) => {
+      state.rooms = state.rooms.filter((room) => room.id !== action.payload.id);
+    },
     setTime: (state, action: PayloadAction<number | null>) => {
       state.time = action.payload;
     },
@@ -80,6 +92,6 @@ const roomSlice = createSlice({
   },
 });
 
-export const { setRoom, setTime } = roomSlice.actions;
+export const { setRoom, createRoom, updateRoom, setTime } = roomSlice.actions;
 
 export const roomReducer = roomSlice.reducer;

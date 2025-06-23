@@ -34,10 +34,10 @@ class TimerStore {
       if (currentData.time <= 0) {
         const RoomService = require("../../services/roomService");
         const actualRoom = await RoomService.findRoomById(roomId);
+        io.to(roomId).emit("timer", { time: 0 });
+        this.clearTimer(roomId);
 
         if (actualRoom.status === "end") {
-          io.to(roomId).emit("timer", { time: 0 });
-          this.clearTimer(roomId);
           return;
         }
 

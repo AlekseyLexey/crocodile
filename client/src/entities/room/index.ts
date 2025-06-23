@@ -5,7 +5,13 @@ export type {
   IRoom,
   ICreateRoom,
 } from "./model";
-export { setRoom, roomReducer } from "./slice/RoomSlice";
+export {
+  setRoom,
+  createRoom,
+  updateRoom,
+  setTime,
+  roomReducer,
+} from "./slice/RoomSlice";
 export {
   createRoomThunk,
   getAllRoomThunk,

@@ -17,3 +17,4 @@ export { ColorsPanel } from "./ui/ColorsPanel/ColorsPanel";
 export { CreateGameModal } from "./ui/Modal/CreateGameModal";
 export type { IApiResponse } from "./types";
 export { ButtonNavigate } from "./ui/ButtonNavigate/ButtonNavigate";
+export { SOCKET_LOBBIES } from "./enums/lobbiesSockets";
