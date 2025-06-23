@@ -1,32 +1,26 @@
-// src/shared/components/ui/CrocodileAlert.tsx
 import { useEffect, useState } from "react";
 import styles from "./CrocodileAlert.module.scss";
-import  type { AlertType } from "../../types/alertTypes";
+import type { AlertType } from "../../types/alertTypes";
 
 interface CrocodileAlertProps {
   message: string;
-  duration?: number;
   type?: AlertType;
 }
 
 export const CrocodileAlert = ({
   message,
-  duration = 4000,
   type = "success",
 }: CrocodileAlertProps) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (message) {
-      setIsVisible(true);
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-      }, duration);
-      return () => clearTimeout(timer);
-    }
-  }, [message, duration]);
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!isVisible || !message) return null;
+  if (!isVisible) return null;
 
   return (
     <div className={`${styles.alert} ${styles[type]}`}>
