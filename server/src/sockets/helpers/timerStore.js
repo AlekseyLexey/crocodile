@@ -1,89 +1,91 @@
-const RoomService = require("../../services/roomService");
-const GameController = require("./gameController");
-
-const timerStore = new Map();
-
-const initTimerForRoom = (io, socket, roomId, status, inintTime) => {
-  clearTimer(roomId);
-  GameController.initTimer(initTimerForRoom);
-
-  let time;
-  switch (status) {
-    case "active":
-      time = 15000;
-      break;
-    case "pause":
-      time = 8000;
-      break;
-    default:
-      return;
+class TimerStore {
+  constructor() {
+    this.store = new Map();
   }
 
-  if (inintTime) {
-    time = inintTime;
-  }
+  initTimerForRoom(io, socket, roomId, status, initialTime) {
+    this.clearTimer(roomId);
 
-  io.to(roomId).emit("timer", { time });
-
-  const timer = setInterval(async () => {
-    const currentData = timerStore.get(roomId);
-    if (!currentData) return;
-
-    currentData.time -= 1000;
-
-    io.to(roomId).emit("timer", { time: currentData.time });
-
-    if (currentData.time <= 0) {
-      const actulaleRoom = await RoomService.findRoomById(roomId);
-      if (actulaleRoom.status === "end") {
-        io.to(roomId).emit("timer", { time: 0 });
-        clearTimer(roomId);
+    let time;
+    switch (status) {
+      case "active":
+        time = 30000;
+        break;
+      case "pause":
+        time = 8000;
+        break;
+      default:
         return;
-      }
-
-      switch (status) {
-        case "active":
-          await GameController.pause(io, socket, roomId, status);
-          break;
-        case "pause":
-          await GameController.active(io, socket, roomId, status);
-          break;
-        default:
-          io.to(roomId).emit("timer", { time: 0 });
-          clearTimer(roomId);
-          return;
-      }
     }
-  }, 1000);
 
-  timerStore.set(roomId, {
-    timer,
-    time,
-    status,
-  });
-};
+    if (initialTime) {
+      time = initialTime;
+    }
 
-const getCurrentTime = (roomId) => {
-  const data = timerStore.get(roomId);
-  return data?.time || null;
-};
+    io.to(roomId).emit("timer", { time });
 
-const getCurrentStatus = (roomId) => {
-  const data = timerStore.get(roomId);
-  return data?.status || null;
-};
+    const timer = setInterval(async () => {
+      const currentData = this.store.get(roomId);
+      if (!currentData) return;
 
-const clearTimer = (roomId) => {
-  const data = timerStore.get(roomId);
-  if (data?.timer) {
-    clearInterval(data.timer);
+      currentData.time -= 1000;
+      io.to(roomId).emit("timer", { time: currentData.time });
+
+      if (currentData.time <= 0) {
+        const RoomService = require("../../services/roomService");
+        const actualRoom = await RoomService.findRoomById(roomId);
+
+        if (actualRoom.status === "end") {
+          io.to(roomId).emit("timer", { time: 0 });
+          this.clearTimer(roomId);
+          return;
+        }
+
+        const { setGamePause, setGameActive } = require("./gameController");
+        switch (status) {
+          case "active":
+            await setGamePause(io, socket, roomId, status);
+            break;
+          case "pause":
+            await setGameActive(io, socket, roomId, status);
+            break;
+          default:
+            io.to(roomId).emit("timer", { time: 0 });
+            clearTimer(roomId);
+            return;
+        }
+      }
+    }, 1000);
+
+    this.setTimerStore(roomId, { timer, time, status });
   }
-  timerStore.delete(roomId);
-};
 
-module.exports = {
-  initTimerForRoom,
-  getCurrentTime,
-  getCurrentStatus,
-  clearTimer,
-};
+  getTimerStore(roomId) {
+    return this.store.get(roomId);
+  }
+
+  setTimerStore(roomId, data) {
+    this.store.set(roomId, data);
+    return this.getTimerStore(roomId);
+  }
+
+  clearTimer(roomId) {
+    const data = this.getTimerStore(roomId);
+    if (data?.timer) {
+      clearInterval(data.timer);
+    }
+    this.store.delete(roomId);
+  }
+
+  getCurrentTime(roomId) {
+    const data = this.getTimerStore(roomId);
+    return data?.time || null;
+  }
+
+  getCurrentStatus(roomId) {
+    const data = this.getTimerStore(roomId);
+    return data?.status || null;
+  }
+}
+
+module.exports = new TimerStore();

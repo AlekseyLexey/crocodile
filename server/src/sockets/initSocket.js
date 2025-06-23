@@ -1,7 +1,6 @@
 const { roomSocket } = require("./api/roomSocket");
 const { gameSocket } = require("./api/gameSocket");
 const { chatSocket } = require("./api/chatSocket");
-const { wordSocket } = require("./api/wordSocket");
 const { canvasSocket } = require("./api/canvasSocket");
 const { colorSocket } = require("./api/colorSocket");
 const { handleLeaveRoom } = require("./helpers/handleLeaveRoom");
@@ -13,7 +12,6 @@ function initSocket(io) {
     gameSocket(io, socket);
     roomSocket(io, socket);
     chatSocket(io, socket);
-    wordSocket(io, socket);
     canvasSocket(io, socket);
     colorSocket(io, socket);
     socket.on("disconnect", async () => {

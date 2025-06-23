@@ -7,10 +7,11 @@ import {
   clearCanvas,
 } from "@/entities/canvas/slice/canvasSlice";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
+import $api from "../lib/axiosConfig";
 
 type ToolType = "pencil" | "fill" | "clear";
 
-export const useCanvas = () => {
+export const useCanvas = (roomId: number) => {
   const { canvasRef } = useCanvasContext();
   const dispatch = useAppDispatch();
   const { currentColor, activeTool, dimensions } = useAppSelector(selectCanvas);
@@ -23,7 +24,10 @@ export const useCanvas = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-     if (canvas.width !== dimensions.width || canvas.height !== dimensions.height) {
+    if (
+      canvas.width !== dimensions.width ||
+      canvas.height !== dimensions.height
+    ) {
       canvas.width = dimensions.width;
       canvas.height = dimensions.height;
       ctx.fillStyle = "#FFFFFF";
@@ -40,8 +44,9 @@ export const useCanvas = () => {
   const saveCanvasState = useCallback(() => {
     if (!canvasRef?.current) return;
     const dataURL = canvasRef.current.toDataURL();
+    $api.put(`/picture/${roomId}`, { pictures: dataURL });
     dispatch(saveCanvas(dataURL));
-  }, [dispatch, canvasRef]);
+  }, [dispatch, canvasRef, roomId]);
 
   const handleClearCanvas = useCallback(() => {
     if (!canvasRef?.current) return;
@@ -52,8 +57,9 @@ export const useCanvas = () => {
     ctx.fillStyle = "#FFF5F5";
     ctx.fillRect(0, 0, dimensions.width, dimensions.height);
     dispatch(clearCanvas());
+    $api.put(`/picture/${roomId}`, { pictures: canvasRef.current.toDataURL() });
     dispatch(setTool("pencil"));
-  }, [dispatch, dimensions, canvasRef]);
+  }, [dispatch, dimensions, canvasRef, roomId]);
 
   const changeTool = useCallback(
     (tool: ToolType) => {
