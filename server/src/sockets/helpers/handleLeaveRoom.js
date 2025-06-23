@@ -2,10 +2,10 @@ const RoomService = require("../../services/roomService");
 const UserRoomService = require("../../services/userRoomService");
 const { setGamePause, gameEndAction } = require("./gameController");
 const { sendRoom } = require("./sendRoom");
-const TimerStore = require("./TimerStore");
+const TimerStore = require("./timerStore");
 
 const leaveUserAttemptsStore = new Map();
-const MAX_DISCONNECT_ATTEMPTS = 999;
+const MAX_DISCONNECT_ATTEMPTS = 3;
 const RECONNECT_TIMEOUT = 10000;
 
 const handleLeaveRoom = async (io, socket) => {
@@ -16,7 +16,7 @@ const handleLeaveRoom = async (io, socket) => {
   await UserRoomService.updateUserOnlineStatus({
     userId,
     roomId,
-    status: false,
+    is_online: false,
   });
 
   await changeLeadRoom(io, socket, userId, roomId);
@@ -49,40 +49,42 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
 
   const data = leaveUserAttemptsStore.get(roomId + userId);
   const disconnectCount = (data?.disconnectCount || 0) + 1;
-  let time = RECONNECT_TIMEOUT;
+  if (!["prepare", "end"].includes(room.status)) {
+    let time = RECONNECT_TIMEOUT;
 
-  const pauseStatus = TimerStore.getCurrentStatus(roomId);
-  const pauseTime = TimerStore.getCurrentTime(roomId);
+    const pauseStatus = TimerStore.getCurrentStatus(roomId);
+    const pauseTime = TimerStore.getCurrentTime(roomId);
 
-  TimerStore.clearTimer(roomId);
+    TimerStore.clearTimer(roomId);
 
-  const timer = setInterval(async () => {
-    const currentData = TimerStore.getTimerStore(roomId);
-    if (!currentData) return;
+    const timer = setInterval(async () => {
+      const currentData = TimerStore.getTimerStore(roomId);
+      if (!currentData) return;
 
-    currentData.time -= 1000;
+      currentData.time -= 1000;
 
-    io.to(roomId).emit("timer", { time: currentData.time });
+      io.to(roomId).emit("timer", { time: currentData.time });
 
-    if (currentData.time <= 0) {
-      io.to(roomId).emit("timer", { time: 0 });
-      const actulaleRoom = await RoomService.findRoomById(roomId);
-      if (!["prepare", "end"].includes(actulaleRoom.status)) {
-        executeDisconnectAction(io, socket, room);
-        return;
+      if (currentData.time <= 0) {
+        io.to(roomId).emit("timer", { time: 0 });
+        const actulaleRoom = await RoomService.findRoomById(roomId);
+        if (!["prepare", "end"].includes(actulaleRoom.status)) {
+          executeDisconnectAction(io, socket, room);
+          return;
+        }
       }
-    }
-  }, 1000);
+    }, 1000);
+
+    TimerStore.setTimerStore(roomId, {
+      timer,
+      time,
+      pauseStatus,
+      pauseTime,
+    });
+  }
 
   leaveUserAttemptsStore.set(roomId + userId, {
     disconnectCount,
-  });
-
-  TimerStore.setTimerStore(roomId, {
-    timer,
-    time,
-    pauseStatus,
-    pauseTime,
   });
 
   const messageType =

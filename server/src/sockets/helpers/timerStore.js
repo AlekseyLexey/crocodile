@@ -9,10 +9,10 @@ class TimerStore {
     let time;
     switch (status) {
       case "active":
-        time = 30000;
+        time = 55000;
         break;
       case "pause":
-        time = 8000;
+        time = 7000;
         break;
       default:
         return;
@@ -34,10 +34,10 @@ class TimerStore {
       if (currentData.time <= 0) {
         const RoomService = require("../../services/roomService");
         const actualRoom = await RoomService.findRoomById(roomId);
+        io.to(roomId).emit("timer", { time: 0 });
+        this.clearTimer(roomId);
 
         if (actualRoom.status === "end") {
-          io.to(roomId).emit("timer", { time: 0 });
-          this.clearTimer(roomId);
           return;
         }
 
@@ -51,7 +51,7 @@ class TimerStore {
             break;
           default:
             io.to(roomId).emit("timer", { time: 0 });
-            clearTimer(roomId);
+            this.clearTimer(roomId);
             return;
         }
       }

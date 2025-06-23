@@ -5,7 +5,7 @@ const {
   handleLeaveRoom,
   checkLeadOfRoom,
 } = require("../helpers/handleLeaveRoom");
-const TimerStore = require("../helpers/TimerStore");
+const TimerStore = require("../helpers/timerStore");
 const { getCurrentWord } = require("../helpers/wordStore");
 
 module.exports.roomSocket = (io, socket) => {
@@ -20,6 +20,7 @@ module.exports.roomSocket = (io, socket) => {
     socket.join(roomId);
 
     const room = await RoomService.findRoomById(roomId);
+    if (room.status === "end") sendRoom(io, roomId, room);
 
     const candidateUserRoom = await UserRoomService.findUserRoomByIds(
       user.id,
@@ -46,20 +47,22 @@ module.exports.roomSocket = (io, socket) => {
           message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
         });
 
-        TimerStore.initTimerForRoom(
-          io,
-          socket,
-          roomId,
-          data.pauseStatus,
-          data.pauseTime
-        );
+        if (room.status !== "prepare") {
+          TimerStore.initTimerForRoom(
+            io,
+            socket,
+            roomId,
+            data.pauseStatus,
+            data.pauseTime
+          );
+        }
       }
     }
 
     await UserRoomService.updateUserOnlineStatus({
       userId: user.id,
       roomId,
-      status: true,
+      is_online: true,
     });
 
     await sendRoom(io, roomId);

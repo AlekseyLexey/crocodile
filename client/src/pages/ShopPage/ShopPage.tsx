@@ -20,6 +20,17 @@ interface Purchase {
   product_id: number;
 }
 
+interface ApiError {
+  response?: {
+    status?: number;
+    data?: {
+      message?: string;
+    };
+  };
+  isAxiosError?: boolean;
+  message?: string;
+}
+
 export const ShopPage = () => {
   const { setBackground } = useBackground();
   const { showAlert } = useAlert();
@@ -65,23 +76,32 @@ export const ShopPage = () => {
     return () => setBackground("forest");
   }, [setBackground]);
 
-  const handleBuy = async (productId: number) => {
-    try {
-      const response = await $api.post<IApiResponse<Purchase>>("/buies", {
-        productId,
-      });
+const handleBuy = async (productId: number) => {
+  try {
+    const response = await $api.post<IApiResponse<Purchase>>("/buies", {
+      productId,
+    });
 
-      if (response.data.statusCode === 201) {
-        setPurchasedIds((prev) => [...prev, productId]);
-        showAlert("Товар успешно куплен!");
-      } else {
-        showAlert(response.data.message || "Ошибка при покупке");
-      }
-    } catch (err) {
-      showAlert(err instanceof Error ? err.message : "Неизвестная ошибка");
+    if (response.data.statusCode === 201) {
+      setPurchasedIds((prev) => [...prev, productId]);
+      showAlert(`Товар ${productId} успешно куплен!`, "success"); 
     }
-  };
+  } catch (err: unknown) {
+    const error = err as ApiError;
+    const errorKey = Date.now(); // Уникальный ключ для каждого алерта
+    
+    if (error.response?.status === 400 || 
+        error.response?.data?.message?.toLowerCase().includes("not enough")) {
+      showAlert(`Недостаточно поинтов для покупки!`, "error");
+      return;
+    }
 
+    showAlert(
+      (error.response?.data?.message || "Неизвестная ошибка") + ` [${errorKey}]`,
+      "error"
+    );
+  }
+};
   if (loading) return <div className={styles.loading}>Загрузка...</div>;
   if (error) return <div className={styles.error}>Ошибка: {error}</div>;
   if (products.length === 0) {
