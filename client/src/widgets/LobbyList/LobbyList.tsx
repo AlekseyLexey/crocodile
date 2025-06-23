@@ -54,6 +54,10 @@ export const LobbyList = () => {
 
     getUserActiveRooms();
 
+    const handleGetActiveRoom = (rooms: IActiveUserRoom[]) => {
+      setActiveUserRooms(rooms);
+    };
+
     const handleCreateRoom = (room: IRoom) => {
       dispatch(createRoom(room));
     };
@@ -62,12 +66,14 @@ export const LobbyList = () => {
       dispatch(updateRoom(room));
     };
 
+    socket.on(SOCKET_LOBBIES.GET_ACTIVE, handleGetActiveRoom);
     socket.on(SOCKET_LOBBIES.CREATE, handleCreateRoom);
     socket.on(SOCKET_LOBBIES.UPDATE, handleUpdateRoom);
 
     return () => {
       socket.off(SOCKET_LOBBIES.CREATE, handleCreateRoom);
       socket.off(SOCKET_LOBBIES.UPDATE, handleUpdateRoom);
+      socket.off(SOCKET_LOBBIES.GET_ACTIVE, handleGetActiveRoom);
     };
   }, [dispatch, socket]);
 

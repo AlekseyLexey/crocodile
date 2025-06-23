@@ -20,6 +20,7 @@ module.exports.roomSocket = (io, socket) => {
     socket.join(roomId);
 
     const room = await RoomService.findRoomById(roomId);
+    if (room.status === "end") sendRoom(io, roomId, room);
 
     const candidateUserRoom = await UserRoomService.findUserRoomByIds(
       user.id,

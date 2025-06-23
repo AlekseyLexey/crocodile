@@ -1,4 +1,6 @@
 const RoomService = require("../../services/roomService");
+const UserRoomService = require("../../services/userRoomService");
+const { LOBBIES_ROUTES } = require("../api/lobbiesSocket");
 const newWordSendler = require("./newWordSendler");
 const nextLeadHandler = require("./nextLeadHandler");
 const { sendRoom } = require("./sendRoom");
@@ -55,8 +57,12 @@ const setGamePause = async (io, socket, roomId) => {
 
 const gameEndAction = async (io, socket, roomId) => {
   const room = await updateRoomsWithUserProfilePoints(roomId);
+  const activeRooms = await UserRoomService.findUserActiveRooms(socket.user.id);
+  io.emit(LOBBIES_ROUTES.GET_ACTIVE, activeRooms ? activeRooms : []);
 
   TimerStore.clearTimer(room.id);
+  const { leaveUserAttemptsStore } = require("./handleLeaveRoom");
+  leaveUserAttemptsStore?.delete(roomId);
 
   clearRoomWords(room.id);
 
