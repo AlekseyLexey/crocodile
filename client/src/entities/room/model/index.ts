@@ -16,6 +16,7 @@ export interface IRoomUser {
 export interface IUserRoom {
   point: number;
   is_lead: boolean;
+  is_online: boolean;
 }
 
 export type TypeGame = 'mono' | 'multi';
