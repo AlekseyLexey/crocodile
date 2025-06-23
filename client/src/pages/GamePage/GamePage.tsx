@@ -192,9 +192,9 @@ export const GamePage = () => {
         {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
-            <div key={user.id} className={`${styles.userCard} ${user.UserRoom.is_lead? styles.userLead : ''}`}>
+            <div key={user.id} className={`${styles.userCard} ${user.UserRoom.is_lead? styles.userLead : ''} ${user.UserRoom.is_online? '' : styles.userOffline}`}>
               <div className={styles.userAvatar} />
-              <div className={`${styles.userName} ${user.UserRoom.is_online? '' : styles.userOffline}`}>{user.username}</div>
+              <div className={`${styles.userName} `}>{user.username}</div>
               <div className={styles.userScore}>{user.UserRoom.point}</div>
             </div>
           ))}
