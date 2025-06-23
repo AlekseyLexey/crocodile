@@ -78,10 +78,6 @@ export const GamePage = () => {
       console.log(message);
     });
 
-    socket.on(SOCKET_STATUS_ROUTES.END, ({ room }) => {
-      dispatch(setRoom(room));
-    });
-
     socket.on("messageReconnect", ({ message }) => {
       showAlert(message);
     });
@@ -98,7 +94,6 @@ export const GamePage = () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
       socket.off("message");
-      socket.off(SOCKET_STATUS_ROUTES.END);
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
       socket.off("messageReconnect");
       socket.off("messageDisconnect");

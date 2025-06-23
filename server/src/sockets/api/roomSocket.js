@@ -1,12 +1,11 @@
 const UserRoomService = require("../../services/userRoomService");
 const { sendRoom } = require("../helpers/sendRoom");
 const RoomService = require("../../services/roomService");
-const { getCurrentTime, initTimerForRoom } = require("../helpers/timerStore");
 const {
   handleLeaveRoom,
   checkLeadOfRoom,
-  leaveTimerStore,
 } = require("../helpers/handleLeaveRoom");
+const TimerStore = require("../helpers/TimerStore");
 
 module.exports.roomSocket = (io, socket) => {
   socket.on("joinRoom", async ({ user, roomId }) => {
@@ -38,22 +37,19 @@ module.exports.roomSocket = (io, socket) => {
       const isLead = await checkLeadOfRoom(user.id, roomId);
 
       if (isLead) {
-        const data = leaveTimerStore.get(roomId);
+        const data = TimerStore.getTimerStore(roomId);
 
-        if (data?.timer) {
-          socket.to(roomId).emit("messageReconnect", {
-            message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
-          });
-          clearInterval(data.timer);
+        socket.to(roomId).emit("messageReconnect", {
+          message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
+        });
 
-          initTimerForRoom(
-            io,
-            socket,
-            roomId,
-            data.pauseStatus,
-            data.pauseTime
-          );
-        }
+        TimerStore.initTimerForRoom(
+          io,
+          socket,
+          roomId,
+          data.pauseStatus,
+          data.pauseTime
+        );
       }
     }
 
@@ -64,7 +60,7 @@ module.exports.roomSocket = (io, socket) => {
     });
 
     await sendRoom(io, roomId);
-    io.to(roomId).emit("timer", { time: getCurrentTime(roomId) });
+    io.to(roomId).emit("timer", { time: TimerStore.getCurrentTime(roomId) });
     socket.to(roomId).emit("message", `Игрок ${user.username} присоеденился`);
   });
 

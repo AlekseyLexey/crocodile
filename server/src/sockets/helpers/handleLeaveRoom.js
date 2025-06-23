@@ -1,16 +1,11 @@
 const RoomService = require("../../services/roomService");
 const UserRoomService = require("../../services/userRoomService");
-const GameController = require("./gameController");
-const { gameEndAction } = require("./gameEndAction");
+const { setGamePause, gameEndAction } = require("./gameController");
 const { sendRoom } = require("./sendRoom");
-const {
-  clearTimer,
-  getCurrentTime,
-  getCurrentStatus,
-} = require("./timerStore");
+const TimerStore = require("./TimerStore");
 
-const leaveTimerStore = new Map();
-const MAX_DISCONNECT_ATTEMPTS = 3;
+const leaveUserAttemptsStore = new Map();
+const MAX_DISCONNECT_ATTEMPTS = 999;
 const RECONNECT_TIMEOUT = 10000;
 
 const handleLeaveRoom = async (io, socket) => {
@@ -43,8 +38,6 @@ const checkLeadOfRoom = async (userId, roomId) => {
 
 const changeLeadRoom = async (io, socket, userId, roomId) => {
   const isLead = await checkLeadOfRoom(userId, roomId);
-  const room = await RoomService.findRoomById(roomId);
-
   if (!isLead) {
     socket.to(roomId).emit("messageDisconnect", {
       message: `Пользователь ${socket.user.username} отключился.`,
@@ -52,19 +45,21 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
     return;
   }
 
-  const data = leaveTimerStore.get(roomId);
+  const room = await RoomService.findRoomById(roomId);
+
+  if (room.status === "end") return;
+
+  const data = leaveUserAttemptsStore.get(roomId + userId);
   const disconnectCount = (data?.disconnectCount || 0) + 1;
   let time = RECONNECT_TIMEOUT;
 
-  const pauseStatus = getCurrentStatus(roomId);
-  const pauseTime = getCurrentTime(roomId);
+  const pauseStatus = TimerStore.getCurrentStatus(roomId);
+  const pauseTime = TimerStore.getCurrentTime(roomId);
 
-  if (data?.timer) {
-    clearInterval(data.timer);
-  }
+  TimerStore.clearTimer(roomId);
 
   const timer = setInterval(async () => {
-    const currentData = leaveTimerStore.get(roomId);
+    const currentData = TimerStore.getTimerStore(roomId);
     if (!currentData) return;
 
     currentData.time -= 1000;
@@ -76,22 +71,21 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
       const actulaleRoom = await RoomService.findRoomById(roomId);
       if (!["prepare", "end"].includes(actulaleRoom.status)) {
         executeDisconnectAction(io, socket, room);
-        leaveTimerStore.delete(roomId);
-        clearInterval(currentData.timer);
         return;
       }
     }
   }, 1000);
 
-  leaveTimerStore.set(roomId, {
+  leaveUserAttemptsStore.set(roomId + userId, {
+    disconnectCount,
+  });
+
+  TimerStore.setTimerStore(roomId, {
     timer,
     time,
-    disconnectCount,
     pauseStatus,
     pauseTime,
   });
-
-  clearTimer(roomId);
 
   const messageType =
     room.type === "mono" || ["prepare", "end"].includes(room.status)
@@ -105,7 +99,6 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
 
   if (disconnectCount >= MAX_DISCONNECT_ATTEMPTS) {
     executeDisconnectAction(io, socket, room);
-    leaveTimerStore.delete(roomId);
     socket.to(roomId).emit("messageDisconnect", {
       message: `Ведущий ${socket.user.username} отключился (${disconnectCount}/${MAX_DISCONNECT_ATTEMPTS}). ${messageTypeLastAttempt}`,
     });
@@ -121,12 +114,12 @@ const executeDisconnectAction = (io, socket, room) => {
   if (room.type === "mono" || ["prepare", "end"].includes(room.status)) {
     gameEndAction(io, socket, room.id);
   } else {
-    GameController.pause(io, socket, room.id);
+    setGamePause(io, socket, room.id);
   }
 };
 
 module.exports = {
-  leaveTimerStore,
+  leaveUserAttemptsStore,
   handleLeaveRoom,
   checkLeadOfRoom,
   changeLeadRoom,

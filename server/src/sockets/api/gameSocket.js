@@ -1,7 +1,7 @@
 const RoomService = require("../../services/roomService");
+const { gameEndAction } = require("../helpers/gameController");
 const { sendRoom } = require("../helpers/sendRoom");
-const { initTimerForRoom } = require("../helpers/timerStore");
-const { gameEndAction } = require("../helpers/gameEndAction");
+const TimerStore = require("../helpers/TimerStore");
 
 const GAME_ROUTES = {
   START: "startGame",
@@ -22,7 +22,7 @@ module.exports.gameSocket = (io, socket) => {
       status: ROOM_STATUS.ACTIVE,
     });
 
-    initTimerForRoom(io, socket, roomId, ROOM_STATUS.ACTIVE);
+    TimerStore.initTimerForRoom(io, socket, roomId, ROOM_STATUS.ACTIVE);
 
     sendRoom(io, roomId, room);
     io.to(roomId).emit("message", `Раунд начался!`);

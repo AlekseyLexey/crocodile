@@ -17,6 +17,7 @@ const themeRoomRouter = require("./api/themeRoomRouter");
 const buyRouter = require("./api/buyRouter");
 const categoryRouter = require("./api/categoryRouter");
 const productRouter = require("./api/productRouter");
+const pictureRouter = require("./api/pictureRouter");
 
 router.post("/registration", registration);
 router.post("/login", login);
@@ -24,6 +25,7 @@ router.post("/logout", logout);
 router.get("/refresh", refresh);
 
 router.use("/rooms", authMiddleware, roomRouter);
+router.use("/picture", pictureRouter);
 router.use("/words", wordRouter);
 router.use("/themes", themeRouter);
 router.use("/user-room", authMiddleware, userRoomRouter);

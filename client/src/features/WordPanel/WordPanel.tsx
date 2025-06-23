@@ -23,13 +23,12 @@ export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
     socket.emit(SOCKET_WORD_ROUTES.CHOOSE_THEME, {
       roomId,
     });
-  }, [socket, roomId, isOwner ]);
+  }, [socket, roomId, isOwner]);
 
   useEffect(() => {
     const newWordHandler = ({ word }: { word: string }) => {
       setWord(word);
       setIsCorrectWord(false);
-      
     };
 
     socket.on(SOCKET_WORD_ROUTES.NEW_WORD, newWordHandler);
@@ -48,9 +47,9 @@ export const WordPanel = memo(({ isOwner }: { isOwner: boolean }) => {
 
     return () => {
       socket.off(SOCKET_WORD_ROUTES.CORRECT_WORD);
-      socket.off(SOCKET_WORD_ROUTES.GET_WORD);
     };
-  }, [socket, roomId, isCorrectWord , showAlert ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket, roomId, isCorrectWord]);
 
   return (
     <>

@@ -3,7 +3,6 @@ import {
   $api,
   Button,
   CLIENT_ROUTES,
-  ROOM_STATUSES,
   useAppDispatch,
   useAppSelector,
 } from "@/shared";
@@ -16,7 +15,7 @@ import { useBackground } from "@/app/store/BackgroundContext";
 import lionSvg from "@/assets/svg/animals/лев.svg";
 import crabSvg from "@/assets/svg/animals/краб.svg";
 import whaleSvg from "@/assets/svg/animals/кит.svg";
-import type { IActiveUserRoom, IRoomForUser } from "@/entities/room/model";
+import type { IActiveUserRoom } from "@/entities/room/model";
 
 export const LobbyList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
