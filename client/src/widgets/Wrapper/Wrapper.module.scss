@@ -6,25 +6,35 @@
   position: relative;
   gap: 20px;
   width: 100%;
-  min-height: 100%; 
+  min-height: calc(100vh - 73px); // Вычитаем высоту header
   margin-top: 73px;
   background-color: rgba(51, 90, 0, 0.541);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  background-attachment: fixed; 
-  overflow-y: auto; 
+  background-attachment: fixed;
+  overflow-y: auto;
   
   &::before {
     content: '';
-    position: fixed; 
-    top: -73px; 
+    position: fixed;
+    top: -73px;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: $background-container;
     z-index: -1;
     opacity: 0.7;
+  }
+
+  
+  &.authPage {
+    min-height: 100vh;
+    margin-top: 0;
+    
+    &::before {
+      top: 0;
+    }
   }
 
   &.forest {
