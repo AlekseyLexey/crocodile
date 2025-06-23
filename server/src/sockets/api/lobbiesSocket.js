@@ -3,6 +3,7 @@ const RoomService = require("../../services/roomService");
 const LOBBIES_ROUTES = {
   CREATE: "createLobbies",
   UPDATE: "updateLobbies",
+  GET_ACTIVE: "getActiveLobbies",
 };
 
 const lobbiesSocket = (io, socket) => {
