@@ -1,15 +1,15 @@
-const UserRoomService = require("../../services/userRoomService");
-const { sendRoom } = require("../helpers/sendRoom");
-const RoomService = require("../../services/roomService");
+const UserRoomService = require('../../services/userRoomService');
+const { sendRoom } = require('../helpers/sendRoom');
+const RoomService = require('../../services/roomService');
 const {
   handleLeaveRoom,
   checkLeadOfRoom,
-} = require("../helpers/handleLeaveRoom");
-const TimerStore = require("../helpers/TimerStore");
-const { getCurrentWord } = require("../helpers/wordStore");
+} = require('../helpers/handleLeaveRoom');
+const TimerStore = require('../helpers/timerStore');
+const { getCurrentWord } = require('../helpers/wordStore');
 
 module.exports.roomSocket = (io, socket) => {
-  socket.on("joinRoom", async ({ user, roomId }) => {
+  socket.on('joinRoom', async ({ user, roomId }) => {
     if (!user) {
       socket.leave(roomId);
       return;
@@ -39,10 +39,10 @@ module.exports.roomSocket = (io, socket) => {
 
       if (isLead) {
         const currentWord = getCurrentWord(roomId);
-        socket.emit("getWord", { word: currentWord ? currentWord : "" });
+        socket.emit('getWord', { word: currentWord ? currentWord : '' });
         const data = TimerStore.getTimerStore(roomId);
 
-        socket.to(roomId).emit("messageReconnect", {
+        socket.to(roomId).emit('messageReconnect', {
           message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
         });
 
@@ -63,11 +63,11 @@ module.exports.roomSocket = (io, socket) => {
     });
 
     await sendRoom(io, roomId);
-    io.to(roomId).emit("timer", { time: TimerStore.getCurrentTime(roomId) });
-    socket.to(roomId).emit("message", `Игрок ${user.username} присоеденился`);
+    io.to(roomId).emit('timer', { time: TimerStore.getCurrentTime(roomId) });
+    socket.to(roomId).emit('message', `Игрок ${user.username} присоеденился`);
   });
 
-  socket.on("exitRoom", async ({ user, roomId }) => {
+  socket.on('exitRoom', async ({ user, roomId }) => {
     await handleLeaveRoom(io, socket);
 
     await UserRoomService.deleteUserRoom({
@@ -76,10 +76,10 @@ module.exports.roomSocket = (io, socket) => {
     });
 
     sendRoom(io, roomId);
-    socket.to(roomId).emit("message", `Игрок ${user.username} покинул игру`);
+    socket.to(roomId).emit('message', `Игрок ${user.username} покинул игру`);
   });
 
-  socket.on("leaveRoom", async () => {
+  socket.on('leaveRoom', async () => {
     await handleLeaveRoom(io, socket);
   });
 };

@@ -7,7 +7,6 @@ const {
   findToken,
   validateRefreshToken,
 } = require('./tokenService');
-const { formatResponse } = require('../utils/formatResponse');
 const HttpError = require('../exceptions/HttpError');
 
 const registrationService = async (username, email, password) => {

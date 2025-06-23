@@ -1,8 +1,8 @@
-const RoomService = require("../../services/roomService");
-const UserRoomService = require("../../services/userRoomService");
-const { setGamePause, gameEndAction } = require("./gameController");
-const { sendRoom } = require("./sendRoom");
-const TimerStore = require("./TimerStore");
+const RoomService = require('../../services/roomService');
+const UserRoomService = require('../../services/userRoomService');
+const { setGamePause, gameEndAction } = require('./gameController');
+const { sendRoom } = require('./sendRoom');
+const TimerStore = require('./timerStore');
 
 const leaveUserAttemptsStore = new Map();
 const MAX_DISCONNECT_ATTEMPTS = 999;
@@ -38,10 +38,10 @@ const checkLeadOfRoom = async (userId, roomId) => {
 
 const changeLeadRoom = async (io, socket, userId, roomId) => {
   const room = await RoomService.findRoomById(roomId);
-  if (room.status === "end") return;
+  if (room.status === 'end') return;
   const isLead = await checkLeadOfRoom(userId, roomId);
   if (!isLead) {
-    socket.to(roomId).emit("messageDisconnect", {
+    socket.to(roomId).emit('messageDisconnect', {
       message: `Пользователь ${socket.user.username} отключился.`,
     });
     return;
@@ -62,12 +62,12 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
 
     currentData.time -= 1000;
 
-    io.to(roomId).emit("timer", { time: currentData.time });
+    io.to(roomId).emit('timer', { time: currentData.time });
 
     if (currentData.time <= 0) {
-      io.to(roomId).emit("timer", { time: 0 });
+      io.to(roomId).emit('timer', { time: 0 });
       const actulaleRoom = await RoomService.findRoomById(roomId);
-      if (!["prepare", "end"].includes(actulaleRoom.status)) {
+      if (!['prepare', 'end'].includes(actulaleRoom.status)) {
         executeDisconnectAction(io, socket, room);
         return;
       }
@@ -86,30 +86,30 @@ const changeLeadRoom = async (io, socket, userId, roomId) => {
   });
 
   const messageType =
-    room.type === "mono" || ["prepare", "end"].includes(room.status)
+    room.type === 'mono' || ['prepare', 'end'].includes(room.status)
       ? `Игра будет завершена через ${RECONNECT_TIMEOUT / 1000} сек...`
       : `Смена раунда через ${RECONNECT_TIMEOUT / 1000} сек...`;
 
   const messageTypeLastAttempt =
-    room.type === "mono" || ["prepare", "end"].includes(room.status)
+    room.type === 'mono' || ['prepare', 'end'].includes(room.status)
       ? `Игра будет завершена.`
       : `Смена раунда.`;
 
   if (disconnectCount >= MAX_DISCONNECT_ATTEMPTS) {
     executeDisconnectAction(io, socket, room);
-    socket.to(roomId).emit("messageDisconnect", {
+    socket.to(roomId).emit('messageDisconnect', {
       message: `Ведущий ${socket.user.username} отключился (${disconnectCount}/${MAX_DISCONNECT_ATTEMPTS}). ${messageTypeLastAttempt}`,
     });
     return;
   }
 
-  socket.to(roomId).emit("messageDisconnect", {
+  socket.to(roomId).emit('messageDisconnect', {
     message: `Ведущий ${socket.user.username} отключился (${disconnectCount}/${MAX_DISCONNECT_ATTEMPTS}). ${messageType}`,
   });
 };
 
 const executeDisconnectAction = (io, socket, room) => {
-  if (room.type === "mono" || ["prepare", "end"].includes(room.status)) {
+  if (room.type === 'mono' || ['prepare', 'end'].includes(room.status)) {
     gameEndAction(io, socket, room.id);
   } else {
     setGamePause(io, socket, room.id);

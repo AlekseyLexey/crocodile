@@ -1,12 +1,13 @@
 import styles from "./ChatMessage.module.scss";
 import { useAppSelector } from "@/shared/hooks/useReduxHooks";
 import type { IMessage } from "../../../features/Chat/Chat";
+import React from "react";
 
 interface IMessageBlockProps {
   msg: IMessage;
 }
 
-export const ChatMessage = ({ msg }: IMessageBlockProps) => {
+export const ChatMessage = React.memo(({ msg }: IMessageBlockProps) => {
   const { user } = useAppSelector((state) => state.user);
 
   return (
@@ -18,4 +19,4 @@ export const ChatMessage = ({ msg }: IMessageBlockProps) => {
       {`${msg.sender.username}:  ${msg.message}`}
     </div>
   );
-};
+});
