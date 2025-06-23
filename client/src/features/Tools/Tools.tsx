@@ -9,13 +9,14 @@ import { useParams } from "react-router-dom";
 import { useMemo } from "react";
 
 export const Tools = () => {
-  const { activeTool, changeTool, handleClearCanvas } = useCanvas();
   const { socket } = useSocket();
   const { id } = useParams();
 
   const roomId: number = useMemo(() => {
     return Number(id);
   }, [id]);
+
+  const { activeTool, changeTool, handleClearCanvas } = useCanvas(roomId);
 
   const handleToolChange = (tool: "pencil" | "fill" | "clear") => {
     changeTool(tool);

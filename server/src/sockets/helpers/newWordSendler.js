@@ -1,17 +1,15 @@
-const { getRandomWordForRoom } = require('./wordStore');
-const updateRoomsWithUserProfilePoints = require('./updateRoomsWithUserProfilePoints');
+const { getRandomWordForRoom } = require("./wordStore");
 
-async function newWordSendler(io, roomId) {
+async function newWordSendler(io, roomId, socket) {
   const word = getRandomWordForRoom(roomId);
 
   if (!word) {
-    const room = await updateRoomsWithUserProfilePoints(roomId);
-
-    io.to(roomId).emit('endGame', { room });
+    const { gameEndAction } = require("./gameController");
+    await gameEndAction(io, socket, roomId);
     return;
   }
 
-  io.to(roomId).emit('newWord', { word });
+  io.to(roomId).emit("newWord", { word });
 }
 
 module.exports = newWordSendler;

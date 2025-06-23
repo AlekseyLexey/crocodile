@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo,useLayoutEffect } from "react";
+import React, { useEffect, useMemo, useLayoutEffect } from "react";
 import { useSocket } from "@/app/store/hooks/useSocket";
 import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
-import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas } from "@/shared";
+import { SOCKET_DRAW_ROUTES, useFloodFill, useCanvas, $api } from "@/shared";
 import { useParams } from "react-router-dom";
 import { getCursorPosition } from "./helpers/getCursorPosition";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
@@ -14,18 +14,18 @@ interface CanvasProps {
 export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   const { socket } = useSocket();
   const { canvasRef } = useCanvasContext();
+  const { id } = useParams();
+
+  const roomId: number = useMemo(() => {
+    return Number(id);
+  }, [id]);
   const {
     currentColor,
     activeTool,
     isDrawing,
     saveCanvasState,
     handleClearCanvas,
-  } = useCanvas();
-  const { id } = useParams();
-
-  const roomId: number = useMemo(() => {
-    return Number(id);
-  }, [id]);
+  } = useCanvas(roomId);
 
   const { floodFill } = useFloodFill();
   const dispatch = useAppDispatch();
@@ -33,12 +33,15 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
   useLayoutEffect(() => {
     const updateCanvasSize = () => {
       if (!canvasRef.current?.parentElement) return;
-      
-      const { width, height } = canvasRef.current.parentElement.getBoundingClientRect();
-      dispatch(setDimensions({ 
-        width: Math.floor(width), 
-        height: Math.floor(height) 
-      }));
+
+      const { width, height } =
+        canvasRef.current.parentElement.getBoundingClientRect();
+      dispatch(
+        setDimensions({
+          width: Math.floor(width),
+          height: Math.floor(height),
+        })
+      );
     };
 
     updateCanvasSize();
@@ -65,6 +68,15 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
       handleClearCanvas();
     });
 
+    $api.get(`/picture/${roomId}`).then(({ data }) => {
+      const img = new Image();
+      img.src = data.data;
+
+      img.onload = () => {
+        canvasRef.current.getContext("2d")?.drawImage(img, 0, 0);
+      };
+    });
+
     return () => {
       socket.off(SOCKET_DRAW_ROUTES.DRAW);
       socket.off(SOCKET_DRAW_ROUTES.FILL);
@@ -74,11 +86,14 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startDrawing = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     if (!canvasRef.current) return;
 
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
+    isDrawing.current = true;
 
     const { x, y } = getCursorPosition(e, canvasRef);
 
@@ -86,7 +101,6 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.strokeStyle = currentColor;
-      isDrawing.current = true;
     } else if (activeTool === SOCKET_DRAW_ROUTES.FILL) {
       socket.emit(SOCKET_DRAW_ROUTES.DRAW, {
         roomId,
@@ -101,7 +115,9 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
     }
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const draw = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     if (
       !isDrawing.current ||
       !canvasRef.current ||
@@ -134,6 +150,7 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
       action: SOCKET_DRAW_ROUTES.FINISH,
       figure: {},
     });
+
     saveCanvasState();
   };
 
