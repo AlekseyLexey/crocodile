@@ -5,7 +5,7 @@ const { sendRoom } = require("./sendRoom");
 const TimerStore = require("./TimerStore");
 
 const leaveUserAttemptsStore = new Map();
-const MAX_DISCONNECT_ATTEMPTS = 999;
+const MAX_DISCONNECT_ATTEMPTS = 3;
 const RECONNECT_TIMEOUT = 10000;
 
 const handleLeaveRoom = async (io, socket) => {
