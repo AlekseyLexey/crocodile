@@ -9,7 +9,7 @@ interface UserData {
 }
 
 export const ChangeName = () => {
-  const [userData, setUserData] = useState<UserData>({
+  const [userData] = useState<UserData>({
     username: "NoHomo",
     avatar: "",
   });
