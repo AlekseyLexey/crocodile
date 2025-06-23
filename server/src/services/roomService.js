@@ -1,20 +1,20 @@
-const { Room, User } = require("../../db/models");
-const HttpError = require("../exceptions/HttpError");
+const { Room, User } = require('../../db/models');
+const HttpError = require('../exceptions/HttpError');
 
 class RoomService {
   static async findAllRooms() {
     return await Room.findAll({
       where: {
-        status: "prepare",
+        status: 'prepare',
       },
-      attributes: ["id", "pictures", "status", "name", "owner_id", "type"],
+      attributes: ['id', 'pictures', 'status', 'name', 'owner_id', 'type'],
       include: [
         {
           model: User,
-          as: "roomUsers",
-          attributes: ["id", "username", "point"],
+          as: 'roomUsers',
+          attributes: ['id', 'username', 'point'],
           through: {
-            attributes: ["point", "is_lead"],
+            attributes: ['point', 'is_lead', 'is_online'],
           },
         },
       ],
@@ -23,21 +23,21 @@ class RoomService {
 
   static async findRoomById(roomId) {
     const room = await Room.findByPk(roomId, {
-      attributes: ["id", "pictures", "status", "name", "owner_id", "type"],
+      attributes: ['id', 'pictures', 'status', 'name', 'owner_id', 'type'],
       include: [
         {
           model: User,
-          as: "roomUsers",
-          attributes: ["id", "username", "point"],
+          as: 'roomUsers',
+          attributes: ['id', 'username', 'point'],
           through: {
-            attributes: ["point", "is_lead"],
+            attributes: ['point', 'is_lead', 'is_online'],
           },
         },
       ],
     });
 
     if (!room) {
-      throw new HttpError(404, "Room not found");
+      throw new HttpError(404, 'Room not found');
     }
 
     return room.get({ plain: true });
@@ -46,7 +46,7 @@ class RoomService {
   static async createNewRoom(roomData) {
     const newRoom = await Room.create({
       pictures: roomData.pictures,
-      status: "prepare",
+      status: 'prepare',
       name: roomData.name,
       owner_id: roomData.userId,
       type: roomData.type,
@@ -60,7 +60,7 @@ class RoomService {
   static async updateRoomById(roomId, roomData) {
     const room = await Room.findByPk(roomId);
     if (!room) {
-      throw new HttpError(404, "Room not found");
+      throw new HttpError(404, 'Room not found');
     }
 
     await room.update({
