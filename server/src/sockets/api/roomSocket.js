@@ -47,13 +47,15 @@ module.exports.roomSocket = (io, socket) => {
           message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
         });
 
-        TimerStore.initTimerForRoom(
-          io,
-          socket,
-          roomId,
-          data.pauseStatus,
-          data.pauseTime
-        );
+        if (room.status !== "prepare") {
+          TimerStore.initTimerForRoom(
+            io,
+            socket,
+            roomId,
+            data.pauseStatus,
+            data.pauseTime
+          );
+        }
       }
     }
 

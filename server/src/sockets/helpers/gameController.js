@@ -62,13 +62,15 @@ const gameEndAction = async (io, socket, roomId) => {
 
   TimerStore.clearTimer(room.id);
   const { leaveUserAttemptsStore } = require("./handleLeaveRoom");
-  leaveUserAttemptsStore?.delete(roomId);
+  leaveUserAttemptsStore?.delete(roomId + socket.user.id);
 
   clearRoomWords(room.id);
 
   await sendRoom(io, roomId, room);
-  socket.leave(roomId);
+
   io.to(roomId).emit("message", `Игра законченна`);
+  socket.leave(roomId);
+  socket.roomId = null;
 };
 
 module.exports = { setGameActive, setGamePause, gameEndAction };
