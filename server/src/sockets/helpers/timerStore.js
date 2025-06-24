@@ -9,7 +9,7 @@ class TimerStore {
     let time;
     switch (status) {
       case "active":
-        time = 33330000;
+        time = 10000;
         break;
       case "pause":
         time = 7000;
