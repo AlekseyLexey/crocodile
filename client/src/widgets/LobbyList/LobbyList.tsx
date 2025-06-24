@@ -19,6 +19,7 @@ import whaleSvg from "@/assets/svg/animals/кит.svg";
 import type { IActiveUserRoom } from "@/entities/room/model";
 import { useSocket } from "@/app/store/hooks/useSocket";
 
+
 export const LobbyList = () => {
   const { socket } = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +29,7 @@ export const LobbyList = () => {
   const { setBackground } = useBackground();
 
   const [activeUserRooms, setActiveUserRooms] = useState<IActiveUserRoom[]>([]);
+  const [gameTypeFilter, setGameTypeFilter] = useState<string>("all");
 
   useEffect(() => {
     const res = dispatch(getAllRoomThunk());
@@ -81,6 +83,14 @@ export const LobbyList = () => {
     navigate(`${CLIENT_ROUTES.GAME}/${id}`);
   };
 
+  const filteredRooms = rooms.filter((room) => {
+    return gameTypeFilter === "all" || room.type === gameTypeFilter;
+  });
+
+  const filteredActiveRooms = activeUserRooms.filter((userRoom) => {
+    return gameTypeFilter === "all" || userRoom.room.type === gameTypeFilter;
+  });
+
   return (
     <>
       <div className={styles.pageContainer}>
@@ -95,27 +105,46 @@ export const LobbyList = () => {
         <div className={styles.contentWrapper}>
           <h1 className={styles.title}>Доступные игры</h1>
 
+          {/* Фильтры */}
+          <div className={styles.filtersContainer}>
+            <select
+              value={gameTypeFilter}
+              onChange={(e) => setGameTypeFilter(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="all">Все режимы</option>
+              <option value="mono">Моно</option>
+              <option value="multi">Мульти</option>
+            </select>
+          </div>
+
           <div className={styles.lobbiesContainer}>
-            {activeUserRooms &&
-              activeUserRooms.map((userRoom: IActiveUserRoom) => {
-                return (
-                  <div
-                    key={`${userRoom.room.id}_active`}
-                    className={styles.lobbyCard}
-                  >
-                    <span className={styles.lobbyName}>
-                      {userRoom.room.name}
-                    </span>
-                    <div className={styles.lobbyName}>продолжить</div>
-                    <Button
-                      onClick={() => handleJoinGame(userRoom.room.id)}
-                      buttonText="войти"
-                      className={styles.joinButton}
-                    />
-                  </div>
-                );
-              })}
-            {rooms.map((room: IRoom) => {
+            {filteredActiveRooms.length > 0 && (
+              <h2 className={styles.sectionTitle}>Ваши активные игры</h2>
+            )}
+            {filteredActiveRooms.map((userRoom: IActiveUserRoom) => {
+              return (
+                <div
+                  key={`${userRoom.room.id}_active`}
+                  className={styles.lobbyCard}
+                >
+                  <span className={styles.lobbyName}>
+                    {userRoom.room.name}
+                  </span>
+                  <div className={styles.lobbyName}>продолжить</div>
+                  <Button
+                    onClick={() => handleJoinGame(userRoom.room.id)}
+                    buttonText="войти"
+                    className={styles.joinButton}
+                  />
+                </div>
+              );
+            })}
+
+            {filteredRooms.length > 0 && (
+              <h2 className={styles.sectionTitle}>Доступные комнаты</h2>
+            )}
+            {filteredRooms.map((room: IRoom) => {
               return (
                 <div key={room.id} className={styles.lobbyCard}>
                   <span className={styles.lobbyName}>{room.name}</span>
