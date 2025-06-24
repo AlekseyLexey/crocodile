@@ -146,7 +146,23 @@ class BuyService {
       include: [
         {
           model: Product,
-          attributes: ['id', 'name', 'price'],
+          attributes: ['id', 'name', 'price', 'category_id'],
+        },
+      ],
+    });
+  }
+  //тут сноваже жестко аватра категория 3, менять если переделываем сиды
+  static async findAvatarsByUserId(userId) {
+    return await Buy.findAll({
+      where: { user_id: userId },
+      attributes: ['id', 'user_id', 'product_id', 'is_active'],
+      include: [
+        {
+          model: Product,
+          where: {
+            category_id: 3
+          },
+          attributes: ['id', 'name', 'price', 'category_id'],
         },
       ],
     });
@@ -206,7 +222,7 @@ class BuyService {
         user_id: userId,
         is_active: true,
       },
-      attributes: ['product_id', 'user_id', 'is_active'],
+      attributes: ['id', 'product_id', 'user_id', 'is_active'],
       include: [
         {
           model: Product,

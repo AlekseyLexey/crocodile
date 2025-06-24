@@ -15,24 +15,6 @@ class BuyController {
     }
   }
 
-  // static async updateBuy(req, res, next) {
-  //   try {
-  //     const userId = res.locals.user.id;
-  //     const { buyStatus } = req.body;
-  //     const productId = req.validateId;
-
-  //     const updatedBuy = await BuyService.updateBuyByIds({
-  //       productId,
-  //       userId,
-  //       buyStatus,
-  //     });
-
-  //     return res.status(200).json(formatResponse(200, 'Success', updatedBuy));
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
-
   static async activateBuy(req, res, next) {
     try {
       const userId = res.locals.user.id;
@@ -91,6 +73,18 @@ class BuyController {
     }
   }
 
+  static async getAvatarsByUserId(req, res, next) {
+    try {
+      const userId = res.locals.user.id;
+
+      const avatars = await BuyService.findAvatarsByUserId(userId);
+
+      return res.status(200).json(formatResponse(200, 'Success', avatars));
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async getActiveBuyInCategory(req, res, next) {
     try {
       const userId = res.locals.user.id;
@@ -111,7 +105,6 @@ class BuyController {
     try {
       const userId = res.locals.user.id;
       const activeAvatar = await BuyService.findActiveAvatar(userId);
-    
 
       return res.status(200).json(formatResponse(200, 'Success', activeAvatar));
     } catch (err) {

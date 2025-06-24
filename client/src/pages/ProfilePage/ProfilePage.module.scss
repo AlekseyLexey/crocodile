@@ -266,20 +266,27 @@
   }
 }
 
+.selected {
+  border: 3px solid $active-border-v2-color;
+}
+
 .addAvatar {
   font-size: 24px;
   color: #4a76a8;
 }
 
-.modalCloseButton {
+
+.modalCloseButton,
+.modalDeactivateButton,
+.modalSaveButton {
+
   display: block;
-  margin: 0 auto;
   padding: 8px 16px;
   border: 5px solid #3b673d50;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease-out;
-  width: 109px;
+  width: 30%;
   height: 41px;
   background-color: #71a47350;
   stroke: #3b673d50;
@@ -534,3 +541,19 @@
     display: none;
   }
 }
+
+.modalButtons {
+  display: flex;
+  justify-content: center;
+  gap: 15px
+}
+
+.allUserPoints {
+  font-family: "Shantell Sans", cursive;
+  font-optical-sizing: auto;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 12%;
+  color: #2b640b;
+}
+

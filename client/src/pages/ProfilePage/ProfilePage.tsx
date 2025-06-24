@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
-import styles from "./ProfilePage.module.scss";
-import { useAlert } from "@/shared/hooks/useAlert";
-import { useBackground } from "@/app/store/BackgroundContext";
-import hareSvg from "@/assets/svg/animals/заяц.svg";
-import hedgehogSvg from "@/assets/svg/animals/ёж.svg";
-import polarBearSvg from "@/assets/svg/animals/медведьбелый.svg";
-import { FinishedGames } from "@/shared/ui/FinishedGames/FinishedGames";
-import { ChangeName } from "@/shared/ui/ChangeName/ChangeName";
-import { useAppDispatch, useAppSelector } from "@/shared/hooks/useReduxHooks";
-import { $api, Button } from "@/shared";
-import { updateUserThunk } from "@/entities/user/api/UserApi";
-import defaultAvatarSvg from "@/assets/svg/заливка.svg";
+import { useEffect, useState } from 'react';
+import styles from './ProfilePage.module.scss';
+import { useAlert } from '@/shared/hooks/useAlert';
+import { useBackground } from '@/app/store/BackgroundContext';
+import hareSvg from '@/assets/svg/animals/заяц.svg';
+import hedgehogSvg from '@/assets/svg/animals/ёж.svg';
+import polarBearSvg from '@/assets/svg/animals/медведьбелый.svg';
+import { FinishedGames } from '@/shared/ui/FinishedGames/FinishedGames';
+import { ChangeName } from '@/shared/ui/ChangeName/ChangeName';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks/useReduxHooks';
+import { $api, Button } from '@/shared';
+import { updateUserThunk } from '@/entities/user/api/UserApi';
+import defaultAvatarSvg from '@/assets/svg/заливка.svg';
+import type { IUser } from '@/entities/user';
 
 interface Purchase {
   id: number;
@@ -38,6 +39,7 @@ export const ProfilePage = () => {
     games: false,
     avatar: false,
   });
+  const [actualUser, setActualUser] = useState<IUser | null>(null);
 
   const dispatch = useAppDispatch();
   const { user, isLoading } = useAppSelector((state) => state.user);
@@ -49,14 +51,15 @@ export const ProfilePage = () => {
       const response = await $api.get<{
         statusCode: number;
         data: Purchase[];
-      }>("/buies/user");
+      }>('/buies/user/avatars');
 
       if (response.data.statusCode === 200) {
         setPurchasedProducts(response.data.data);
+        console.log('response.data.data ===>', response.data.data);
       }
     } catch (err) {
       showAlert(
-        err instanceof Error ? err.message : "Ошибка загрузки купленных товаров"
+        err instanceof Error ? err.message : 'Ошибка загрузки купленных товаров'
       );
     } finally {
       setLoading((prev) => ({ ...prev, products: false }));
@@ -68,13 +71,16 @@ export const ProfilePage = () => {
       const response = await $api.get<{
         statusCode: number;
         data: Purchase;
-      }>("/buies/active/avatar");
+      }>('/buies/active/avatar');
+
+      console.log('response ===>', response);
 
       if (response.data.statusCode === 200) {
         setActiveAvatar(response.data.data);
+        console.log('activeAvatar ===>', activeAvatar);
       }
     } catch (err) {
-      showAlert("Ошибка загрузки активного аватара");
+      console.log('Нет активного аватара', err);
     }
   };
 
@@ -84,7 +90,8 @@ export const ProfilePage = () => {
       await fetchActiveAvatar();
       setIsAvatarModalOpen(true);
     } catch (err) {
-      showAlert("Ошибка при загрузке данных аватара");
+      showAlert('Ошибка при загрузке данных аватара');
+      console.log('Ошибка при загрузке данных аватара', err);
     }
   };
 
@@ -116,7 +123,7 @@ export const ProfilePage = () => {
       closeAvatarModal();
     } catch (err) {
       showAlert(
-        err instanceof Error ? err.message : "Ошибка при сохранении аватара"
+        err instanceof Error ? err.message : 'Ошибка при сохранении аватара'
       );
     } finally {
       setLoading((prev) => ({ ...prev, avatar: false }));
@@ -130,11 +137,11 @@ export const ProfilePage = () => {
       setLoading((prev) => ({ ...prev, avatar: true }));
       await $api.patch(`/buies/deactivate/${activeAvatar.id}`);
       setActiveAvatar(null);
-      showAlert("Аватар деактивирован!");
+      showAlert('Аватар деактивирован!');
       closeAvatarModal();
     } catch (err) {
       showAlert(
-        err instanceof Error ? err.message : "Ошибка при деактивации аватара"
+        err instanceof Error ? err.message : 'Ошибка при деактивации аватара'
       );
     } finally {
       setLoading((prev) => ({ ...prev, avatar: false }));
@@ -144,9 +151,10 @@ export const ProfilePage = () => {
   const handleUpdateUsername = async (newUsername: string) => {
     try {
       await dispatch(updateUserThunk({ username: newUsername })).unwrap();
-      showAlert("Имя успешно изменено!");
+      showAlert('Имя успешно изменено!');
     } catch (err) {
-      showAlert(err.message || "Ошибка при изменении имени");
+      showAlert('Ошибка при изменении имени');
+      console.log('Ошибка при изменении имени', err);
     }
   };
 
@@ -166,9 +174,25 @@ export const ProfilePage = () => {
   };
 
   useEffect(() => {
-    setBackground("forest");
+    setBackground('forest');
     fetchActiveAvatar();
-  }, [setBackground]);
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await $api('/user');
+
+        if (response.status === 200) {
+          setActualUser(response.data.data);
+        }
+      } catch (err) {
+        console.error('Ошибка загрузки пользователя', err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <div className={styles.profile}>
@@ -193,8 +217,11 @@ export const ProfilePage = () => {
             </button>
           </div>
         </div>
+        <div className={styles.allUserPoints}>
+          Текущий баланс: {actualUser?.point}
+        </div>
         <ChangeName
-          currentUsername={user?.username || ""}
+          currentUsername={user?.username || ''}
           onUpdate={handleUpdateUsername}
           isLoading={isLoading}
         />
@@ -206,14 +233,12 @@ export const ProfilePage = () => {
             className={styles.modalContent}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className={styles.modalTitle}>
-              Выберите купленный продукт в качестве аватарки
-            </h2>
+            <h2 className={styles.modalTitle}>Выбрать аватарку</h2>
             <div className={styles.avatarsGrid}>
               {loading.products ? (
                 <div>Загрузка товаров...</div>
               ) : purchasedProducts.length === 0 ? (
-                <div>Вы пока ничего не купили</div>
+                <div>Нет купленных аватарок</div>
               ) : (
                 purchasedProducts.map((purchase) => (
                   <div
@@ -222,7 +247,7 @@ export const ProfilePage = () => {
                       selectedAvatar?.id === purchase.id ||
                       (activeAvatar?.id === purchase.id && !selectedAvatar)
                         ? styles.selected
-                        : ""
+                        : ''
                     }`}
                     onClick={() => handleAvatarSelect(purchase)}
                   >
@@ -237,24 +262,23 @@ export const ProfilePage = () => {
             <div className={styles.modalButtons}>
               {activeAvatar && (
                 <Button
-                  buttonText={
-                    loading.avatar ? "Обработка..." : "Деактивировать"
-                  }
+                  buttonText={loading.avatar ? 'Обработка...' : 'Убрать'}
                   onClick={handleDeactivateAvatar}
                   className={styles.modalDeactivateButton}
                   disabled={loading.avatar}
                 />
               )}
+             
               <Button
-                buttonText="Закрыть"
-                onClick={closeAvatarModal}
-                className={styles.modalCloseButton}
-              />
-              <Button
-                buttonText={loading.avatar ? "Сохранение..." : "Сохранить"}
+                buttonText={loading.avatar ? 'Сохранение...' : 'Сохранить'}
                 onClick={handleSaveAvatar}
                 className={styles.modalSaveButton}
                 disabled={!selectedAvatar || loading.avatar}
+              />
+               <Button
+                buttonText="Закрыть"
+                onClick={closeAvatarModal}
+                className={styles.modalCloseButton}
               />
             </div>
           </div>

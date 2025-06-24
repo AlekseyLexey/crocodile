@@ -9,6 +9,7 @@ buyRouter.delete('/:id', validateId, BuyController.deleteBuy);
 buyRouter.get('/user', BuyController.getProductsByUserId);
 buyRouter.patch('/activate/:id', validateId, BuyController.activateBuy);
 buyRouter.patch('/deactivate/:id', validateId, BuyController.deactivateBuy);
-// buyRouter.get('/active/:categoryName', BuyController.getActiveBuyInCategory);
 buyRouter.get('/active/avatar', BuyController.getActiveAvatar);
+buyRouter.get('/user/avatars', BuyController.getAvatarsByUserId);
+
 module.exports = buyRouter;

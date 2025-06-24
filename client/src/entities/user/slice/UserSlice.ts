@@ -1,12 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { IUser } from "../model";
+import { createSlice } from '@reduxjs/toolkit';
+import type { IUser } from '../model';
 import {
   logoutThunk,
   refreshThunk,
   signInThunk,
   signUpThunk,
   updateUserThunk,
-} from "../api/UserApi";
+} from '../api/UserApi';
 
 type UserType = {
   user: IUser | null;
@@ -21,7 +21,7 @@ const initialState: UserType = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -36,7 +36,7 @@ const userSlice = createSlice({
       })
       .addCase(signUpThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload!.message ?? "Unknow error";
+        state.error = action.payload!.message ?? 'Unknow error';
       })
 
       .addCase(signInThunk.pending, (state) => {
@@ -49,7 +49,7 @@ const userSlice = createSlice({
       })
       .addCase(signInThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload!.message ?? "Unknow error";
+        state.error = action.payload!.message ?? 'Unknow error';
       })
 
       .addCase(logoutThunk.pending, (state) => {
@@ -62,7 +62,7 @@ const userSlice = createSlice({
       })
       .addCase(logoutThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.message ?? "Unknow error";
+        state.error = action.payload?.message ?? 'Unknow error';
       })
 
       .addCase(refreshThunk.pending, (state) => {
@@ -75,7 +75,7 @@ const userSlice = createSlice({
       })
       .addCase(refreshThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.message ?? "Unknow error";
+        state.error = action.payload?.message ?? 'Unknow error';
       })
 
       .addCase(updateUserThunk.pending, (state) => {
@@ -88,7 +88,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUserThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.message ?? "Ошибка при изменении имени";
+        state.error = action.payload?.message ?? 'Ошибка при изменении имени';
       });
   },
 });
