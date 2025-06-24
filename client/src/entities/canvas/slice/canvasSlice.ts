@@ -8,6 +8,10 @@ interface CanvasState {
   currentColor: string;
   activeTool: ToolType;
   canvasData: string | null;
+  baseSize: {
+    width: number;
+    height: number;
+  };
   dimensions: {
     width: number;
     height: number;
@@ -18,6 +22,10 @@ const initialState: CanvasState = {
   currentColor: "#000000",
   activeTool: "pencil",
   canvasData: null,
+  baseSize: {
+    width: 1000,
+    height: 1000,
+  },
   dimensions: {
     width: 464,
     height: 426,

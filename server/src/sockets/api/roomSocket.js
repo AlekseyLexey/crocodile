@@ -47,7 +47,7 @@ module.exports.roomSocket = (io, socket) => {
           message: `Ведущий ${user.username} вернулся! Игра продолжается.`,
         });
 
-        if (room.status !== "prepare") {
+        if (!["prepare", "end"].includes(room.status)) {
           TimerStore.initTimerForRoom(
             io,
             socket,
