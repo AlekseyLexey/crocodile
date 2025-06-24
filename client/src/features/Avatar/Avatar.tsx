@@ -6,19 +6,21 @@ interface IAvatar {
 }
 
 const Avatar = ({ fileName }: IAvatar) => {
-
-    const getAvatarUrl = (name: string) => {
-    return new URL(`/src/assets/svg/avatars/${name}`, import.meta.url).href;
+  const getAvatarUrl = (name: string) => {
+    return new URL(`/src/assets/svg/avatars/${name}.svg`, import.meta.url).href;
   };
-  
-  const avatar = fileName ? <img src={getAvatarUrl(fileName)} alt={`Аватар ${fileName}`} /> : <img src={crocoDefaultAva}
-                alt="Дефолтный аватар"
-                className={styles.defaultAvatar}
-              />
+
+  const avatar = fileName ? (
+    <img src={getAvatarUrl(fileName)} alt={`Аватар ${fileName}`} />
+  ) : (
+    <img
+      src={crocoDefaultAva}
+      alt="Дефолтный аватар"
+      className={styles.defaultAvatar}
+    />
+  );
 
   return avatar;
-  
-  
 };
 
 export default Avatar;
