@@ -12,6 +12,15 @@ export const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  //ищем путь
+  const currentPath = Object.values(CLIENT_ROUTES).find(
+    route => route === location.pathname
+  );
+
+  const isAuthPage = currentPath 
+    ? [CLIENT_ROUTES.SIGN_IN, CLIENT_ROUTES.SIGN_UP].includes(currentPath)
+    : false;
+
   useEffect(() => {
     refreshFetch();
     // eslint-disable-next-line
@@ -21,10 +30,6 @@ export const Layout = () => {
     const response = await dispatch(refreshThunk());
     if (refreshThunk.rejected.match(response)) {
       navigate(CLIENT_ROUTES.SIGN_IN);
-    } else {
-      if (location.pathname === CLIENT_ROUTES.MAIN) {
-        // navigate(...Куда-нибудь);
-      }
     }
     setRefreshLoading(true);
   };
@@ -34,14 +39,12 @@ export const Layout = () => {
   }
 
   return (
-    <>
-      <Header />
-      <BackgroundProvider>
-        <Wrapper>
-          <Outlet />
-          <Footer />
-        </Wrapper>
-      </BackgroundProvider>
-    </>
+    <BackgroundProvider>
+      {!isAuthPage && <Header />}
+      <Wrapper isAuthPage={isAuthPage}>
+        <Outlet />
+      </Wrapper>
+      {!isAuthPage && <Footer />}
+    </BackgroundProvider>
   );
 };

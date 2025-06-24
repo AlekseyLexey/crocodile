@@ -35,6 +35,8 @@ export const AuthPage = () => {
         <Button
           buttonText={isLogin ? "Регистрация" : "Войти в профиль"}
           onClick={() => setIsLogin(!isLogin)}
+         
+          style={{ marginTop: '0.5rem' }}
         />
       </div>
     </div>
