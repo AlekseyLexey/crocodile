@@ -8,9 +8,10 @@
   background-image: $win;
   background-size: cover;
   background-position: center;
-  padding: 2rem;
+  padding: 1rem;
   box-sizing: border-box;
-  
+  overflow: hidden;
+
   grid-column: colors-start / tools-end;
   grid-row: word-start / tools-end;
 
@@ -18,41 +19,49 @@
     grid-column: word-start / canvas-end;
     grid-row: word-start / canvas-end;
   }
-  
+
   @media (max-width: 768px) {
     grid-column: 1 / -1;
     grid-row: 1;
-    height: 50vh;
+    height: auto;
     min-height: 100px;
     margin-bottom: 0;
-    justify-content: center;
-    padding: 1rem;
+    justify-content: flex-start;
+    padding: 0.8rem;
   }
 }
 
 .title {
   color: #1f1d1d;
-  margin-bottom: 1.5rem;
+  margin: 0 0 1rem 0;
   @include text-style-bold;
-  font-size: clamp(24px, 5vw, 40px);
+  font-size: clamp(20px, 4vw, 32px);
   text-align: center;
+  width: 100%;
+  word-break: break-word;
+  flex-shrink: 0;
 }
 
 .subtitle {
   @include text-style-bold;
-  font-size: clamp(18px, 3vw, 24px);
-  margin-bottom: 2rem;
+  font-size: clamp(16px, 2.5vw, 20px);
+  margin: 0 0 1rem 0;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .resultsTable {
-  width: 80%;
-  max-width: 600px;
-  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 1rem auto;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: $br;
-  padding: 1rem;
+  padding: 0.6rem;
+  flex-shrink: 2;
+  overflow: hidden;
+  max-height: 50vh;
   box-shadow: $box;
+  flex-grow: 0;
 
   @media (max-width: 768px) {
     width: 95%;
@@ -62,10 +71,10 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  padding: 0.5rem 1rem;
+  grid-template-columns: 0.8fr 3fr 0.8fr;
+  padding: 0.5rem 0.8rem;
   @include text-style-bold;
-  font-size: clamp(14px, 2vw, 18px);
+  font-size: clamp(13px, 1.8vw, 16px);
   border-bottom: 2px solid #033d0696;
 
   @media (max-width: 480px) {
@@ -76,11 +85,11 @@
 
 .playerRow {
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  padding: 0.8rem 1rem;
+  grid-template-columns: 0.8fr 3fr 0.8fr;
+  padding: 0.6rem 0.8rem;
   align-items: center;
   @include text-style-semibold;
-  font-size: clamp(14px, 2vw, 16px);
+  font-size: clamp(12px, 1.8vw, 14px);
 
   &:not(:last-child) {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -88,7 +97,7 @@
 
   @media (max-width: 480px) {
     grid-template-columns: 0.5fr 2fr 0.5fr;
-    padding: 0.5rem;
+    padding: 0.4rem;
   }
 }
 
@@ -99,31 +108,10 @@
 
 .username {
   text-align: left;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
 }
 
 .score {
   text-align: center;
   font-weight: bold;
-}
-
-.actionButton {
-  @include text-style-bold;
-  border: 5px solid #033d0696;
-  padding: 12px 30px;
-  font-size: clamp(16px, 2vw, 1.1rem);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  min-width: 200px;
-  margin-top: 1rem;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-  
-  @media (max-width: 480px) {
-    padding: 10px 20px;
-    min-width: 160px;
-  }
 }
