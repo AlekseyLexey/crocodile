@@ -1,4 +1,3 @@
-
 import { useBackground } from "@/app/store/BackgroundContext";
 import styles from "./Wrapper.module.scss";
 
