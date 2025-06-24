@@ -160,7 +160,7 @@ class BuyService {
         {
           model: Product,
           where: {
-            category_id: 3
+            category_id: 3,
           },
           attributes: ['id', 'name', 'price', 'category_id'],
         },
@@ -177,8 +177,7 @@ class BuyService {
     });
   }
 
-  //СОГЛАСОВАТЬ НЕЙМИНГ но тогда на инглише в бд либо сразу id
-  //или под каждую категорию свою ручку?
+  //для расширения функционала магазина при добавлении категорий
   static async findActiveBuyInCategory(userId, categoryName) {
     const buy = await Buy.findOne({
       where: {
@@ -213,9 +212,9 @@ class BuyService {
     return buy;
   }
 
-  //либо под каждую категорию отдельно
+  //отдельно под категорию аватар
   static async findActiveAvatar(userId) {
-    const categoryId = 3; //у нас пока 3 в бд у аватарок
+    const categoryId = 3; // у аватарок в бд id 3, менять, если изменим в сидах
 
     const activeBuy = await Buy.findOne({
       where: {

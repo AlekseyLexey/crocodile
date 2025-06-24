@@ -51,7 +51,6 @@ class RoomController {
       next(err);
     }
   }
-  //уточнить как инициализируется смена статуса
   static async updateRoom(req, res, next) {
     try {
       const userId = res.locals.user.id;

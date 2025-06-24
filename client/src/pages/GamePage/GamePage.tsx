@@ -156,15 +156,7 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-  useEffect(() => {
-  if (room?.roomUsers) {
-    console.log("=== roomUsers ===");
-    room.roomUsers.forEach((u) =>
-      console.log(u.username, u.UserRoom?.is_online, u.UserRoom)
-    );
-  }
-}, [room]);
-
+ 
   return (
     <div className={styles.game}>
       <img
