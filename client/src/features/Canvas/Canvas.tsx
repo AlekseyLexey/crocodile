@@ -175,7 +175,6 @@ export const CanvasComponent: React.FC<CanvasProps> = ({ isOwner }) => {
         borderRadius: "12px",
         cursor: activeTool === SOCKET_DRAW_ROUTES.FILL ? "pointer" : "default",
         ...(isOwner ? {} : { pointerEvents: "none" }),
-        backgroundColor: "#FFF5F5",
         touchAction: "none",
       }}
     />
