@@ -6,11 +6,27 @@ export type StatusRoomType =
   | ROOM_STATUSES.PAUSE
   | ROOM_STATUSES.END;
 
+interface IBuy {
+  id: number;
+  is_active: boolean;
+  product_id: number;
+  user_id: number;
+}
+
+interface IUserProducts {
+  Buy: IBuy;
+  category_id: number;
+  id: number;
+  name: string;
+  price: number;
+}
+
 export interface IRoomUser {
   id: number;
   username: string;
   point: number;
   UserRoom: IUserRoom;
+  userProducts: IUserProducts[];
 }
 
 export interface IUserRoom {

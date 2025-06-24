@@ -27,12 +27,12 @@ module.exports = {
           category_id: 3,
         },
         {
-          name: 'Ava3',
+          name: 'динозавр.svg',
           price: 12,
           category_id: 3,
         },
         {
-          name: 'Ava4',
+          name: 'динозавр.svg',
           price: 12,
           category_id: 3,
         },

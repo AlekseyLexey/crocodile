@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import styles from "./GamePage.module.scss";
-import { useSocket } from "@/app/store/hooks/useSocket";
-import { ChangeOfRound, Finish, Preparation } from "@/widgets";
-import { CanvasComponent, Tools, Chat, WordPanel } from "@/features";
-import { setRoom, type IRoomUser } from "@/entities/room";
-import { setColor } from "@/entities/canvas/slice/canvasSlice";
-import { setTime } from "@/entities/room/slice/RoomSlice";
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import styles from './GamePage.module.scss';
+import { useSocket } from '@/app/store/hooks/useSocket';
+import { ChangeOfRound, Finish, Preparation } from '@/widgets';
+import { CanvasComponent, Tools, Chat, WordPanel } from '@/features';
+import { setRoom, type IRoomUser } from '@/entities/room';
+import { setColor } from '@/entities/canvas/slice/canvasSlice';
+import { setTime } from '@/entities/room/slice/RoomSlice';
 import {
   SOCKET_ROOM_ROUTES,
   SOCKET_STATUS_ROUTES,
   SOCKET_WORD_ROUTES,
-} from "@/shared";
+} from '@/shared';
 import {
   Button,
   ColorsPanel,
@@ -20,14 +20,15 @@ import {
   useAppSelector,
   SOCKET_DRAW_ROUTES,
   ROOM_STATUSES,
-} from "@/shared";
-import { useBackground } from "@/app/store/BackgroundContext";
-import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
-import raccoonSvg from "@/assets/svg/animals/енот.svg";
-import { useAlert } from "@/shared/hooks/useAlert";
+} from '@/shared';
+import { useBackground } from '@/app/store/BackgroundContext';
+import crocodileSvg from '@/assets/svg/animals/крокодил.svg';
+import raccoonSvg from '@/assets/svg/animals/енот.svg';
+import { useAlert } from '@/shared/hooks/useAlert';
+import Avatar from '@/features/Avatar/Avatar';
 
 export const GamePage = () => {
-  const [word, setWord] = useState<string>("");
+  const [word, setWord] = useState<string>('');
   const { showAlert } = useAlert();
   const { room, time } = useAppSelector((state) => state.room);
   const { user } = useAppSelector((state) => state.user);
@@ -60,13 +61,13 @@ export const GamePage = () => {
     return () => {
       socket.off(SOCKET_WORD_ROUTES.NEW_WORD);
       socket.off(SOCKET_WORD_ROUTES.GET_WORD);
-      socket.emit("leaveRoom");
+      socket.emit('leaveRoom');
     };
     //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    setBackground("river");
+    setBackground('river');
 
     if (!roomId) return;
     socket.emit(SOCKET_ROOM_ROUTES.JOIN_ROOM, {
@@ -79,6 +80,8 @@ export const GamePage = () => {
     });
 
     socket.on(SOCKET_ROOM_ROUTES.ROOM, ({ room }) => {
+      console.log('room socket ==>', room);
+      
       dispatch(setRoom(room));
 
       const leader = room.roomUsers.filter(
@@ -88,41 +91,38 @@ export const GamePage = () => {
       setLead(leader[0] ? leader[0].id : null);
     });
 
-    socket.on("message", (message: string) => {
+    socket.on('message', (message: string) => {
       console.log(message);
     });
 
-    socket.on("messageReconnect", ({ message }) => {
+    socket.on('messageReconnect', ({ message }) => {
       showAlert(message);
     });
 
-    socket.on("messageDisconnect", ({ message }) => {
-      showAlert(message, "error");
+    socket.on('messageDisconnect', ({ message }) => {
+      showAlert(message, 'error');
     });
 
-    socket.on("disconnect", () => {
-      showAlert("Призошел disconnect", "error");
+    socket.on('disconnect', () => {
+      showAlert('Призошел disconnect', 'error');
     });
 
     return () => {
       socket.off(SOCKET_ROOM_ROUTES.JOIN_ROOM);
       socket.off(SOCKET_ROOM_ROUTES.ROOM);
-      socket.off("message");
+      socket.off('message');
       socket.off(SOCKET_DRAW_ROUTES.COLOR);
-      socket.off("messageReconnect");
-      socket.off("messageDisconnect");
-      socket.off("disconnect");
-      setBackground("forest");
+      socket.off('messageReconnect');
+      socket.off('messageDisconnect');
+      socket.off('disconnect');
+      setBackground('forest');
     };
 
-
-    
-    
     //eslint-disable-next-line
   }, [dispatch, user, socket, roomId, setBackground]);
 
   useEffect(() => {
-    socket.on("timer", ({ time }) => {
+    socket.on('timer', ({ time }) => {
       const seconds = Math.round(time / 1000);
       dispatch(setTime(seconds));
     });
@@ -136,7 +136,7 @@ export const GamePage = () => {
     }
 
     return () => {
-      socket.off("timer");
+      socket.off('timer');
     };
   }, [dispatch, user, socket, roomId, navigate, room?.status, isLead]);
 
@@ -156,7 +156,8 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
- 
+  console.log('room GP ===>', room);
+
   return (
     <div className={styles.game}>
       <img
@@ -184,8 +185,15 @@ export const GamePage = () => {
         {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
-            <div key={user.id} className={`${styles.userCard} ${user.UserRoom.is_lead? styles.userLead : ''} ${user.UserRoom.is_online? '' : styles.userOffline}`}>
-              <div className={styles.userAvatar} />
+            <div
+              key={user.id}
+              className={`${styles.userCard} ${
+                user.UserRoom.is_lead ? styles.userLead : ''
+              } ${user.UserRoom.is_online ? '' : styles.userOffline}`}
+            >
+              <div className={styles.userAvatar}>
+                <Avatar fileName={user.userProducts[0]?.name} />
+              </div>
               <div className={`${styles.userName} `}>{user.username}</div>
               <div className={styles.userScore}>{user.UserRoom.point}</div>
             </div>

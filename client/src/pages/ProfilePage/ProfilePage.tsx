@@ -12,6 +12,7 @@ import { $api, Button } from '@/shared';
 import { updateUserThunk } from '@/entities/user/api/UserApi';
 import defaultAvatarSvg from '@/assets/svg/заливка.svg';
 import type { IUser } from '@/entities/user';
+import Avatar from '@/features/Avatar/Avatar';
 
 interface Purchase {
   id: number;
@@ -73,11 +74,8 @@ export const ProfilePage = () => {
         data: Purchase;
       }>('/buies/active/avatar');
 
-      console.log('response ===>', response);
-
       if (response.data.statusCode === 200) {
         setActiveAvatar(response.data.data);
-        console.log('activeAvatar ===>', activeAvatar);
       }
     } catch (err) {
       console.log('Нет активного аватара', err);
@@ -158,20 +156,20 @@ export const ProfilePage = () => {
     }
   };
 
-  const getAvatarImage = () => {
-    if (activeAvatar) {
-      return (
-        <div className={styles.avatarImage}>{activeAvatar.Product.name}</div>
-      );
-    }
-    return (
-      <img
-        src={defaultAvatarSvg}
-        alt="Дефолтный аватар"
-        className={styles.defaultAvatar}
-      />
-    );
-  };
+  // const getAvatarImage = () => {
+  //   if (activeAvatar) {
+  //     return (
+  //       <div className={styles.avatarImage}>{activeAvatar.Product.name}</div>
+  //     );
+  //   }
+  //   return (
+  //     <img
+  //       src={crocoDefaultAva}
+  //       alt="Дефолтный аватар"
+  //       className={styles.defaultAvatar}
+  //     />
+  //   );
+  // };
 
   useEffect(() => {
     setBackground('forest');
@@ -207,7 +205,10 @@ export const ProfilePage = () => {
       <div className={styles.section1}>
         <div className={styles.avatarWrapper}>
           <div className={styles.avatarContainer}>
-            {getAvatarImage()}
+            {/* {getAvatarImage()} */}
+            {activeAvatar?.Product?.name && (
+              <Avatar fileName={activeAvatar.Product.name} />
+            )}
             <button
               onClick={openAvatarModal}
               className={styles.avatarChangeButton}
@@ -252,8 +253,9 @@ export const ProfilePage = () => {
                     onClick={() => handleAvatarSelect(purchase)}
                   >
                     <div className={styles.productAvatar}>
-                      {purchase.Product.name} - {purchase.Product.price} руб.
-                      {purchase.is_active && <span> (Активен)</span>}
+                      {/* {purchase.Product.name} - {purchase.Product.price} руб.
+                      {purchase.is_active && <span> (Активен)</span>} */}
+                      <Avatar fileName={purchase.Product.name} />
                     </div>
                   </div>
                 ))
@@ -268,14 +270,14 @@ export const ProfilePage = () => {
                   disabled={loading.avatar}
                 />
               )}
-             
+
               <Button
                 buttonText={loading.avatar ? 'Сохранение...' : 'Сохранить'}
                 onClick={handleSaveAvatar}
                 className={styles.modalSaveButton}
                 disabled={!selectedAvatar || loading.avatar}
               />
-               <Button
+              <Button
                 buttonText="Закрыть"
                 onClick={closeAvatarModal}
                 className={styles.modalCloseButton}

@@ -1,4 +1,4 @@
-const { Room, User } = require('../../db/models');
+const { Room, User, Product, Buy } = require('../../db/models');
 const HttpError = require('../exceptions/HttpError');
 
 class RoomService {
@@ -32,15 +32,33 @@ class RoomService {
           through: {
             attributes: ['point', 'is_lead', 'is_online'],
           },
+          include: [
+            {
+              model: Product,
+              as: 'userProducts',
+              attributes: ['id', 'name', 'price', 'category_id'],
+              // where: {
+              //   category_id: 3,
+              // },
+              through: {
+                attributes: ['id', 'user_id', 'product_id', 'is_active'],
+                // where: {
+                //   is_active: true,
+                // },
+              },
+            },
+          ],
         },
       ],
     });
 
     if (!room) {
-      throw new HttpError(404, 'Room not found');
+      // throw new HttpError(404, 'Room not found');
+      return null;
     }
 
     return room.get({ plain: true });
+
   }
 
   static async createNewRoom(roomData) {
@@ -76,3 +94,6 @@ class RoomService {
 }
 
 module.exports = RoomService;
+
+
+RoomService.findRoomById(21).then(data => console.log(data))

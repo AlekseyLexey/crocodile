@@ -16,6 +16,8 @@ class RoomController {
     try {
       const roomId = req.validateId;
       const room = await RoomService.findRoomById(roomId);
+      console.log('room controller ===>', room);
+      
 
       if (!room) {
         return res
