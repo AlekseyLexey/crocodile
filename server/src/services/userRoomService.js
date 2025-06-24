@@ -117,14 +117,14 @@ class UserRoomService {
     return await UserRoomService.findUserRoomByIds(userId, roomId);
   }
 
-  static async updateUserOnlineStatus({ userId, roomId, status }) {
+  static async updateUserOnlineStatus({ userId, roomId, is_online }) {
     const changedItem = await UserRoomService.findUserRoomByIds(userId, roomId);
 
     if (!changedItem) {
       return null;
     }
 
-    await changedItem.update({ is_online: status });
+    await changedItem.update({ is_online });
 
     return await UserRoomService.findUserRoomByIds(userId, roomId);
   }

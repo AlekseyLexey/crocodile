@@ -37,10 +37,11 @@
   grid-template-rows: 27px 426px 83px;
   gap: 16px;
   grid-template-areas:
-    'colors word timer chat'
-    'colors canvas tools chat'
-    'sidebar sidebar sidebar chat';
+    "colors word timer chat"
+    "colors canvas tools chat"
+    "sidebar sidebar sidebar chat";
   box-sizing: border-box;
+  
 }
 
 .exitButton {
@@ -278,8 +279,10 @@
 .changeOfRound,
 .finish {
   box-shadow: $box;
+  box-shadow: $box;
   position: relative;
   z-index: 1;
+
 
   &:before {
     content: '';
@@ -319,6 +322,7 @@
 
   .container {
     display: grid;
+    grid-template-columns: 1fr auto;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto 1fr auto;
     height: calc(100vh - 78px);
@@ -509,6 +513,7 @@
 
   @media (max-height: 860px) {
     bottom: -50px;
+    bottom: -50px;
     width: 140px;
     height: 140px;
   }
@@ -523,4 +528,14 @@
   @media (max-width: 768px) {
     display: none;
   }
+}
+
+.userLead {
+  // border: 2px solid $buy-color;
+  background-color: rgb(241, 169, 34);
+}
+
+.userOffline {
+  opacity: 0.5;
+  background-color: rgb(237, 176, 176);
 }
