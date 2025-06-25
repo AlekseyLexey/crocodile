@@ -4,11 +4,13 @@ import fillIcon from "@/assets/svg/заливка.svg";
 import clearIcon from "@/assets/svg/удалить все.svg";
 import { useCanvas } from "@/shared/hooks/useCanvas";
 import { useSocket } from "@/app/store/hooks/useSocket";
-import { SOCKET_DRAW_ROUTES } from "@/shared";
+import { $api, SOCKET_DRAW_ROUTES } from "@/shared";
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
+import { useCanvasContext } from "@/app/store/hooks/useCanvasContext";
 
 export const Tools = () => {
+  const { canvasRef } = useCanvasContext();
   const { socket } = useSocket();
   const { id } = useParams();
 
@@ -27,6 +29,9 @@ export const Tools = () => {
         figure: {},
       });
       handleClearCanvas();
+      $api.put(`/picture/${roomId}`, {
+        pictures: canvasRef.current.toDataURL(),
+      });
     }
   };
 

@@ -1,4 +1,4 @@
-import { Footer, Header, Wrapper } from "@/widgets";
+import { Header, Wrapper } from "@/widgets";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/shared/hooks/useReduxHooks";
@@ -44,7 +44,6 @@ export const Layout = () => {
       <Wrapper isAuthPage={isAuthPage}>
         <Outlet />
       </Wrapper>
-      {!isAuthPage && <Footer />}
     </BackgroundProvider>
   );
 };

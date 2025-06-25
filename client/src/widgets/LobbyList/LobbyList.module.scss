@@ -85,19 +85,19 @@
   max-height: 50vh;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #71A473 #f5f5f5;
+  scrollbar-color: #71a473 #f5f5f5;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: #f5f5f5;
     border-radius: 3px;
   }
-  
+
   &::-webkit-scrollbar-thumb {
-    background-color: #71A473;
+    background-color: #71a473;
     border-radius: 3px;
   }
 
@@ -117,6 +117,7 @@
   border-radius: $br;
   border: 1px solid $border-encircle;
   transition: $transition;
+  min-width: 0;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -177,6 +178,7 @@
   transition: $transition;
   @include text-style-bold;
   @include big-button;
+  background-color: #bbd3b1;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -309,7 +311,8 @@
     left: -30px;
     bottom: -50px;
   }
-}.pageContainer {
+}
+.pageContainer {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -420,7 +423,7 @@
 
   &:focus {
     outline: none;
-    border-color: #71A473;
+    border-color: #71a473;
     box-shadow: 0 0 0 2px rgba(113, 164, 115, 0.2);
   }
 
@@ -438,19 +441,19 @@
   max-height: 50vh;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #71A473 #f5f5f5;
+  scrollbar-color: #71a473 #f5f5f5;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: #f5f5f5;
     border-radius: 3px;
   }
-  
+
   &::-webkit-scrollbar-thumb {
-    background-color: #71A473;
+    background-color: #71a473;
     border-radius: 3px;
   }
 
@@ -464,7 +467,7 @@
   @include text-style-bold;
   font-size: 20px;
   margin-bottom: 1rem;
-  color: #71A473;
+  color: #71a473;
 
   @media (max-width: 768px) {
     font-size: 18px;
@@ -673,4 +676,20 @@
     left: -30px;
     bottom: -50px;
   }
+}
+
+.lobbyName {
+  max-width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.lobbyName {
+  max-width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }

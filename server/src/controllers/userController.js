@@ -4,6 +4,7 @@ const {
   logoutService,
   refreshService,
   updateUserService,
+  findUserService,
 } = require('../services/userService');
 const cookieConfig = require('../config/cookieConfig');
 const { formatResponse } = require('../utils/formatResponse');
@@ -82,6 +83,19 @@ const updateUser = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+ 
 };
 
-module.exports = { registration, login, logout, refresh, updateUser };
+const getUser = async (req, res, next) => {
+    try {
+      const { id } = res.locals.user;
+      const user = await findUserService(id);
+      res
+        .status(200)
+        .json(formatResponse(200, 'Данные пользователя получены', user));
+    } catch (err) {
+      next(err);
+    }
+  };
+
+module.exports = { registration, login, logout, refresh, updateUser, getUser };

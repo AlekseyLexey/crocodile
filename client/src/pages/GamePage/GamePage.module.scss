@@ -41,7 +41,8 @@
     "colors canvas tools chat"
     "sidebar sidebar sidebar chat";
   box-sizing: border-box;
-  
+  z-index: 2;
+  overflow: hidden;
 }
 
 .exitButton {
@@ -69,7 +70,6 @@
   grid-area: canvas;
   width: 100%;
   height: 426px;
-  background-color: #fff5f5;
   border-radius: $br;
   box-shadow: $box;
   position: relative;
@@ -154,6 +154,16 @@
     border-radius: 50%;
     margin-bottom: 4px;
     background-color: #ccc;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
   }
 
   .userName {
@@ -283,9 +293,8 @@
   position: relative;
   z-index: 1;
 
-
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -302,9 +311,9 @@
 @media (max-width: 1000px) {
   .container {
     grid-template-areas:
-      'word word timer chat'
-      'canvas canvas canvas chat'
-      'sidebar sidebar sidebar chat';
+      "word word timer chat"
+      "canvas canvas canvas chat"
+      "sidebar sidebar sidebar chat";
   }
 
   .colorsPanel {
@@ -330,9 +339,9 @@
     gap: 16px;
     padding: 16px;
     grid-template-areas:
-      'word timer'
-      'canvas canvas'
-      'chat chat';
+      "word timer"
+      "canvas canvas"
+      "chat chat";
     margin-bottom: 0;
     overflow: hidden;
     background-color: $background-container;
@@ -450,88 +459,44 @@
 }
 
 .crocodileDesktop {
-  position: absolute;
-  left: 20px;
-  bottom: -10px;
-  width: 180px;
-  height: 180px;
-  z-index: 10;
-
-  @media (max-width: 1440px) {
-    width: 160px;
-    height: 160px;
-    left: 15px;
-    bottom: -8px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 150px;
-    height: 150px;
-    left: 10px;
-    bottom: -5px;
-  }
-
+  @include animal-position(left, -80px, 20px);
+  pointer-events: none;
+  
   @media (max-height: 860px) {
-    bottom: -60px;
+    bottom: -100px;
     width: 140px;
     height: 140px;
   }
-
-  @media (max-width: 992px) {
-    width: 140px;
-    height: 140px;
-    left: 5px;
-    bottom: -5px;
+  
+  @media (max-height: 800px) {
+    display: none;
   }
-
+  
   @media (max-width: 768px) {
     display: none;
   }
 }
 
 .raccoonDesktop {
-  position: absolute;
-  right: 20px;
-  bottom: -10px;
-  width: 180px;
-  height: 180px;
-  z-index: 10;
-
-  @media (max-width: 1440px) {
-    width: 160px;
-    height: 160px;
-    right: 15px;
-    bottom: -8px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 150px;
-    height: 150px;
-    right: 10px;
-    bottom: -5px;
-  }
-
+  @include animal-position(right, -80px, null, 20px);
+  pointer-events: none;
+  
   @media (max-height: 860px) {
-    bottom: -50px;
-    bottom: -50px;
+    bottom: -90px;
     width: 140px;
     height: 140px;
   }
-
-  @media (max-width: 992px) {
-    width: 140px;
-    height: 140px;
-    right: 5px;
-    bottom: -5px;
+  
+  @media (max-height: 800px) {
+    display: none;
   }
-
+  
   @media (max-width: 768px) {
     display: none;
   }
 }
 
 .userLead {
-  // border: 2px solid $buy-color;
   background-color: rgb(241, 169, 34);
 }
 

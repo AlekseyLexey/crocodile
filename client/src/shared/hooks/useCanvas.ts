@@ -54,12 +54,11 @@ export const useCanvas = (roomId: number) => {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, dimensions.width, dimensions.height);
-    ctx.fillStyle = "#FFF5F5";
+    ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, dimensions.width, dimensions.height);
     dispatch(clearCanvas());
-    $api.put(`/picture/${roomId}`, { pictures: canvasRef.current.toDataURL() });
     dispatch(setTool("pencil"));
-  }, [dispatch, dimensions, canvasRef, roomId]);
+  }, [dispatch, dimensions, canvasRef]);
 
   const changeTool = useCallback(
     (tool: ToolType) => {

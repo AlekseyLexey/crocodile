@@ -19,7 +19,6 @@ import whaleSvg from "@/assets/svg/animals/кит.svg";
 import type { IActiveUserRoom } from "@/entities/room/model";
 import { useSocket } from "@/app/store/hooks/useSocket";
 
-
 export const LobbyList = () => {
   const { socket } = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,13 +127,10 @@ export const LobbyList = () => {
                   key={`${userRoom.room.id}_active`}
                   className={styles.lobbyCard}
                 >
-                  <span className={styles.lobbyName}>
-                    {userRoom.room.name}
-                  </span>
-                  <div className={styles.lobbyName}>продолжить</div>
+                  <span className={styles.lobbyName}>{userRoom.room.name}</span>
                   <Button
                     onClick={() => handleJoinGame(userRoom.room.id)}
-                    buttonText="войти"
+                    buttonText="Продолжить"
                     className={styles.joinButton}
                   />
                 </div>
@@ -148,9 +144,10 @@ export const LobbyList = () => {
               return (
                 <div key={room.id} className={styles.lobbyCard}>
                   <span className={styles.lobbyName}>{room.name}</span>
+
                   <Button
                     onClick={() => handleJoinGame(room.id)}
-                    buttonText="войти"
+                    buttonText="Войти"
                     className={styles.joinButton}
                   />
                 </div>

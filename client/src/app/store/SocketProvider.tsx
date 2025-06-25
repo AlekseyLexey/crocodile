@@ -11,6 +11,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   //     secure: true,
   //   })
   // );
+
   const [socket, setSocket] = useState<Socket>(io("ws://localhost:3000"));
 
   return (

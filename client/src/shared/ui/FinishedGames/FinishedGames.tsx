@@ -81,11 +81,11 @@ export const FinishedGames = () => {
           finishedGames.map((game) => (
             <div className={styles.gamesHistory} key={game.room.id}>
               <div className={styles.results}>
-                Очки: {game.point}
-                <div>Игра: {game.room.name}</div>
-                <span className={styles.gameDate}>
+                <div className={styles.finishedGamePoints}>Очки: {game.point}</div>
+                <div className={styles.finishedGameName}>Игра: {game.room.name}</div>
+                <div className={styles.gameDate}>
                   {formaterData(game.room.createdAt)}
-                </span>
+                </div>
               </div>
             </div>
           ))

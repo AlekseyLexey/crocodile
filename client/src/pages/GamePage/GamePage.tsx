@@ -25,6 +25,7 @@ import { useBackground } from "@/app/store/BackgroundContext";
 import crocodileSvg from "@/assets/svg/animals/крокодил.svg";
 import raccoonSvg from "@/assets/svg/animals/енот.svg";
 import { useAlert } from "@/shared/hooks/useAlert";
+import Avatar from "@/features/Avatar/Avatar";
 
 export const GamePage = () => {
   const [word, setWord] = useState<string>("");
@@ -115,9 +116,6 @@ export const GamePage = () => {
       setBackground("forest");
     };
 
-
-    
-    
     //eslint-disable-next-line
   }, [dispatch, user, socket, roomId, setBackground]);
 
@@ -156,15 +154,6 @@ export const GamePage = () => {
     navigate(CLIENT_ROUTES.MAIN);
   };
 
-  useEffect(() => {
-  if (room?.roomUsers) {
-    console.log("=== roomUsers ===");
-    room.roomUsers.forEach((u) =>
-      console.log(u.username, u.UserRoom?.is_online, u.UserRoom)
-    );
-  }
-}, [room]);
-
   return (
     <div className={styles.game}>
       <img
@@ -192,8 +181,15 @@ export const GamePage = () => {
         {room?.status === ROOM_STATUSES.END && <Finish />}
         <div className={styles.sidebar}>
           {room?.roomUsers.map((user) => (
-            <div key={user.id} className={`${styles.userCard} ${user.UserRoom.is_lead? styles.userLead : ''} ${user.UserRoom.is_online? '' : styles.userOffline}`}>
-              <div className={styles.userAvatar} />
+            <div
+              key={user.id}
+              className={`${styles.userCard} ${
+                user.UserRoom.is_lead ? styles.userLead : ""
+              } ${user.UserRoom.is_online ? "" : styles.userOffline}`}
+            >
+              <div className={styles.userAvatar}>
+                <Avatar fileName={user.avatarData.Product?.name} />
+              </div>
               <div className={`${styles.userName} `}>{user.username}</div>
               <div className={styles.userScore}>{user.UserRoom.point}</div>
             </div>
