@@ -49,7 +49,7 @@ module.exports = {
         { name: "Мёд", theme_id: 2 },
         { name: "Кофе", theme_id: 2 },
         { name: "Чай", theme_id: 2 },
-        
+
         //потерриада
         { name: "Очки", theme_id: 3 },
         { name: "Шрам", theme_id: 3 },
@@ -70,7 +70,7 @@ module.exports = {
         { name: "Добби", theme_id: 3 },
         { name: "Пикси", theme_id: 3 },
         { name: "Слизерин", theme_id: 3 },
-        { name: "Поттер", theme_id: 3 }
+        { name: "Поттер", theme_id: 3 },
 
         //безумный зоопарк
         { name: "РобоПаук", theme_id: 4 },
@@ -92,7 +92,7 @@ module.exports = {
         { name: "Совомедведь", theme_id: 4 },
         { name: "ПингвоКот", theme_id: 4 },
 
-        // Мульт-кавардак 
+        // Мульт-кавардак
         { name: "Чебурашка", theme_id: 5 },
         { name: "Леопольд", theme_id: 5 },
         { name: "Шапокляк", theme_id: 5 },
@@ -114,7 +114,7 @@ module.exports = {
         { name: "Русалочка", theme_id: 5 },
         { name: "Аладдин", theme_id: 5 },
 
-        // Гонки на диване 
+        // Гонки на диване
         { name: "Автомобиль", theme_id: 6 },
         { name: "Автобус", theme_id: 6 },
         { name: "Трамвай", theme_id: 6 },
@@ -136,7 +136,7 @@ module.exports = {
         { name: "Карета", theme_id: 6 },
         { name: "Сани", theme_id: 6 },
 
-        // Игрушки-бунтари 
+        // Игрушки-бунтари
         { name: "Кукла", theme_id: 7 },
         { name: "Кубики", theme_id: 7 },
         { name: "Пирамидка", theme_id: 7 },
@@ -158,7 +158,7 @@ module.exports = {
         { name: "Киндер", theme_id: 7 },
         { name: "Палка", theme_id: 7 },
 
-        // Древний трэш 
+        // Древний трэш
         { name: "Наполеон", theme_id: 8 },
         { name: "Пётр", theme_id: 8 },
         { name: "Клеопатра", theme_id: 8 },
@@ -180,7 +180,7 @@ module.exports = {
         { name: "Блокада", theme_id: 8 },
         { name: "Кремль", theme_id: 8 },
 
-        // Монстры в тапках 
+        // Монстры в тапках
         { name: "Дракула", theme_id: 9 },
         { name: "Франкенштейн", theme_id: 9 },
         { name: "Мумия", theme_id: 9 },
@@ -200,7 +200,7 @@ module.exports = {
         { name: "Джокер", theme_id: 9 },
         { name: "Кракен", theme_id: 9 },
         { name: "Дементор", theme_id: 9 },
-        { name: "Зомби", theme_id: 9 }
+        { name: "Зомби", theme_id: 9 },
         //консольный бардак
         { name: "Марио", theme_id: 10 },
         { name: "Соник", theme_id: 10 },
