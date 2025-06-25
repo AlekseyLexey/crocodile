@@ -1,3 +1,4 @@
+import type { ITheme } from "@/features/Select";
 import type { ROOM_STATUSES } from "@/shared";
 
 export type StatusRoomType =
@@ -43,6 +44,7 @@ export interface IRoom extends ICreateRoom {
   owner_id: number;
   roomUsers: IRoomUser[];
   type: TypeGame;
+  roomThemes: ITheme[];
 }
 
 export interface ICreateRoom {
@@ -59,6 +61,7 @@ export interface IRoomForUser {
   owner_id: number;
   type: string;
   createdAt: string;
+  roomThemes: ITheme[];
 }
 
 export interface IActiveUserRoom {

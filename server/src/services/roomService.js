@@ -1,4 +1,4 @@
-const { Room, User, Product, Buy } = require("../../db/models");
+const { Room, User, Product, Buy, Theme } = require("../../db/models");
 const HttpError = require("../exceptions/HttpError");
 const { findActiveAvatar } = require("./buyService");
 
@@ -17,6 +17,11 @@ class RoomService {
           through: {
             attributes: ["point", "is_lead", "is_online"],
           },
+        },
+        {
+          model: Theme,
+          as: "roomThemes",
+          attributes: ["id", "name"],
         },
       ],
     });

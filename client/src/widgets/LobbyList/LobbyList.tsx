@@ -18,6 +18,7 @@ import crabSvg from "@/assets/svg/animals/краб.svg";
 import whaleSvg from "@/assets/svg/animals/кит.svg";
 import type { IActiveUserRoom } from "@/entities/room/model";
 import { useSocket } from "@/app/store/hooks/useSocket";
+import { ThemesSelect } from "@/features";
 
 export const LobbyList = () => {
   const { socket } = useSocket();
@@ -29,6 +30,7 @@ export const LobbyList = () => {
 
   const [activeUserRooms, setActiveUserRooms] = useState<IActiveUserRoom[]>([]);
   const [gameTypeFilter, setGameTypeFilter] = useState<string>("all");
+  const [themeFilter, setThemeFilter] = useState<string>("all");
 
   useEffect(() => {
     const res = dispatch(getAllRoomThunk());
@@ -82,13 +84,26 @@ export const LobbyList = () => {
     navigate(`${CLIENT_ROUTES.GAME}/${id}`);
   };
 
-  const filteredRooms = rooms.filter((room) => {
-    return gameTypeFilter === "all" || room.type === gameTypeFilter;
-  });
+  const filteredRooms = rooms
+    .filter((room) => {
+      return gameTypeFilter === "all" || room.type === gameTypeFilter;
+    })
+    .filter((room) => {
+      if (themeFilter === "all") return room;
+      if (room.roomThemes.length === 0) return;
+      if (room.roomThemes[0]?.id === Number(themeFilter)) return room;
+    });
 
-  const filteredActiveRooms = activeUserRooms.filter((userRoom) => {
-    return gameTypeFilter === "all" || userRoom.room.type === gameTypeFilter;
-  });
+  const filteredActiveRooms = activeUserRooms
+    .filter((userRoom) => {
+      return gameTypeFilter === "all" || userRoom.room.type === gameTypeFilter;
+    })
+    .filter((userRoom) => {
+      if (themeFilter === "all") return userRoom;
+      if (userRoom.room.roomThemes.length === 0) return;
+      if (userRoom.room.roomThemes[0]?.id === Number(themeFilter))
+        return userRoom;
+    });
 
   return (
     <>
@@ -115,6 +130,10 @@ export const LobbyList = () => {
               <option value="mono">Моно</option>
               <option value="multi">Мульти</option>
             </select>
+          </div>
+
+          <div className={styles.filtersContainer}>
+            <ThemesSelect setTheme={setThemeFilter} />
           </div>
 
           <div className={styles.lobbiesContainer}>
