@@ -1,7 +1,19 @@
+@use "./vars" as *;
+
 @mixin flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin grid-center {
+  display: grid;
+  place-items: center;
 }
 
 //для всех текстов
@@ -26,18 +38,111 @@
 
 //для маленьких кнопок
 @mixin button {
+  @include text-style-bold;
   width: 160px;
   height: 61px;
   background-color: #71A47350;
-  stroke: #3B673D50;
+  border: 5px solid #3B673D50;
+  border-radius: 12px;
   cursor: pointer;
+  transition: all 0.2s ease-out;
+
+  &:hover {
+    background-color: #71A47360;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
-//для больших кнопок
 @mixin big-button {
+  @include button;
   width: 250px;
   height: 50px;
-  background-color: #71A47350;
-  stroke: #3B673D50;
-  cursor: pointer;
+}
+
+@mixin card-style {
+  background-color: $background-container;
+  border-radius: $br;
+  box-shadow: $box;
+  padding: $spacing;
+  transition: $transition;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+
+@mixin scroll {
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba($color: #2B640B, $alpha: 0.1);
+    border-radius: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #2B640B;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
+}
+
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == tablet {
+    @media (max-width: 992px) { @content; }
+  }
+  @else if $breakpoint == mobile {
+    @media (max-width: 768px) { @content; }
+  }
+  @else if $breakpoint == small-mobile {
+    @media (max-width: 480px) { @content; }
+  }
+}
+
+
+@mixin modal-window {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+
+@mixin animal-position($position, $bottom, $left: null, $right: null) {
+  position: absolute;
+  bottom: $bottom;
+  @if $left {
+    left: $left;
+  }
+  @if $right {
+    right: $right;
+  }
+  width: 180px;
+  height: 180px;
+  z-index: 10;
+
+  @include respond-to(tablet) {
+    width: 160px;
+    height: 160px;
+  }
+
+  @include respond-to(mobile) {
+    display: none;
+  }
 }

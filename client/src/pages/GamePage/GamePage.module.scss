@@ -41,6 +41,8 @@
     "colors canvas tools chat"
     "sidebar sidebar sidebar chat";
   box-sizing: border-box;
+  z-index: 2;
+  overflow: hidden;
 }
 
 .exitButton {
@@ -457,88 +459,44 @@
 }
 
 .crocodileDesktop {
-  position: absolute;
-  left: 20px;
-  bottom: -10px;
-  width: 180px;
-  height: 180px;
-  z-index: 10;
-
-  @media (max-width: 1440px) {
-    width: 160px;
-    height: 160px;
-    left: 15px;
-    bottom: -8px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 150px;
-    height: 150px;
-    left: 10px;
-    bottom: -5px;
-  }
-
+  @include animal-position(left, -80px, 20px);
+  pointer-events: none;
+  
   @media (max-height: 860px) {
-    bottom: -60px;
+    bottom: -100px;
     width: 140px;
     height: 140px;
   }
-
-  @media (max-width: 992px) {
-    width: 140px;
-    height: 140px;
-    left: 5px;
-    bottom: -5px;
+  
+  @media (max-height: 800px) {
+    display: none;
   }
-
+  
   @media (max-width: 768px) {
     display: none;
   }
 }
 
 .raccoonDesktop {
-  position: absolute;
-  right: 20px;
-  bottom: -10px;
-  width: 180px;
-  height: 180px;
-  z-index: 10;
-
-  @media (max-width: 1440px) {
-    width: 160px;
-    height: 160px;
-    right: 15px;
-    bottom: -8px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 150px;
-    height: 150px;
-    right: 10px;
-    bottom: -5px;
-  }
-
+  @include animal-position(right, -80px, null, 20px);
+  pointer-events: none;
+  
   @media (max-height: 860px) {
-    bottom: -50px;
-    bottom: -50px;
+    bottom: -90px;
     width: 140px;
     height: 140px;
   }
-
-  @media (max-width: 992px) {
-    width: 140px;
-    height: 140px;
-    right: 5px;
-    bottom: -5px;
+  
+  @media (max-height: 800px) {
+    display: none;
   }
-
+  
   @media (max-width: 768px) {
     display: none;
   }
 }
 
 .userLead {
-  // border: 2px solid $buy-color;
   background-color: rgb(241, 169, 34);
 }
 
