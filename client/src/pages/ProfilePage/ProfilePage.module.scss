@@ -329,9 +329,11 @@
   height: 60px;
   padding: 5px;
   grid-template-columns: 1fr;
+  
 }
 
 .results {
+  min-width: 0;
   grid-column: 1 / -1;
   border: 2px solid #71a47380;
   border-radius: 8px;
@@ -543,4 +545,17 @@
   font-weight: 800;
   letter-spacing: 12%;
   color: #2b640b;
+}
+
+
+.finishedGameName {
+  max-width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.finishedGamePoints{
+  min-width: 0;
 }

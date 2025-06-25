@@ -1,11 +1,17 @@
-const isCorrectWord = require("../helpers/isCorrectWord");
-
-const newWordSendler = require("../helpers/newWordSendler");
-const correctWordHandler = require("../helpers/correctWordHandler");
+const isCorrectWord = require('../helpers/isCorrectWord');
+const newWordSendler = require('../helpers/newWordSendler');
+const correctWordHandler = require('../helpers/correctWordHandler');
+const UserRoomService = require('../../services/userRoomService');
 
 module.exports.chatSocket = (io, socket) => {
-  socket.on("sendMessage", async ({ message, roomId }) => {
-    io.to(roomId).emit("newMessage", { message, sender: socket.user });
+  socket.on('sendMessage', async ({ message, roomId }) => {
+    io.to(roomId).emit('newMessage', { message, sender: socket.user });
+
+    const leadRoom = await UserRoomService.findLeadOfRoom({ roomId });
+
+    if (leadRoom.user_id === socket.user.id) {
+      return;
+    }
 
     const checker = isCorrectWord(message, roomId);
 
