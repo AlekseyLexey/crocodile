@@ -10,6 +10,7 @@ export interface IUser {
   email: string;
   createdAt: string;
   updatedAt: string;
+  point: number
 }
 
 export interface IAuthResponse {

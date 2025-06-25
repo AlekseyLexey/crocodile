@@ -1,11 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { IUser } from "../model";
+import { createSlice } from '@reduxjs/toolkit';
+import type { IUser } from '../model';
 import {
   logoutThunk,
   refreshThunk,
   signInThunk,
   signUpThunk,
-} from "../api/UserApi";
+  updateUserThunk,
+} from '../api/UserApi';
 
 type UserType = {
   user: IUser | null;
@@ -20,13 +21,11 @@ const initialState: UserType = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-
-      // ***signUpThunk
       .addCase(signUpThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -37,10 +36,9 @@ const userSlice = createSlice({
       })
       .addCase(signUpThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload!.message ?? "Unknow error";
+        state.error = action.payload!.message ?? 'Unknow error';
       })
 
-      // ***signInThunk
       .addCase(signInThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -51,10 +49,9 @@ const userSlice = createSlice({
       })
       .addCase(signInThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload!.message ?? "Unknow error";
+        state.error = action.payload!.message ?? 'Unknow error';
       })
 
-      // ***logoutThunk
       .addCase(logoutThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -65,10 +62,9 @@ const userSlice = createSlice({
       })
       .addCase(logoutThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.message ?? "Unknow error";
+        state.error = action.payload?.message ?? 'Unknow error';
       })
 
-      // ***refreshThunk
       .addCase(refreshThunk.pending, (state) => {
         state.error = null;
         state.isLoading = true;
@@ -79,7 +75,20 @@ const userSlice = createSlice({
       })
       .addCase(refreshThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.message ?? "Unknow error";
+        state.error = action.payload?.message ?? 'Unknow error';
+      })
+
+      .addCase(updateUserThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUserThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.data;
+      })
+      .addCase(updateUserThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload?.message ?? 'Ошибка при изменении имени';
       });
   },
 });

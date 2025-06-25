@@ -1,5 +1,5 @@
 // Шрифты
-$ff: "IBM Plex Mono", sans-serif;
+$ff: 'IBM Plex Mono', sans-serif;
 $fs: 14px;
 $fs-title: 20px;
 $fw-normal: 400;
@@ -12,6 +12,10 @@ $buy-color: #2ecc71;
 $buy-hover-color: #24e675;
 $loading-color: #ffeb3b;
 $error-color: #f44336;
+$lead-color: #f19d14;
+$active-border-color: #f6b956;
+$active-border-v2-color: #eabd4e;
+$offline-color: #eeb2b2;
 
 // Отступы и границы
 $spacing: 1.25rem;
@@ -20,12 +24,12 @@ $br: 12px;
 $box: 0 0 15px rgba(0, 0, 0, 1);
 
 // Фоны
-$background-main: #FFEFD9;
-$background-container: #FFEFD9;
-$background-mini: #71A47350;
-$white: rgb(255,245,245);
-$background-modal: #FFEFD9;
-$border-encircle: #71A47350;
+$background-main: #ffefd9;
+$background-container: #ffefd9;
+$background-mini: #71a47350;
+$white: rgb(255, 245, 245);
+$background-modal: #ffefd9;
+$border-encircle: #71a47350;
 $background-header: #16ff1d3d;
 
 // Фоновые изображения

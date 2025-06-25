@@ -5,7 +5,7 @@ const cors = require("cors");
 const corsOptions = {
   origin: ["http://localhost:5173", "https://crocdraw.ru"],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 204,
 };
