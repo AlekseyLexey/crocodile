@@ -106,10 +106,10 @@ export const LobbyList = () => {
                     <span className={styles.lobbyName}>
                       {userRoom.room.name}
                     </span>
-                    <div className={styles.lobbyName}>продолжить</div>
+                    <div className={styles.lobbyName}></div>
                     <Button
                       onClick={() => handleJoinGame(userRoom.room.id)}
-                      buttonText="войти"
+                      buttonText="Продолжить"
                       className={styles.joinButton}
                     />
                   </div>
@@ -119,6 +119,7 @@ export const LobbyList = () => {
               return (
                 <div key={room.id} className={styles.lobbyCard}>
                   <span className={styles.lobbyName}>{room.name}</span>
+                  
                   <Button
                     onClick={() => handleJoinGame(room.id)}
                     buttonText="войти"
