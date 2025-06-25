@@ -128,7 +128,7 @@ export const GamePage = () => {
     if (room?.status === ROOM_STATUSES.END) {
       const timer = setTimeout(() => {
         navigate(CLIENT_ROUTES.LOBBY_LIST);
-      }, 555555555000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
