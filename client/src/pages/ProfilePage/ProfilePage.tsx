@@ -221,9 +221,9 @@ export const ProfilePage = () => {
             <h2 className={styles.modalTitle}>Выбрать аватарку</h2>
             <div className={styles.avatarsGrid}>
               {loading.products ? (
-                <div>Загрузка товаров...</div>
+                <div className={styles.text}>Загрузка товаров...</div>
               ) : purchasedProducts.length === 0 ? (
-                <div>Нет купленных аватарок</div>
+                <div className={styles.text}>Нет купленных аватарок</div>
               ) : (
                 purchasedProducts.map((purchase) => (
                   <div

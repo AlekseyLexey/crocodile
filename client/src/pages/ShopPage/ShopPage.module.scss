@@ -121,7 +121,7 @@
 }
 
 .foxDesktop {
-  @include animal-position(absolute, 20px, 20%);
+  @include animal-position(absolute, 10px, 0%);
 
   @media (max-height: 780px) {
     display: none;

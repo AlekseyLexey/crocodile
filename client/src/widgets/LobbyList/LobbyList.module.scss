@@ -178,7 +178,6 @@
   transition: $transition;
   @include text-style-bold;
   @include big-button;
-  background-color: #bbd3b1;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -188,6 +187,8 @@
   &:hover {
     transform: translateY(-2px);
   }
+
+  background-color: #c8dbbd;
 }
 
 /* Десктопные животные */
@@ -312,85 +313,8 @@
     bottom: -50px;
   }
 }
-.pageContainer {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: $background-container;
-  box-shadow: $box;
-  border-radius: $br;
-  padding: 2rem;
-  margin: 45px auto 120px;
-  min-height: calc(100vh - 165px);
-  width: calc(100% - 328px);
-  max-width: 1200px;
-  overflow: visible;
 
-  @media (max-width: 1440px) {
-    width: calc(100% - 328px);
-    margin-left: 164px;
-    margin-right: 164px;
-  }
 
-  @media (max-width: 1200px) {
-    width: calc(100% - 328px);
-    margin-left: 164px;
-    margin-right: 164px;
-  }
-
-  @media (max-width: 992px) {
-    width: calc(100% - 200px);
-    margin-left: 100px;
-    margin-right: 100px;
-  }
-
-  @media (max-width: 768px) {
-    width: calc(100% - 52px);
-    margin: 45px 26px 120px;
-    padding: 1.5rem;
-  }
-
-  @media (max-width: 480px) {
-    width: calc(100% - 52px);
-    margin: 45px 26px 120px;
-    padding: 1rem;
-  }
-}
-
-.contentWrapper {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: $spacing;
-}
-
-.title {
-  @include text-style-bold;
-  margin-bottom: $spacing;
-  text-align: center;
-  font-size: 30px;
-
-  @media (max-width: 1440px) {
-    font-size: 28px;
-  }
-
-  @media (max-width: 1200px) {
-    font-size: 28px;
-  }
-
-  @media (max-width: 992px) {
-    font-size: 26px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 24px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 20px;
-  }
-}
 
 .filtersContainer {
   display: flex;
@@ -526,157 +450,7 @@
   }
 }
 
-.createButtonWrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: auto;
-  position: relative;
-  z-index: 5;
 
-  @media (max-width: 768px) {
-    margin-top: 1.5rem;
-  }
-}
-
-.createButton {
-  padding: 0.75rem 1.5rem;
-  transition: $transition;
-  @include text-style-bold;
-  @include big-button;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 1rem;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-}
-
-/* Десктопные животные */
-.lionDesktop {
-  position: absolute;
-  left: -80px;
-  bottom: -80px;
-  width: 180px;
-  height: 180px;
-  z-index: 1;
-
-  @media (max-width: 1440px) {
-    width: 160px;
-    height: 160px;
-    left: -70px;
-    bottom: -70px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 150px;
-    height: 150px;
-    left: -60px;
-    bottom: -60px;
-  }
-
-  @media (max-width: 992px) {
-    width: 140px;
-    height: 140px;
-    left: -50px;
-    bottom: -50px;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
-.crabDesktop {
-  position: absolute;
-  bottom: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 233px;
-  height: 152px;
-  z-index: 1;
-
-  @media (max-width: 1440px) {
-    width: 220px;
-    height: 142px;
-    bottom: -45px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 210px;
-    height: 132px;
-    bottom: -40px;
-  }
-
-  @media (max-width: 992px) {
-    width: 200px;
-    height: 122px;
-    bottom: -35px;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
-.whaleDesktop {
-  position: absolute;
-  right: -80px;
-  bottom: -80px;
-  width: 180px;
-  height: 180px;
-  z-index: 1;
-
-  @media (max-width: 1440px) {
-    width: 160px;
-    height: 160px;
-    right: -70px;
-    bottom: -70px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 150px;
-    height: 150px;
-    right: -60px;
-    bottom: -60px;
-  }
-
-  @media (max-width: 992px) {
-    width: 140px;
-    height: 140px;
-    right: -50px;
-    bottom: -50px;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
-/* Мобильное животное */
-.lionMobile {
-  display: none;
-
-  @media (max-width: 768px) {
-    display: block;
-    position: absolute;
-    left: -40px;
-    bottom: -60px;
-    width: 140px;
-    height: 140px;
-    z-index: 1;
-  }
-
-  @media (max-width: 480px) {
-    width: 120px;
-    height: 120px;
-    left: -30px;
-    bottom: -50px;
-  }
-}
 
 .lobbyName {
   max-width: 25%;

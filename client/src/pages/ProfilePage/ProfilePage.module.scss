@@ -204,6 +204,9 @@
   font-size: 20px;
 }
 
+.text{
+  @include text-style-bold;
+}
 .avatarsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
