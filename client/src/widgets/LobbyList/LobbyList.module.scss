@@ -117,6 +117,7 @@
   border-radius: $br;
   border: 1px solid $border-encircle;
   transition: $transition;
+  min-width: 0;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -177,6 +178,7 @@
   transition: $transition;
   @include text-style-bold;
   @include big-button;
+  background-color: #bbd3b1;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -309,4 +311,12 @@
     left: -30px;
     bottom: -50px;
   }
+}
+
+.lobbyName {
+  max-width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }

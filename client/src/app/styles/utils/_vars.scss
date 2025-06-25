@@ -1,11 +1,9 @@
-// Шрифты
 $ff: 'IBM Plex Mono', sans-serif;
 $fs: 14px;
 $fs-title: 20px;
 $fw-normal: 400;
 $fw-bold: 600;
 
-// Цвета
 $primary-color: #646cff;
 $hover-color: #535bf2;
 $buy-color: #2ecc71;
@@ -17,13 +15,11 @@ $active-border-color: #f6b956;
 $active-border-v2-color: #eabd4e;
 $offline-color: #eeb2b2;
 
-// Отступы и границы
 $spacing: 1.25rem;
 $transition: all 0.2s ease-out 0s;
 $br: 12px;
 $box: 0 0 15px rgba(0, 0, 0, 1);
 
-// Фоны
 $background-main: #ffefd9;
 $background-container: #ffefd9;
 $background-mini: #71a47350;
@@ -32,12 +28,28 @@ $background-modal: #ffefd9;
 $border-encircle: #71a47350;
 $background-header: #16ff1d3d;
 
-// Фоновые изображения
+$header-height: 73px;
+$button-height: 41px;
+$button-height-lg: 50px;
+$button-height-sm: 31px;
+$avatar-size: 120px;
+$avatar-size-mobile: 80px;
+
+$shadow-small: 0 2px 4px rgba(0, 0, 0, 0.2);
+$shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.3);
+$shadow-large: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+$success-gradient: linear-gradient(to bottom, #286a2a, #266929);
+$error-gradient: linear-gradient(to bottom, #ff6b6b, #e05555);
+
+$z-index-modal: 1000;
+$z-index-header: 1000;
+$z-index-animals: 10;
+
 $forest: url('../../../assets/svg/обои.svg');
 $beach: url('../../../assets/svg/пляж.svg');
 $river: url('../../../assets/svg/река.svg');
 
-//зверушки
 $crocodile: url('../../../assets/svg/animals/крокодил.svg');
 $dino: url('../../../assets/svg/animals/динозавр.svg');
 $dino-pink: url('../../../assets/svg/animals/динозавррозовый.svg');
@@ -55,5 +67,4 @@ $polar-bear: url('../../../assets/svg/animals/медведьбелый.svg');
 $deer: url('../../../assets/svg/animals/олень.svg');
 $penguin: url('../../../assets/svg/animals/пингвин.svg');
 
-//заставка
 $win: url('../../../assets/svg/победа.svg');
