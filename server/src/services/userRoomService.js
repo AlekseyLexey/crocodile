@@ -1,4 +1,4 @@
-const { UserRoom, User, Room } = require("../../db/models");
+const { UserRoom, User, Room, Theme } = require("../../db/models");
 const HttpError = require("../exceptions/HttpError");
 const { Op } = require("sequelize");
 
@@ -197,6 +197,13 @@ class UserRoomService {
             "createdAt",
           ],
           required: true,
+          include: [
+            {
+              model: Theme,
+              as: "roomThemes",
+              attributes: ["id", "name"],
+            },
+          ],
         },
       ],
       order: [
@@ -221,4 +228,3 @@ class UserRoomService {
 }
 
 module.exports = UserRoomService;
-

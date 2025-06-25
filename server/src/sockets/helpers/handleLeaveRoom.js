@@ -6,7 +6,7 @@ const TimerStore = require("./timerStore");
 
 const leaveUserAttemptsStore = new Map();
 const MAX_DISCONNECT_ATTEMPTS = 3;
-const RECONNECT_TIMEOUT = 10000;
+const RECONNECT_TIMEOUT = 15000;
 
 const handleLeaveRoom = async (io, socket) => {
   if (!socket.roomId) return;
