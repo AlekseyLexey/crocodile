@@ -198,20 +198,24 @@ export const GamePage = () => {
         {room && <Chat />}
       </div>
       <div className={styles.controls}>
-        {isLead && room?.status === ROOM_STATUSES.ACTIVE && (
-          <>
-            <Button
-              buttonText="Завершить игру"
-              onClick={handleEndGame}
-              className={styles.gameButton}
-            />
-          </>
+        {isLead &&
+          room?.status === ROOM_STATUSES.ACTIVE &&
+          room?.type !== "multi" && (
+            <>
+              <Button
+                buttonText="Завершить игру"
+                onClick={handleEndGame}
+                className={styles.gameButton}
+              />
+            </>
+          )}
+        {room?.status !== "end" && (
+          <Button
+            onClick={handleExit}
+            buttonText="Выйти из игры"
+            className={styles.gameButton}
+          />
         )}
-        <Button
-          onClick={handleExit}
-          buttonText="Выйти из игры"
-          className={styles.gameButton}
-        />
       </div>
     </div>
   );

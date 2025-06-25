@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import type { ITheme } from './index';
-import { $api } from '@/shared';
-import styles from './ThemesSelect.module.scss';
+import React, { useEffect, useState } from "react";
+import type { ITheme } from "./index";
+import { $api } from "@/shared";
+import styles from "./ThemesSelect.module.scss";
 
 interface IThemesSelectProps {
   setTheme: React.Dispatch<React.SetStateAction<string>>;
@@ -9,11 +9,11 @@ interface IThemesSelectProps {
 
 export const ThemesSelect = ({ setTheme }: IThemesSelectProps) => {
   const [themes, setThemes] = useState<ITheme[]>([]);
-  const [selectedTheme, setSelectedTheme] = useState<string>('');
+  const [selectedTheme, setSelectedTheme] = useState<string>("");
 
   useEffect(() => {
     const getAllThemes = async () => {
-      const allThemesArr = await $api.get('/themes');
+      const allThemesArr = await $api.get("/themes");
       setThemes(allThemesArr.data.data);
     };
 
