@@ -12,7 +12,7 @@ class TimerStore {
         time = 40000;
         break;
       case "pause":
-        time = 7000;
+        time = 777777777000;
         break;
       default:
         return;

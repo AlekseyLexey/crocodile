@@ -43,11 +43,11 @@ export const ChangeOfRound = () => {
       
       <h3 className={styles.subtitle}>До нового раунда: {time} сек</h3>
       
-      <Button 
+      {/* <Button 
         buttonText="Начать следующий раунд" 
         onClick={handleChangeGame} 
         className={styles.actionButton}
-      />
+      /> */}
     </div>
   );
 };
