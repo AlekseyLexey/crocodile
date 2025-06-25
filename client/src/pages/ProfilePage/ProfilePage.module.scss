@@ -111,13 +111,13 @@
   @media (max-width: 390px) {
     padding-right: 0;
     margin-right: -5px;
-    max-height: calc(100vh - 180px); 
+    max-height: calc(100vh - 180px);
   }
 }
 
-.noInfo{
-   @include text-style-bold;
-   text-align: center;
+.noInfo {
+  @include text-style-bold;
+  text-align: center;
 }
 
 .password {
@@ -137,14 +137,21 @@
 }
 
 .avatarContainer {
-  position: relative;
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #2b640b;
+  margin-bottom: 4px;
+  background-color: #ccc;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
 
   @media (max-width: 768px) {
     width: 80px;
@@ -155,12 +162,6 @@
     width: 100px;
     height: 100px;
     overflow: visible;
-
-    .avatarImage {
-      object-fit: contain;
-      border: 2px solid #2b640b;
-      box-sizing: border-box;
-    }
   }
 }
 .avatarImage {
@@ -275,11 +276,9 @@
   color: #4a76a8;
 }
 
-
 .modalCloseButton,
 .modalDeactivateButton,
 .modalSaveButton {
-
   display: block;
   padding: 8px 16px;
   border: 5px solid #3b673d50;
@@ -381,11 +380,6 @@
     @include text-style-bold;
   }
 
-  .avatarContainer {
-    width: 130px;
-    height: 130px;
-  }
-
   .password {
     width: 100%;
   }
@@ -413,11 +407,6 @@
 
     .avatarWrapper {
       margin-bottom: 10px;
-    }
-
-    .avatarContainer {
-      width: 60px;
-      height: 60px;
     }
 
     .avatarChangeButton {
@@ -483,7 +472,7 @@
     bottom: -60px;
   }
 
- @media (max-width: 1000px) {
+  @media (max-width: 1000px) {
     display: none;
   }
 }
@@ -512,7 +501,6 @@
   @media (max-width: 1000px) {
     display: none;
   }
-
 }
 
 .polarBearDesktop {
@@ -545,7 +533,7 @@
 .modalButtons {
   display: flex;
   justify-content: center;
-  gap: 15px
+  gap: 15px;
 }
 
 .allUserPoints {
@@ -556,4 +544,3 @@
   letter-spacing: 12%;
   color: #2b640b;
 }
-

@@ -1,23 +1,12 @@
-import crocoDefaultAva from '@/assets/svg/animals/крокодил.svg';
-import styles from '../../pages/ProfilePage/ProfilePage.module.scss';
-
 interface IAvatar {
-  fileName: string | null;
+  fileName: string | null | undefined;
 }
 
 const Avatar = ({ fileName }: IAvatar) => {
-  const getAvatarUrl = (name: string) => {
-    return new URL(`/src/assets/svg/avatars/${name}.svg`, import.meta.url).href;
-  };
-
   const avatar = fileName ? (
-    <img src={getAvatarUrl(fileName)} alt={`Аватар ${fileName}`} />
+    <img src={`/${fileName}.svg`} alt={`Аватар ${fileName}`} />
   ) : (
-    <img
-      src={crocoDefaultAva}
-      alt="Дефолтный аватар"
-      className={styles.defaultAvatar}
-    />
+    <img src={`/crocodile-com.svg`} alt="Дефолтный аватар" />
   );
 
   return avatar;

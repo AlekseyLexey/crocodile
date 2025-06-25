@@ -1,8 +1,8 @@
-const { Buy, Product } = require('../../db/models');
-const { updateUserService, findUserService } = require('./userService');
-const HttpError = require('../exceptions/HttpError');
-const ProductService = require('./productService');
-const { Op } = require('sequelize');
+const { Buy, Product } = require("../../db/models");
+const { updateUserService, findUserService } = require("./userService");
+const HttpError = require("../exceptions/HttpError");
+const ProductService = require("./productService");
+const { Op } = require("sequelize");
 
 class BuyService {
   static async findBuyByUserProductId(productId, userId) {
@@ -11,7 +11,7 @@ class BuyService {
         user_id: userId,
         product_id: productId,
       },
-      attributes: ['id', 'user_id', 'product_id', 'is_active'],
+      attributes: ["id", "user_id", "product_id", "is_active"],
     });
   }
 
@@ -19,13 +19,13 @@ class BuyService {
     const product = await ProductService.findProductById(productId);
 
     if (!product) {
-      throw new HttpError(404, 'Product not found');
+      throw new HttpError(404, "Product not found");
     }
 
     const buyer = await findUserService(userId);
 
     if (buyer.point < product.price) {
-      throw new HttpError(400, 'Not enough points for this product');
+      throw new HttpError(400, "Not enough points for this product");
     }
 
     await updateUserService(userId, {
@@ -65,13 +65,13 @@ class BuyService {
       include: [
         {
           model: Product,
-          attributes: ['id', 'name', 'category_id'],
+          attributes: ["id", "name", "category_id"],
         },
       ],
     });
 
     if (!buyToActivate) {
-      throw new HttpError(404, 'Buy not found');
+      throw new HttpError(404, "Buy not found");
     }
 
     const categoryId = buyToActivate.Product.category_id;
@@ -102,14 +102,14 @@ class BuyService {
     );
 
     if (!activatedBuy[0]) {
-      throw new HttpError(404, 'Buy not activated');
+      throw new HttpError(404, "Buy not activated");
     }
 
     return await Buy.findByPk(buyId, {
       include: [
         {
           model: Product,
-          attributes: ['id', 'name', 'price', 'category_id'],
+          attributes: ["id", "name", "price", "category_id"],
         },
       ],
     });
@@ -124,7 +124,7 @@ class BuyService {
     });
 
     if (!buy) {
-      throw new HttpError(404, 'Buy not found');
+      throw new HttpError(404, "Buy not found");
     }
 
     await buy.update({ is_active: false });
@@ -133,7 +133,7 @@ class BuyService {
       include: [
         {
           model: Product,
-          attributes: ['id', 'name', 'price', 'category_id'],
+          attributes: ["id", "name", "price", "category_id"],
         },
       ],
     });
@@ -142,11 +142,11 @@ class BuyService {
   static async findProductsByUserId(userId) {
     return await Buy.findAll({
       where: { user_id: userId },
-      attributes: ['id', 'user_id', 'product_id', 'is_active'],
+      attributes: ["id", "user_id", "product_id", "is_active"],
       include: [
         {
           model: Product,
-          attributes: ['id', 'name', 'price', 'category_id'],
+          attributes: ["id", "name", "price", "category_id"],
         },
       ],
     });
@@ -155,14 +155,14 @@ class BuyService {
   static async findAvatarsByUserId(userId) {
     return await Buy.findAll({
       where: { user_id: userId },
-      attributes: ['id', 'user_id', 'product_id', 'is_active'],
+      attributes: ["id", "user_id", "product_id", "is_active"],
       include: [
         {
           model: Product,
           where: {
             category_id: 3,
           },
-          attributes: ['id', 'name', 'price', 'category_id'],
+          attributes: ["id", "name", "price", "category_id"],
         },
       ],
     });
@@ -190,14 +190,14 @@ class BuyService {
           include: [
             {
               model: Category,
-              as: 'productCategories',
+              as: "productCategories",
               where: {
                 name: categoryName,
               },
-              attributes: ['id', 'name'],
+              attributes: ["id", "name"],
             },
           ],
-          attributes: ['id', 'name', 'price', 'category_id'],
+          attributes: ["id", "name", "price", "category_id"],
         },
       ],
     });
@@ -221,18 +221,21 @@ class BuyService {
         user_id: userId,
         is_active: true,
       },
-      attributes: ['id', 'product_id', 'user_id', 'is_active'],
+      attributes: ["id", "product_id", "user_id", "is_active"],
       include: [
         {
           model: Product,
           where: { category_id: categoryId },
-          attributes: ['id', 'name', 'price', 'category_id'],
+          attributes: ["id", "name", "price", "category_id"],
         },
       ],
     });
 
     if (!activeBuy) {
-      throw new HttpError(404, 'Active avatar not found');
+      return {
+        user_id: userId,
+        Product: null,
+      };
     }
 
     return activeBuy.get({ plain: true });

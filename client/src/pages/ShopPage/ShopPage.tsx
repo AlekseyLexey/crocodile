@@ -130,7 +130,7 @@ export const ShopPage = () => {
               <div className={styles.productImage}>
                 <h3 className={styles.productName}>{product.name}</h3>
                 <img
-                  src={`../../../public/${product.name}.svg`}
+                  src={`/${product.name}.svg`}
                   alt={product.name}
                   className={styles.animalImage}
                   onError={(e) => {

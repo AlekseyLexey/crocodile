@@ -1,4 +1,4 @@
-import type { ROOM_STATUSES } from '@/shared';
+import type { ROOM_STATUSES } from "@/shared";
 
 export type StatusRoomType =
   | ROOM_STATUSES.PREPARE
@@ -6,19 +6,19 @@ export type StatusRoomType =
   | ROOM_STATUSES.PAUSE
   | ROOM_STATUSES.END;
 
-interface IBuy {
+interface IProduct {
   id: number;
-  is_active: boolean;
-  product_id: number;
-  user_id: number;
+  category_id: number;
+  price: number;
+  name: string;
 }
 
-interface IUserProducts {
-  Buy: IBuy;
-  category_id: number;
-  id: number;
-  name: string;
-  price: number;
+interface IAvatarData {
+  Product: IProduct | null;
+  user_id: number;
+  product_id?: number;
+  is_active?: boolean;
+  id?: number;
 }
 
 export interface IRoomUser {
@@ -26,7 +26,7 @@ export interface IRoomUser {
   username: string;
   point: number;
   UserRoom: IUserRoom;
-  userProducts: IUserProducts[];
+  avatarData: IAvatarData;
 }
 
 export interface IUserRoom {
@@ -35,7 +35,7 @@ export interface IUserRoom {
   is_online: boolean;
 }
 
-export type TypeGame = 'mono' | 'multi';
+export type TypeGame = "mono" | "multi";
 
 export interface IRoom extends ICreateRoom {
   id: number;
