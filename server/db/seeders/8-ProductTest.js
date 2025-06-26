@@ -7,8 +7,8 @@ module.exports = {
       "Products",
       [
         //25
+        { name: "Crocodile", price: 3, category_id: 3 },
         { name: "Parrot", price: 25, category_id: 3 },
-        { name: "Crocodile", price: 25, category_id: 3 },
         { name: "Whale", price: 25, category_id: 3 },
         { name: "Hedgehog", price: 25, category_id: 3 },
         { name: "Crab", price: 25, category_id: 3 },

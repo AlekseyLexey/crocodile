@@ -102,7 +102,7 @@ module.exports = {
         { name: "Пятачок", theme_id: 5 },
         { name: "Совунья", theme_id: 5 },
         { name: "Крош", theme_id: 5 },
-        { name: "Нулик", theme_id: 5 },
+        { name: "Нолик", theme_id: 5 },
         { name: "Буратино", theme_id: 5 },
         { name: "Микки-Маус", theme_id: 5 },
         { name: "Гуфи", theme_id: 5 },
