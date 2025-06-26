@@ -46,4 +46,10 @@
   &:last-child {
     margin-bottom: 0; 
   }
+
+  &.activeTool {
+    background-color: rgba(43, 100, 11, 0.2); 
+    box-shadow: 0 0 0 3px #ffbb00e7;
+    
+  }
 }
