@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "../../../pages/ProfilePage/ProfilePage.module.scss";
 import { $api } from "@/shared/lib/axiosConfig";
 
-
-
 interface FinishedGame {
   room: Room;
   point: number;
@@ -15,8 +13,6 @@ interface Room {
   createdAt: string;
 }
 
-
-
 export const FinishedGames = () => {
   const [loading, setLoading] = useState({
     games: false,
@@ -24,13 +20,13 @@ export const FinishedGames = () => {
   const [finishedGames, setFinishedGames] = useState<FinishedGame[]>([]);
   const [showSection2, setShowSection2] = useState(false);
 
-  const formaterData = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString();
-    } catch {
-      return dateString;
-    }
-  };
+  // const formaterData = (dateString: string) => {
+  //   try {
+  //     return new Date(dateString).toLocaleDateString();
+  //   } catch {
+  //     return dateString;
+  //   }
+  // };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,8 +77,12 @@ export const FinishedGames = () => {
           finishedGames.map((game) => (
             <div className={styles.gamesHistory} key={game.room.id}>
               <div className={styles.results}>
-                <div className={styles.finishedGamePoints}>Очки: {game.point}</div>
-                <div className={styles.finishedGameName}>Игра: {game.room.name}</div>
+                <div className={styles.finishedGamePoints}>
+                  Очки: {game.point}
+                </div>
+                <div className={styles.finishedGameName}>
+                  Игра: {game.room.name}
+                </div>
               </div>
             </div>
           ))
