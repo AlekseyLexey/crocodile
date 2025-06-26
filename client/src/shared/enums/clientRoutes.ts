@@ -7,6 +7,7 @@ export enum CLIENT_ROUTES {
   LOBBY_LIST = "/lobbies",
   SHOP = "/shop",
   PROFILE = "/profile",
+  RULES = "/rules"
 }
 
 export enum SOCKET_DRAW_ROUTES {

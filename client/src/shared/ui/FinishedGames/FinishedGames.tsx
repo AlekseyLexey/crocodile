@@ -83,9 +83,6 @@ export const FinishedGames = () => {
               <div className={styles.results}>
                 <div className={styles.finishedGamePoints}>Очки: {game.point}</div>
                 <div className={styles.finishedGameName}>Игра: {game.room.name}</div>
-                <div className={styles.gameDate}>
-                  {formaterData(game.room.createdAt)}
-                </div>
               </div>
             </div>
           ))

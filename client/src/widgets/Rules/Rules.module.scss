@@ -1,0 +1,34 @@
+.container{
+    width: 100%;
+    height: 100%;
+    @include grid-center;
+    overflow-y:auto;
+    @include scroll
+}
+
+.rulcontainer{
+    background-color: $background-container;
+    height: auto;
+    width: calc(100% - 15%);
+    border-radius: $br;
+    padding: 10px;
+    box-shadow: $box;
+    @include text-style-bold;
+    @include flex-column;
+    text-align: center;
+
+}
+
+.title{
+    margin: 15px;
+    @include grid-center
+}
+
+ul{
+    background-color: $background-mini;
+    border-radius: $br;
+}
+
+li{
+    margin: 10px;
+}
