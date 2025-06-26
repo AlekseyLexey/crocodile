@@ -33,7 +33,7 @@ export const AuthPage = () => {
         <h2>{isLogin ? "Вход" : "Регистрация"}</h2>
         <AuthForm isLogin={isLogin} />
         <Button
-          buttonText={isLogin ? "Регистрация" : "Войти в профиль"}
+          buttonText={isLogin ? "У меня нет аккаунта" : "У меня уже есть аккаунт"}
           onClick={() => setIsLogin(!isLogin)}
          
           style={{ marginTop: '0.5rem' }}

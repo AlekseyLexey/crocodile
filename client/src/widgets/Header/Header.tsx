@@ -81,7 +81,14 @@ export const Header = () => {
                     className={styles.menuItem}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Список Лобби
+                    Игры
+                  </Link>
+                  <Link
+                    to={CLIENT_ROUTES.RULES}
+                    className={styles.menuItem}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Правила
                   </Link>
                   <Link
                     to={CLIENT_ROUTES.PROFILE}
@@ -101,8 +108,12 @@ export const Header = () => {
                 onClick={() => navigate(CLIENT_ROUTES.SHOP)}
               />
               <ButtonNavigate
-                buttonText="Список Лобби"
+                buttonText="Игры"
                 onClick={() => navigate(CLIENT_ROUTES.LOBBY_LIST)}
+              />
+              <ButtonNavigate
+                buttonText="Правила"
+                onClick={() => navigate(CLIENT_ROUTES.RULES)}
               />
               <ButtonNavigate
                 buttonText="Профиль"
