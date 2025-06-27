@@ -9,7 +9,7 @@ module.exports.chatSocket = (io, socket) => {
 
     const leadRoom = await UserRoomService.findLeadOfRoom({ roomId });
 
-    if (leadRoom.user_id === socket.user.id || leadRoom === null) {
+    if (leadRoom?.user_id === socket.user.id || leadRoom === null) {
       return;
     }
 
